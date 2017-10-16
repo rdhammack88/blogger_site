@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var $searchForm = $('.searchForm');
+	/*var $searchForm = $('.searchForm');
 	var $searchBox = $('#search');
 	var searchWidth = $($searchBox).width();
 	
@@ -18,7 +18,7 @@ $(document).ready(function() {
 		$(this).toggleClass('input-lg').width(searchWidth);
 		$searchForm.toggleClass('col-sm-4 col-sm-5 col-sm-offset-2 ');
 		$('.input-group .btn').toggleClass('btn-lg');
-	});
+	});*/
 
 	$('#signupForm input[type="submit"]').click(function(e) {
 		var $first_name = $('#first_name');
@@ -44,7 +44,9 @@ $(document).ready(function() {
 	}
 	
 	
-	
+	setTimeout(function() {
+		$('.alert').slideUp();
+	}, 2000);
 	
 	
 	

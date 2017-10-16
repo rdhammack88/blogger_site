@@ -54,7 +54,7 @@
         <div class="container-fluid">
 
             <div class="navbar-header">
-            	<h1><a class="navbar-brand" href="index.php"><strong>BLOGGER</strong>.com</a></h1>
+            	<a class="navbar-brand" href="index.php"><strong>BLOGGER</strong>.com</a>
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -75,7 +75,7 @@
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <p class="navbar-text">Aloha, <?php echo $_SESSION['loggedInUser'];?></p> 
+                    <p class="navbar-text">Welcome, <?php echo $_SESSION['loggedInUser'];?></p> 
                     <!--$_POST[$name]-->
 
                     <li><a href="user_account.php">Account</a></li>
@@ -100,14 +100,11 @@
 
         </div>
 
-    </nav>
-	
-	<div class="container">
-		<div class="row">
+   		<div class="row">
 			<!--<h1 class="col-sm-6"><a href="index.php">BLOGGER.com</a></h1>-->
 			
 			<!--<form class="col-sm-4 col-sm-offset-2 col-xs-12 searchForm" >-->
-			<form class="" >
+			<form class="col-md-6 col-md-offset-3" >
 				<!--<div class="form-group">-->
 					<label for="search" class="sr-only">Search site</label>
 					<div class="input-group">
@@ -120,5 +117,10 @@
 			</form>
 			
 		</div>
-
-		<br/><br/>
+   
+   
+    </nav>
+	
+	<div class="container">
+		
+	<br/>

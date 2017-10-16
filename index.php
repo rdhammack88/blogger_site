@@ -1,82 +1,34 @@
-<?php // include('includes/header.php'); ?>
-
-<?php
-session_start();
-
-include("includes/functions.php");
-
-// if login form was submitted
-if( isset( $_POST['login'] ) ) {
-	
-	// create variables
-	// wrap data with validate function
-	$formEmail = validateFormData( $_POST['email'] );
-	$formPass = validateFormData( $_POST['password'] );
-
-	// connect to database
-	include('includes/connection.php');
-
-	// create query
-	$query = "SELECT first_name, password FROM users WHERE email='$formEmail'";
-
-	// store the result
-	$result = mysqli_query( $conn, $query );
-	
-	// verify if result is returned
-	if( mysqli_num_rows($result) > 0 ) {
-		
-		// store basic user data in variables
-		while( $row = mysqli_fetch_assoc($result) ) {
-			$name 		= $row['first_name'];
-			$hashedPass = $row['password'];
-		}
-		
-		// verify hashed password with submitted password
-		if( password_verify( $formPass, $hashedPass ) ) {
-			
-			// correct login details!
-			// store data in SESSION variables
-			$_SESSION['loggedInUser'] = $name;
-			
-			// redirect user to their blog posts
-			header( "Location: blogs.php" );
-		} else { // hashed password didn't verify
-			
-			// error message
-			$loginError = "<div class='alert alert-danger'>Wrong username / password combination. Please try again!</div>";
-		}
-		
-	} else { // there are no results in the database
-		
-		// error message
-		$loginError = "<div class='alert alert-danger'>No such user in database. Please try again! <a class='close' data-dismiss='alert'>&times;</a></div>";
-	}
-
-}
-
-// close connection to database
-mysqli_close($conn);
-
-include('includes/header.php');
-
-//$password = password_hash( "abc123", PASSWORD_DEFAULT );
-//echo $password;
-
-?>
-
-
-
-<?php echo $loginError; ?>
+<?php include('includes/header.php'); ?>
 
 <main class="row">
-<!-- Main Blog Article Content -->
-	<section id="blogSection" class="col-sm-8 col-sm-offset-2">
 
-		<h3>Most Recent Blog Posts...</h3>
+	<!-- aside>nav.blogTopics>ul>li*8>a[href=#] -->
+	<aside id="blogTopics" class="col-sm-3 col-md-3">
+		<nav>
+			<h4 class="">Most Popular Topics</h4>
+			<ul>
+				<li><a href="#">Lorem</a></li>
+				<li><a href="#">Hic</a></li>
+				<li><a href="#">Cum</a></li>
+				<li><a href="#">Esse</a></li>
+				<li><a href="#">Fugiat</a></li>
+				<li><a href="#">Quibusdam</a></li>
+				<li><a href="#">Totam</a></li>
+				<li><a href="#">Soluta</a></li>
+			</ul>
+		</nav>
+	</aside>
+	
+	<!-- Main Blog Article Content -->
+	<section id="blogSection" class="col-sm-8 col-sm-offset-1">
+
+		<small class="text-danger">Most Recent Blog Posts...</small>
 		<article>
 
-			<h2>Lorem ipsum dolor sit amet, consectetur.</h2>
-			<h4>August 23, 2017</h4>				
+			<div class="blog-title">
+				<h2>Lorem ipsum dolor sit amet, consectetur.</h2>
+				<p>August 23, 2017</p>
+			</div>
 
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto ratione excepturi rerum ab optio cumque similique sapiente unde beatae odit magni, voluptatem ipsum sint necessitatibus voluptatibus, reiciendis, ipsam aut voluptate et eveniet. Dignissimos ducimus facilis error, sunt laboriosam deleniti ullam quas eveniet pariatur consequuntur, debitis labore at rerum. Velit fuga deserunt dolorum voluptates rerum hic ut reprehenderit distinctio, possimus aspernatur temporibus, rem eos quo, iure beatae labore eligendi sit quia voluptate. Maiores iure quam alias necessitatibus dolor! Laudantium quasi obcaecati quibusdam est? Dolores quia odit temporibus laudantium culpa atque impedit aut et doloremque? Dolorem dolores non, culpa facere reprehenderit, aut!</p>
 			<p>Error fugiat magnam, cumque quisquam molestiae minima dignissimos quibusdam blanditiis voluptate officia quidem accusantium voluptas facilis voluptatibus voluptatem eaque temporibus unde quis quia necessitatibus excepturi nulla. Quos modi vero aliquam tempora, ullam hic quis dolorem tempore veniam, iusto nulla deserunt, alias. Vel voluptates quis iusto laborum cupiditate quam deserunt, sed inventore cumque animi numquam sapiente! Aut quas adipisci reiciendis inventore ullam libero temporibus cum hic! Porro recusandae cupiditate voluptas eos, saepe temporibus quos veritatis facere delectus consectetur velit nihil, culpa minus maiores voluptatum assumenda voluptatibus reiciendis nulla a magni earum corrupti, atque non. Officia quisquam ex, veritatis aspernatur, nesciunt dolore!</p>
@@ -86,8 +38,10 @@ include('includes/header.php');
 
 		<article>
 
-			<h2>Sequi optio id saepe.</h2>
-			<h4>June 11, 2017</h4>				
+			<div class="blog-title">
+				<h2>Sequi optio id saepe.</h2>
+				<p>June 11, 2017</p>
+			</div>			
 
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, nostrum! Voluptate in corporis adipisci a, saepe similique animi minima ea. Aliquam et modi, officia similique inventore deleniti tenetur facere corrupti, tempora sequi, dolorum ipsam aspernatur recusandae! Laudantium facilis provident iusto minima doloribus natus dolor laboriosam harum dolore, sunt voluptate pariatur ducimus odio sapiente commodi maiores a reiciendis officia sit sint magnam quaerat libero. Consequuntur magni velit molestias delectus earum optio totam tempore eligendi expedita, tenetur est itaque, facilis impedit enim in harum nihil consequatur similique eius assumenda corporis reprehenderit molestiae provident nisi. Voluptatibus animi eveniet et culpa inventore, nesciunt neque.</p>
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, odio assumenda sed ea sit autem labore! Quasi atque possimus sunt fuga optio provident vero qui labore, cumque ratione facere aliquid dolorem. Voluptate officia animi aperiam tempora iure id ducimus, quas suscipit expedita accusamus doloremque eveniet modi nesciunt reiciendis qui, illum autem labore impedit nostrum. Eum dicta labore saepe, esse quo fuga veniam doloribus possimus consectetur expedita dolore cupiditate amet voluptatum nam suscipit natus quos laborum in blanditiis quibusdam dolorum, asperiores? Atque reiciendis, totam perferendis minus placeat excepturi harum!</p>
@@ -99,8 +53,10 @@ include('includes/header.php');
 
 		<article>
 
-			<h2>In, distinctio repudiandae quas!</h2>
-			<h4>June 3, 2017</h4>
+			<div class="blog-title">
+				<h2>In, distinctio repudiandae quas!</h2>
+				<p>June 3, 2017</p>			
+			</div>
 
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, laudantium. Commodi aliquid delectus dolorum molestiae, porro corporis. Sit optio quibusdam quod repellendus id. Molestiae sed, aperiam veritatis voluptatem soluta nemo consectetur voluptate autem doloribus sapiente rerum iure repudiandae, excepturi, iusto quo accusamus. Nisi necessitatibus voluptates, expedita quas, et sunt. Suscipit, tenetur doloribus ex consectetur, qui sunt. Dicta maiores rerum soluta iusto! Officia quibusdam harum cupiditate aperiam corporis distinctio ipsa doloribus nostrum soluta assumenda, reprehenderit quidem voluptate illo, commodi quasi accusantium laboriosam, quam. Officiis, distinctio culpa quod ratione repellat incidunt earum veniam dolorum reprehenderit sint quia alias inventore necessitatibus unde vitae.</p>
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, natus. Eveniet non suscipit, accusamus libero ipsam autem temporibus voluptate, consequuntur quo quaerat beatae officia. Tempore fuga vitae temporibus eveniet eaque ab neque laborum sequi eos debitis nostrum distinctio perspiciatis sapiente aut recusandae est, magnam non fugit a facilis, atque. Asperiores dolor quasi eligendi reprehenderit, odio amet vel rem, molestias nulla illum officiis blanditiis, magni cumque exercitationem officia dignissimos. Vero dolores dolore in, ratione corporis doloremque necessitatibus.</p>
@@ -112,8 +68,10 @@ include('includes/header.php');
 
 		<article>
 
-			<h2>Maiores dicta dolorum iure dolore.</h2>
-			<h4>April 25, 2017</h4>
+			<div class="blog-title">
+				<h2>Maiores dicta dolorum iure dolore.</h2>
+				<p>April 25, 2017</p>
+			</div>
 
 			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minus molestias officiis, recusandae reiciendis voluptas praesentium repudiandae itaque eveniet ducimus aliquid assumenda! Temporibus consequuntur ipsum praesentium distinctio perferendis sed asperiores reprehenderit. Sunt tempora perspiciatis, ipsam temporibus, nisi odit ratione omnis est eligendi laboriosam unde facere, dignissimos inventore accusantium fugiat. Provident voluptatibus omnis accusantium illum quaerat facere fugit sit aut ullam dicta soluta et enim veritatis mollitia laboriosam dolores temporibus illo dolor reiciendis, excepturi amet nostrum veniam! Ex explicabo itaque, natus temporibus aperiam iste earum doloremque hic nostrum molestiae modi ad nesciunt provident, quisquam non consectetur nulla, ullam vitae sint vel facere?</p>
 			<p>Non dicta atque quod vel amet, asperiores odit doloribus possimus ex saepe, voluptate nostrum repellat quas eaque laboriosam dolores maiores ea! Iste, perferendis necessitatibus, excepturi, obcaecati nostrum dolorum voluptatem inventore accusantium autem explicabo ea! Similique sint aperiam id, laboriosam pariatur nihil in molestias. Commodi quisquam ab sed magni doloremque inventore fuga nisi dolore! Consectetur iste dicta quisquam sunt voluptate dolore officiis, veniam eos pariatur assumenda excepturi numquam obcaecati quis eius vel quod voluptatum suscipit soluta tempora, recusandae explicabo nam commodi? Molestias recusandae sequi excepturi dolorem ex ipsum commodi tempora in velit iusto, vel, officia alias ullam vero, dignissimos debitis soluta!</p>
