@@ -32,7 +32,9 @@
 	
 
 	<title>Blogger.com</title>
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+	<!--<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>-->
+	<!--<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">-->
+	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Indie+Flower|Nosifer|Shadows+Into+Light" rel="stylesheet">
 	<!-- Minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/styles.css">
@@ -45,38 +47,67 @@
 	<![endif]-->
 
 </head>
-<body>    
+<body>
+
+	<nav class="navbar navbar-default ">
+
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+            	<h1><a class="navbar-brand" href="index.php"><strong>BLOGGER</strong>.com</a></h1>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+				
+            </div>
+			
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+
+               	<?php
+                if( $_SESSION['loggedInUser'] ) { // if user is logged in
+                ?>
+                <ul class="nav navbar-nav">
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="blogs.php">Blogs</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <p class="navbar-text">Aloha, <?php echo $_SESSION['loggedInUser'];?></p> 
+                    <!--$_POST[$name]-->
+
+                    <li><a href="user_account.php">Account</a></li>
+                    <li><a href="logout.php">Log out</a></li>
+                </ul>
+                <?php
+                } else {
+                ?>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="index.php">Home</a></li>
+                    <li><a href="blogs.php">Blogs</a></li>
+					<li><a href="login.php">Log In</a></li>
+					<li><a href="signup.php">Sign Up</a></li>
+                </ul>
+                
+                <?php
+                }
+                ?>
+
+           		
+            </div>
+
+        </div>
+
+    </nav>
 	
 	<div class="container">
-		<header class="row">
-			<h1 class="col-sm-5"><a href="index.php">Blogger.com</a></h1>
+		<div class="row">
+			<!--<h1 class="col-sm-6"><a href="index.php">BLOGGER.com</a></h1>-->
 			
-		<form class="form-inline col-sm-4 col-sm-offset-3" action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">
-		   <!--<p class="lead">Log in to your account.</p>-->
-			<div class="form-group">
-				<label for="login-email" class="sr-only">Email</label>
-				<input type="text" class="form-control" id="login-email" placeholder="Email/Username" name="email" value="<?php echo $formEmail; ?>">
-			</div>
-			<div class="form-group">
-				<label for="login-password" class="sr-only">Password</label>
-				<input type="password" class="form-control" id="login-password" placeholder="Password" name="password">
-			</div>
-			<button type="submit" class="btn btn-primary" name="login">Login</button>
-		</form>
-			
-		</header>
-
-		<!--<div class="clearfix"></div>-->
-
-		<nav id="mainNav" class="row">
-			<ul class="col-sm-7 col-xs-12">
-				<li><a href="#">Home</a><span>|</span></li>
-				<li><a href="blogs.php">Blogs</a><span>|</span></li>
-				<li><a href="aboutus.php">About</a></li>
-				<!--<li><a href="#"></a> | </li>-->
-			</ul>
-			
-			<form class="col-sm-4 col-sm-offset-1 col-xs-12">
+			<!--<form class="col-sm-4 col-sm-offset-2 col-xs-12 searchForm" >-->
+			<form class="" >
 				<!--<div class="form-group">-->
 					<label for="search" class="sr-only">Search site</label>
 					<div class="input-group">
@@ -87,4 +118,7 @@
 					</div> <!-- End of .input-group -->
 				<!--</div>-->
 			</form>
-		</nav>
+			
+		</div>
+
+		<br/><br/>

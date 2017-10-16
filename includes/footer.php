@@ -1,6 +1,6 @@
 
 <!-- Footer -->
-<footer class="text-center navbar">
+<footer class="text-center">
 	<hr>
 	<small>Created with &hearts; by <a href="http://www.dustinhammack.com/">Dustin Hammack</a>!</small>  
 

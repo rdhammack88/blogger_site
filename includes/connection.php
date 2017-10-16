@@ -11,12 +11,12 @@ $conn = mysqli_connect( $server, $username, $password, $db );
 // check connection
 if( !$conn ) {
 	die( "Connection failed: " . mysqli_connect_error() ) ;
-} else {
+} /*else {
 	echo "Connected!";
-}
+}*/
 
 ?>
 
-
+<!--
 $users = "SELECT * FROM users";
-$blogs = "SELECT * FROM blog_posts";
+$blogs = "SELECT * FROM blog_posts";-->

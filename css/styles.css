@@ -1,3 +1,10 @@
+/*
+font-family: 'Indie Flower', cursive;
+font-family: 'Gloria Hallelujah', cursive;
+font-family: 'Shadows Into Light', cursive;
+font-family: 'Nosifer', cursive;
+*/
+
 body {
 	margin: 0;
 	padding: 0;
@@ -5,15 +12,23 @@ body {
 	
 }
 
-header h1 > a {
+div.navbar-header h1 a {
+	font-family: 'Gloria Hallelujah', cursive;
+	font-size: 1.3em;
+/*	line-height: 2.5em;*/
+}
+
+/*
+.navbar-header h1 > a {
 	color: #000;
 	text-decoration: none;
 }
 
-header h1 > a:hover {
-	color: #000;
+.navbar-header h1:hover {
+	color: #ddd;
 	text-decoration: none;
 }
+*/
 
 header div {
 	display: none;
@@ -25,7 +40,7 @@ header div {
 
 header form {
 	padding: 10px;
-	margin-top: 15px;
+/*	margin-top: 15px;*/
 	height: 100%;
 }
 
@@ -42,7 +57,7 @@ input[type='search'] {
 /*			font-size: 1.3em;*/
 /*			line-height: 2.5em;*/
 	display: none;
-	margin-top: 1.8%;
+/*	margin-top: 1.8%;*/
 }
 
 ul {
@@ -62,9 +77,9 @@ nav {
 	height: 3.5em;
 	line-height: 3.5em;
 	font-size: .8em;
-	text-align: center;
+	text-align: left;
 	border-radius: 8px;
-	background: #5bc0de;		/*rgba(255, 165, 0, .8);;*/
+	background: rgba(91, 192, 222, .3);	/*#5bc0de;*/		/*rgba(255, 165, 0, .8);;*/
 }
 
 /* Main Navigation List Links */
@@ -75,8 +90,8 @@ nav {
 
 /* Main Navigation Anchor Links */
 #mainNav ul li a {
-	font-size: 1.6em;
-	padding: 0 30px;
+/*	font-size: 1em;*/
+	padding: 0 20px;
 	text-decoration: none;
 	color: #000;
 	vertical-align: middle;
@@ -124,7 +139,7 @@ nav {
 /* Blog Article Content */
 article {
 	padding: 5px 30px 30px;
-	background-color: rgba(240, 173, 78, .8); /*	#f0ad4e;	*/	/*rgba(255, 228, 196, .8);*/
+	background-color: rgba(240, 173, 78, .3); /*	#f0ad4e;	*/	/*rgba(255, 228, 196, .8);*/
 	border-radius: 10px;
 	margin-bottom: 100px;
 	border: 2px solid #000;
@@ -132,6 +147,12 @@ article {
 footer {
 	font-size: 1.4em;
 	padding: 20px;
+}
+
+@media only screen and ( min-width: 450px) and (max-width: 767px ) {
+	#mainNav {
+		text-align: center;
+	}
 }
 
 @media only screen and ( min-width: 768px ) {
@@ -142,6 +163,7 @@ footer {
 	
 	#mainNav {
 		text-align: left;
+		font-size: 1.3em;
 	}
 	
 	#blogTopics {
