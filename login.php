@@ -4,19 +4,21 @@ session_start();
 
 include("includes/functions.php");
 
+$loginError = "";
+
 // if login form was submitted
 if( isset( $_POST['login'] ) ) {
 	
 	// create variables
 	// wrap data with validate function
-	$formEmail = validateFormData( $_POST['email'] );
-	$formPass = validateFormData( $_POST['password'] );
+	$formEmail	= validateFormData( $_POST['email'] );
+	$formPass	= validateFormData( $_POST['password'] );
 
 	// connect to database
 	include('includes/connection.php');
 
 	// create query
-	$query = "SELECT first_name, password FROM users WHERE email='$formEmail'";
+	$query = "SELECT id, first_name, password FROM users WHERE email='$formEmail'";
 
 	// store the result
 	$result = mysqli_query( $conn, $query );
@@ -26,7 +28,7 @@ if( isset( $_POST['login'] ) ) {
 		
 		// store basic user data in variables
 		while( $row = mysqli_fetch_assoc($result) ) {
-			$id			= $row['id'];
+			$user_id	= $row['id'];
 			$first_name = $row['first_name'];
 			$hashedPass = $row['password'];
 		}
@@ -36,15 +38,11 @@ if( isset( $_POST['login'] ) ) {
 			
 			// correct login details!
 			// store data in SESSION variables
-			$_SESSION['id']			  = $id;
-			$_SESSION['loggedInUser'] = $first_name;
-				/*array( 
-				"id"		 => $id
-				"first_name" => $first_name
-			);*/
+			$_SESSION['user_id']		= $user_id;
+			$_SESSION['loggedInUser'] 	= $first_name;
 			
 			// redirect user to blogs page
-			header( "Location: blogs.php?alert=logged in" );
+			header( "Location: blogs.php?alert=logged_in" );
 		} else { // hashed password didn't verify
 			
 			// error message
@@ -57,10 +55,12 @@ if( isset( $_POST['login'] ) ) {
 		$loginError = "<div class='alert alert-danger'>No such user in database. Please try again! <a class='close' data-dismiss='alert'>&times;</a></div>";
 	}
 
+	// close connection to database
+	mysqli_close($conn);
+	
 }
 
-// close connection to database
-mysqli_close($conn);
+
 
 include('includes/header.php');
 
@@ -76,7 +76,7 @@ include('includes/header.php');
 <form class="" action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">
     <div class="form-group col-sm-4 col-sm-offset-4">
         <label for="login-email" class="sr-only">Email</label>
-        <input type="text" class="form-control" id="login-email" placeholder="email" name="email" value="<?php echo $formEmail; ?>">
+        <input type="text" class="form-control" id="login-email" placeholder="email" name="email" value="<?php //echo $formEmail; ?>">
     </div>
     <div class="form-group col-sm-4 col-sm-offset-4">
         <label for="login-password" class="sr-only">Password</label>

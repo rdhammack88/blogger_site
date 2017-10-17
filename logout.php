@@ -1,4 +1,6 @@
 <?php
+//include('includes/header.php');
+
 // did the user's browser send a cookie for the session?
 if( isset( $_COOKIE[ session_name() ] ) ) {
 	
@@ -12,9 +14,7 @@ session_unset();
 // destroy the session
 session_destroy();
 
-include('includes/header.php');
-
-header("Location: index.php");
+header("Location: index.php?alert=logged_out");
 
 
 echo "<h1>Logged out</h1>

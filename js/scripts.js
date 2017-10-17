@@ -20,23 +20,32 @@ $(document).ready(function() {
 		$('.input-group .btn').toggleClass('btn-lg');
 	});*/
 
-	$('#signupForm input[type="submit"]').click(function(e) {
+	$('input[name="signup"]').click(function(e) {
 		var $first_name = $('#first_name');
 		var $email = $('#email');
 		var $password = $('#password');
 		
-		if( $first_name === '' ) {
+		if( $first_name.val() === '' ) {
 			e.preventDefault();
-			console.log('no-name');
+			$('.inputError').show();
+		} else {
+			$('.inputError').hide();
 		}
-		if( $email === '' ) {
+		
+		if( $email.val() === '' ) {
 			e.preventDefault();
-			console.log('no-email');
+			$('.inputError').show();
+		} else {
+			$('.inputError').hide();
 		}
-		if( $password === '' ) {
+		
+		if( $password.val() === '' ) {
 			e.preventDefault();
-			console.log('no-password');
+			$('.inputError').show();
+		} else {
+			$('.inputError').hide();
 		}
+		
 	});
 	
 	if( $('#mainNav > div').hasClass('col-xs-12') ) {
@@ -49,14 +58,22 @@ $(document).ready(function() {
 	}, 2000);
 	
 	// If page is login or signup, make the footer bottom-fixed
-	if( document.title.includes('Login') || document.title.includes('Signup') ) {
-		$('footer').addClass('navbar-fixed-bottom');
+	if( document.title.includes('Login') ) {
+		$('footer').css({ 
+			position: "relative",
+			bottom: 0,
+			left: 0
+		});		//.addClass('navbar-fixed-bottom');
 	}
 	
 	// If the main content is less than 500px, fix the navbar to bottom of page
-	if( $('main').height() < 500 ) {
-		$('footer').addClass('navbar-fixed-bottom');
-	}
+	/*if( $('main').height() < 500 ) {
+		$('footer').css({ 
+			position: "relative",
+			bottom: 0,
+			left: 0
+		});		//.addClass('navbar-fixed-bottom');
+	}*/
 	
 	// If there are no user blogs, then hide the "most recent blogs" text
 	if( $('#blogSection').has('div.alert') ) {

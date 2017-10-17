@@ -1,11 +1,12 @@
+</div> <!-- End of #container -->
 
 <!-- Footer -->
-<footer class="text-center col-xs-12"> <!--</footer> navbar-fixed-bottom navbar-inverse">-->
+<footer class="text-center col-sm-12"> <!--</footer> navbar-fixed-bottom navbar-inverse">-->
 	<hr>
 	<small>Created with &hearts; by <a href="http://www.dustinhammack.com/">Dustin Hammack</a>!</small>  
 
 </footer>
-</div> <!-- End of #container -->
+
 
 
 <!-- Scripts -->

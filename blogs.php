@@ -3,48 +3,55 @@
 
 session_start();
 
+$alertMessage = '';
+
 if( !$_SESSION['loggedInUser'] ) {
 	/*echo 'not logged in!';*/
 	// send them to the login page
 	header("Location: login.php");
 } //else {
 	/*echo 'logged in';*/
-	// connect to the database
-	include('includes/connection.php');
 
-	// query & results
-	$query = "SELECT user_id, blog_title, blog_post, blog_category,
-		date_format(date_created, '%W %m/%d/%Y') date_created
-		FROM blog_posts WHERE user_id='1'"; //. "$_SESSION[" . 'id' . "]"
-	$result = mysqli_query( $conn, $query );
+// connect to the database
+include('includes/connection.php');
 
-	// check for query string
-	if( isset( $_GET['alert'] ) ) {
+$user_id = $_SESSION['user_id'];
 
-		// new client added
-		if( $_GET['alert'] == 'logged in' || $_GET['alert'] == 'success' ) {
-			$alertMessage = "<div class='alert alert-success'>You are logged in! <a class='close' data-dismiss='alert'>&times;</a></div>";
-		} 
-		// client updated
-		elseif( $_GET['alert'] == 'updatesuccess' ) {
-			$alertMessage = "<div class='alert alert-success'>Client updated! <a class='close' data-dismiss='alert'>&times;</a></div>";
-		}
-		// client deleted
-		elseif( $_GET['alert'] == 'deleted' ) {
-			$alertMessage = "<div class='alert alert-success'>Client deleted! <a class='close' data-dismiss='alert'>&times;</a></div>";
-		}
+// query & results
+$query = "SELECT user_id, blog_title, blog_post, blog_category,
+	date_format(date_created, '%m/%d/%Y') date_created
+	FROM blog_posts WHERE user_id='$user_id'"; 
+	//. "$_SESSION[" . 'id' . "]"		// %W 
+$result = mysqli_query( $conn, $query );
+
+// check for query string
+if( isset( $_GET['alert'] ) ) {
+
+	// new client added
+	if( $_GET['alert'] == 'logged_in' || $_GET['alert'] == 'success' ) {
+		$alertMessage = "<div class='alert alert-success'>You are logged in! <a class='close' data-dismiss='alert'>&times;</a></div>";
+	} 
+	// client updated
+	elseif( $_GET['alert'] == 'updatesuccess' ) {
+		$alertMessage = "<div class='alert alert-success'>Client updated! <a class='close' data-dismiss='alert'>&times;</a></div>";
 	}
+	// client deleted
+	elseif( $_GET['alert'] == 'deleted' ) {
+		$alertMessage = "<div class='alert alert-success'>Client deleted! <a class='close' data-dismiss='alert'>&times;</a></div>";
+	}
+}
 //}
 
 // close the connection
 mysqli_close( $conn );
 
 include('includes/header.php');
+echo $alertMessage; 
 ?>
 
 <!--<h1>Your recent blogs</h1>-->
 
-<?php echo $alertMessage; ?>
+<?php //echo $alertMessage; ?>
 
 <main class="row">
 	
@@ -79,20 +86,21 @@ include('includes/header.php');
 		// output the data
 		
 		while( $row = mysqli_fetch_assoc($result) ) {
-			$date_created = $row['date_created']; /// $row['date_created']
-			$date = date_format($date_created, 'd-m-Y');
+			//$date_created = $row['date_created']; /// $row['date_created']
+			//$date = date_format($date_created, 'd-m-Y');
 			echo "<article>";
 			
-			echo "<div class='blog-title'><h2>" . $row['blog_title'] . "</h2><p>". $row['date_created'] . "</p></div><p>". $row['blog_post'] . "</p>";
+			echo "<div class='blog-title'><h2>" . $row['blog_title'] . "</h2><a><p class='date_posted'>". $row['date_created'] . "</p></a></div><p>". $row['blog_post'] . "</p>";
 			echo "</article>";			
-				
+				//$row['date_created']
 		}
 	} else {
 		echo "<div class='alert alert-danger'>You have no blog posts!</div>";
 	}
 	
-	mysqli_close($conn);
+//	mysqli_close($conn);
 	
+include('includes/header.php');
 	?>
     
     <!--<tr>

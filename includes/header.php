@@ -1,4 +1,5 @@
-<?php define( "TITLE", "Home" ); ?>
+<?php  //define( "TITLE", "Home" ); ?>
+<?php //session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,7 +33,7 @@
 	<!--<link rel="shortcut icon" href="favicon.ico">-->
 	
 
-	<title>Blogger.com - <?php echo TITLE; ?></title>
+	<title>Blogger.com - <?php echo $title; ?></title>
 	<!--<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>-->
 	<!--<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">-->
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Indie+Flower|Nosifer|Shadows+Into+Light" rel="stylesheet">
@@ -68,11 +69,12 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
 
                	<?php
+				//$_SESSION['loggedInUser'] = '';
                 if( $_SESSION['loggedInUser'] ) { // if user is logged in
                 ?>
                 <ul class="nav navbar-nav">
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="blogs.php">Blogs</a></li>
+                    <li><a href="blogs.php">My Blogs</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
@@ -87,7 +89,7 @@
                 ?>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="index.php">Home</a></li>
-                    <li><a href="blogs.php">Blogs</a></li>
+                    <!--<li><a href="blogs.php">Blogs</a></li>-->
 					<li><a href="login.php">Log In</a></li>
 					<li><a href="signup.php">Sign Up</a></li>
                 </ul>
