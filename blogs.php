@@ -1,3 +1,4 @@
+<?php define( "TITLE", "User blogs" ); ?>
 <?php
 
 session_start();
@@ -14,14 +15,14 @@ if( !$_SESSION['loggedInUser'] ) {
 	// query & results
 	$query = "SELECT user_id, blog_title, blog_post, blog_category,
 		date_format(date_created, '%W %m/%d/%Y') date_created
-		FROM blog_posts WHERE user_id='5'";
+		FROM blog_posts WHERE user_id='1'"; //. "$_SESSION[" . 'id' . "]"
 	$result = mysqli_query( $conn, $query );
 
 	// check for query string
 	if( isset( $_GET['alert'] ) ) {
 
 		// new client added
-		if( $_GET['alert'] == 'logged in' ) {
+		if( $_GET['alert'] == 'logged in' || $_GET['alert'] == 'success' ) {
 			$alertMessage = "<div class='alert alert-success'>You are logged in! <a class='close' data-dismiss='alert'>&times;</a></div>";
 		} 
 		// client updated
@@ -67,7 +68,7 @@ include('includes/header.php');
 	<!-- Main Blog Article Content -->
 	<section id="blogSection" class="col-sm-8 col-sm-offset-1">
 
-		<small class="text-danger">Most Recent Blog Posts...</small>
+		<small class="text-danger no-blogs">Most Recent Blog Posts...</small>
 		
     
     <?php
@@ -87,7 +88,7 @@ include('includes/header.php');
 				
 		}
 	} else {
-		echo "<div class='alert alert-warning'>You have no blog posts!</div>";
+		echo "<div class='alert alert-danger'>You have no blog posts!</div>";
 	}
 	
 	mysqli_close($conn);

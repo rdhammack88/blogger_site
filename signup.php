@@ -1,6 +1,6 @@
+<?php define( "TITLE", "Signup" ); ?>
 <?php include('includes/header.php'); ?>
 <?php 
-
 include("includes/connection.php"); 
 
 if( isset( $_POST["add"] ) ) {
@@ -68,12 +68,21 @@ if( isset( $_POST["add"] ) ) {
 	
 		// CHECK TO SEE IF EACH VARIABLE HAS DATA
 		if( $first_name && $email && $password ) {
+//			$send_to = $email;
+//			$subject = 'Your signed up!';
+//			$message = "Dear $first_name, \n\tThank you for signing up to Blogger.com";
+//			mail( $send_to, $subject, $message );
 	
 			$query = "INSERT INTO users (id, first_name, last_name, email, user_name, password, avatar, biography, signup_date) VALUES (NULL, '$first_name', '$last_name', '$email', '$user_name', '$password', '$avatar', '$biography', CURRENT_TIMESTAMP)";
-
+			
+//			echo "This is line " . __LINE__ . " in file " . __FILE__;
+			
 			if( mysqli_query( $conn, $query ) )	{
-				header( "Location: index.php?alert=success");
-				echo "<div class='alert alert-success'>New record in database!</div>";
+//				echo "This is line " . __LINE__ . " in file " . __FILE__;
+				// redirect user to blogs page
+				header( "Location: blogs.php?alert=logged in" );
+//				header( "Location: blogs.php?alert=success");
+//				echo "<div class='alert alert-success'>New record in database!</div>";
 			} else {
 				echo "Error: " . $query . "<br/>" . mysqli_error( $conn );
 			}
@@ -162,3 +171,5 @@ mysqli_close( $conn );
 			<br/><br/>
 			<input type="submit" name="add" value="Add Entry">
 		</form>
+		
+<?php include('includes/footer.php');

@@ -43,12 +43,25 @@ $(document).ready(function() {
 		$('#mainNav > div').toggle();
 	}
 	
-	
+	// User login conformation animation
 	setTimeout(function() {
-		$('.alert').slideUp();
+		$('.alert-success').slideUp();
 	}, 2000);
 	
+	// If page is login or signup, make the footer bottom-fixed
+	if( document.title.includes('Login') || document.title.includes('Signup') ) {
+		$('footer').addClass('navbar-fixed-bottom');
+	}
 	
+	// If the main content is less than 500px, fix the navbar to bottom of page
+	if( $('main').height() < 500 ) {
+		$('footer').addClass('navbar-fixed-bottom');
+	}
+	
+	// If there are no user blogs, then hide the "most recent blogs" text
+	if( $('#blogSection').has('div.alert') ) {
+		$('.no-blogs').hide();
+	}
 	
 	
 });

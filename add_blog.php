@@ -1,3 +1,4 @@
+<?php define( "TITLE", "Add new blog" ); ?>
 <?php
 session_start();
 

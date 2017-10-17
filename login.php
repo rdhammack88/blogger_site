@@ -1,3 +1,4 @@
+<?php define( "TITLE", "Login" ); ?>
 <?php
 session_start();
 
@@ -35,9 +36,14 @@ if( isset( $_POST['login'] ) ) {
 			
 			// correct login details!
 			// store data in SESSION variables
+			$_SESSION['id']			  = $id;
 			$_SESSION['loggedInUser'] = $first_name;
+				/*array( 
+				"id"		 => $id
+				"first_name" => $first_name
+			);*/
 			
-			// redirect user to clients page
+			// redirect user to blogs page
 			header( "Location: blogs.php?alert=logged in" );
 		} else { // hashed password didn't verify
 			
