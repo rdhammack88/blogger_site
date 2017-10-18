@@ -18,7 +18,10 @@ if( isset( $_POST['login'] ) ) {
 	include('includes/connection.php');
 
 	// create query
-	$query = "SELECT id, first_name, password FROM users WHERE email='$formEmail'";
+	$query = "SELECT id, first_name, password 
+			  FROM users
+			  WHERE email='$formEmail' 
+			  OR user_name='$formEmail'";
 
 	// store the result
 	$result = mysqli_query( $conn, $query );

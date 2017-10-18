@@ -48,6 +48,44 @@ $(document).ready(function() {
 		
 	});
 	
+	 
+	 $('#newBlog').click(function(e) {
+		var $blog_title = $('#blogTitle');
+		var $blog_topic = $('#blogTopic');
+		var $blog = $('#blog');
+		 		
+		if( $blog_title.val() === '' ) {
+			e.preventDefault();
+			$('.titleError').show();
+		} else {
+			$blog_title.addClass('has-success has-feedback');
+			$('.titleError').hide();
+		}
+		 
+		  /*if( $blog_title.val()) {
+			$blog_title.addClass('has-success, has-feedback');
+			$('.titleError').hide();			
+		}else {
+			e.preventDefault();
+			$('.inputError').show();
+		}*/
+		
+		if( $blog_topic.val() === '' ) {
+			e.preventDefault();
+			$('.topicError').show();
+		} else {
+			$('.topicError').hide();
+		}
+		
+		if( $blog.val() === '' ) {
+			e.preventDefault();
+			$('.blogError').show();
+		} else {
+			$('.blogError').hide();
+		}
+		
+	});
+	
 	if( $('#mainNav > div').hasClass('col-xs-12') ) {
 		$('#mainNav > div').toggle();
 	}

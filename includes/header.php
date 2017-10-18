@@ -69,7 +69,7 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
 
                	<?php
-				//$_SESSION['loggedInUser'] = '';
+//				$_SESSION['loggedInUser'] = NULL;
                 if( $_SESSION['loggedInUser'] ) { // if user is logged in
                 ?>
                 <ul class="nav navbar-nav">

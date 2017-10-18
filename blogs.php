@@ -12,17 +12,26 @@ if( !$_SESSION['loggedInUser'] ) {
 } //else {
 	/*echo 'logged in';*/
 
+
 // connect to the database
 include('includes/connection.php');
 
 $user_id = $_SESSION['user_id'];
 
-// query & results
-$query = "SELECT user_id, blog_title, blog_post, blog_category,
-	date_format(date_created, '%m/%d/%Y') date_created
-	FROM blog_posts WHERE user_id='$user_id'"; 
-	//. "$_SESSION[" . 'id' . "]"		// %W 
-$result = mysqli_query( $conn, $query );
+//if( isset( $_POST['add'] ) ) {
+//	header("Location: add_blog.php");
+//}
+
+
+
+
+//// query & results
+//$query = "SELECT user_id, blog_title, blog_post, blog_category,
+//	date_format(date_created, '%m/%d/%Y') date_created
+//	FROM blog_posts WHERE user_id='$user_id'
+//	ORDER BY date_created DESC"; 
+//	//. "$_SESSION[" . 'id' . "]"		// %W 
+//$result = mysqli_query( $conn, $query );
 
 // check for query string
 if( isset( $_GET['alert'] ) ) {
@@ -41,9 +50,9 @@ if( isset( $_GET['alert'] ) ) {
 	}
 }
 //}
-
-// close the connection
-mysqli_close( $conn );
+//
+//// close the connection
+//mysqli_close( $conn );
 
 include('includes/header.php');
 echo $alertMessage; 
@@ -53,25 +62,65 @@ echo $alertMessage;
 
 <?php //echo $alertMessage; ?>
 
+<div class="row">
+	<!--<form action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">-->
+		<!--<button type="submit" class="" name="add">-->
+		<span class="sr-only">Add new blog</span><a href="add_blog.php" class="glyphicon glyphicon-plus"></a>
+		<!--</button>-->
+	<!--	<input type="submit" class="glyphicon glyphicon-plus">-->
+	<!--</form>-->
+</div>
+
+<br/>
+
 <main class="row">
-	
-	<!-- aside>nav.blogTopics>ul>li*8>a[href=#] -->
-	<aside id="blogTopics" class="col-sm-3 col-md-3">
+	<?php
+	$query 	= "SELECT blog_posts
+			  FROM blog_posts
+			  WHERE user_id='$user_id'";
+	$result = mysqli_query( $conn, $query );
+	if( $result ) {
+	echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
 		<nav>
-			<h4 class="">Most Popular Topics</h4>
-			<ul>
-				<li><a href="#">Lorem</a></li>
-				<li><a href="#">Hic</a></li>
-				<li><a href="#">Cum</a></li>
-				<li><a href="#">Esse</a></li>
-				<li><a href="#">Fugiat</a></li>
-				<li><a href="#">Quibusdam</a></li>
-				<li><a href="#">Totam</a></li>
-				<li><a href="#">Soluta</a></li>
-			</ul>
-		</nav>
-	</aside>
+			<h4 class="text-center">Your most written about topics</h4>';
+			
+				$query = "SELECT blog_category 
+				FROM blog_posts
+				WHERE user_id='$user_id'
+				GROUP BY blog_category
+				HAVING COUNT(*) >= 2";
+
+				$result = mysqli_query( $conn, $query );
+
+
+				if(!$result) { printf(mysqli_error($conn)); }
+				if( mysqli_num_rows( $result ) > 0 ) {
+							// we have data
+							// output the data
+
+					while( $row = mysqli_fetch_assoc($result) ) {
+						echo "<ul>";
+
+						echo "<li><a>" . $row['blog_category'] . "</a></p>";
+						echo "</ul>";			
+					}
+
+					mysqli_free_result( $result );
+				}
+			
+			
+		echo '</nav></aside>';
+	}
+	?>
 	
+<?php
+		
+		
+//if( isset( $_POST['addblog'] ) ) {
+//	header('Location: add_blog.php');
+//}
+
+?>
 	<!-- Main Blog Article Content -->
 	<section id="blogSection" class="col-sm-8 col-sm-offset-1">
 
@@ -79,6 +128,12 @@ echo $alertMessage;
 		
     
     <?php
+	// query & results
+	$query = "SELECT user_id, blog_title, blog_post, blog_category,
+		date_format(date_created, '%m/%d/%Y') date_created
+		FROM blog_posts WHERE user_id='$user_id'
+		ORDER BY date_created DESC"; 
+	$result = mysqli_query( $conn, $query );
 	
 	if( mysqli_num_rows( $result ) > 0 ) {
 		
@@ -98,16 +153,18 @@ echo $alertMessage;
 		echo "<div class='alert alert-danger'>You have no blog posts!</div>";
 	}
 	
+	// close the connection
+	mysqli_close( $conn );
 //	mysqli_close($conn);
 	
-include('includes/header.php');
+//include('includes/header.php');
 	?>
     
     <!--<tr>
         <td colspan="7"><div class="text-center"><a href="add.php" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span> Add Client</a></div></td>
     </tr>-->
 
-
+		
 
 
 

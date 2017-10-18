@@ -1,105 +1,65 @@
-<?php define( "TITLE", "Add new blog" ); ?>
+
 <?php
+
 session_start();
 
-if( !$_SESSION['loggedInUser'] ) {
-	
-	// send them to the login page
-	header("Location: index.php");
+if( isset( $_POST['newBlog'] ) ) {
+//	echo 'Blog added';
 }
-
-// connect to database
-include('includes/connection.php');
-
-// include function file
-include('includes/functions.php');
-
-// if add button was submitted
-if( isset( $_POST['add'] ) ) {
-	
-	// set all variables to empty by default
-	$clientName = $clientEmail = $clientPhone = $clientAddress = $clientCompany = $clientNotes = "";
-	
-	// check to see if inputs are empty
-	// create variables with form data
-	// wrap the data with our function
-	if( !$_POST['clientName']) {
-		$nameError = "Please enter a name <br/>";
-	} else {
-		$clientName = validateFormData( $_POST['clientName'] );
-	}
-	
-	if( !$_POST['clientEmail']) {
-		$emailError = "Please enter a valid email <br/>";
-	} else {
-		$clientEmail = validateFormData( $_POST['clientEmail'] );
-	}
-	
-	// these inputs are not required
-	// so we'll just store whatever has been entered
-	$clientPhone	= validateFormData( $_POST['clientPhone'] );
-	$clientAddress	= validateFormData( $_POST['clientAddress'] );
-	$clientCompany	= validateFormData( $_POST['clientCompany'] );
-	$clientNotes	= validateFormData( $_POST['clientNotes'] );
-	
-	if( $clientName && $clientEmail ) {
-		
-		// create query
-		$query = "INSERT INTO clients (id, name, email, phone, address, company, notes, date_added) VALUES (NULL, '$clientName', '$clientEmail', '$clientPhone', '$clientAddress', '$clientCompany', '$clientNotes', CURRENT_TIMESTAMP)";
-		
-		$result = mysqli_query( $conn, $query );
-		
-		// if query was successful
-		if( $result ) {
-			
-			// refresh page with query string
-			header( "Location: clients.php?alert=success");
-		} else {
-			echo "Error: " . $query . "<br/>" . mysqli_error($conn);
-		}
-	}
-	
+elseif( isset( $_POST['cancel'] ) ) {
+	header( "Location: blogs.php" );
 }
-
-// close the mysql connection
-mysqli_close( $conn );
 
 include('includes/header.php');
 ?>
 
-<h1>Add Client</h1>
+<?php  ?>
 
-<form action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post" class="row">
-    <div class="form-group col-sm-6">
-        <label for="client-name">Name *</label>
-        <input type="text" class="form-control input-lg" id="client-name" name="clientName" value="">
-    </div>
-    <div class="form-group col-sm-6">
-        <label for="client-email">Email *</label>
-        <input type="text" class="form-control input-lg" id="client-email" name="clientEmail" value="">
-    </div>
-    <div class="form-group col-sm-6">
-        <label for="client-phone">Phone</label>
-        <input type="text" class="form-control input-lg" id="client-phone" name="clientPhone" value="">
-    </div>
-    <div class="form-group col-sm-6">
-        <label for="client-address">Address</label>
-        <input type="text" class="form-control input-lg" id="client-address" name="clientAddress" value="">
-    </div>
-    <div class="form-group col-sm-6">
-        <label for="client-company">Company</label>
-        <input type="text" class="form-control input-lg" id="client-company" name="clientCompany" value="">
-    </div>
-    <div class="form-group col-sm-6">
-        <label for="client-notes">Notes</label>
-        <textarea type="text" class="form-control input-lg" id="client-notes" name="clientNotes"></textarea>
-    </div>
-    <div class="col-sm-12">
-            <a href="clients.php" type="button" class="btn btn-lg btn-default">Cancel</a>
-            <button type="submit" class="btn btn-lg btn-success pull-right" name="add">Add Client</button>
-    </div>
+
+<!--<script type="text/javascript">
+	$('div.alert').css('display','none');
+</script>-->
+
+
+<!--<h1 class="text-center add_blog">Add your new blog!</h1>-->
+
+<form action="" class="col-sm-8 col-sm-offset-2" method="post">
+	
+	<label for="blogTitle" class="">Title:</label>
+	<small class="text-danger titleError"> <br/>* </small>
+	<small class="text-danger titleError">Please enter a title <br/></small>
+	<input type="text" class="form-control input-lg" name="blogTitle" id="blogTitle" maxlength="150" placeholder="Title"> <br/>
+	
+	<label for="blogTopic" class="">Topic:</label>
+	<small class="text-danger topicError"> <br/>* </small>
+	<small class="text-danger topicError">Please enter a blog topic <br/></small>
+	<input type="text" class="form-control input-lg" name="blogTopic" id="blogTopic" maxlength="100" placeholder="Tags"> <br/>
+	
+	<label for="blog" class="sr-only">Write your content below:</label>
+	<small class="text-danger blogError">* </small>
+	<small class="text-danger blogError">Did you forget to write a blog?</small> <br/>
+	<textarea name="blog" class="form-control input-lg" id="blog" cols="30" rows="15" placeholder="Start writing your blog here..."></textarea> <br/>
+	
+	<div class="col-xs-12">
+		<label for="public" class="radio-inline"><input type="radio" name="public">Make public</label>
+		<label for="private" class="radio-inline"><input type="radio" name="private">Make private</label>
+	</div>
+	
+	<br/><br/>
+	
+	<input type="submit" name="newBlog" id="newBlog" class="btn btn-success btn-lg col-xs-4 col-xs-offset-1"><!--Submit</button>-->
+	<input type="reset"  name="cancel" class="btn btn-danger btn-lg col-xs-4 col-xs-offset-2" value="Cancel"><!--Cancel</button>-->
+	
 </form>
 
-<?php
-include('includes/footer.php');
-?>
+
+
+
+
+
+
+
+
+
+
+<?php include('includes/footer.php'); ?>
