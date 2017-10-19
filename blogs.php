@@ -22,6 +22,55 @@ $user_id = $_SESSION['user_id'];
 //	header("Location: add_blog.php");
 //}
 
+if( isset( $_POST['edit'] ) ) {
+	$blog_id = $_POST['blog_id'];
+	header("Location: edit_blog.php?id=$blog_id");
+}
+
+if( isset( $_POST['delete'] ) ) {
+	$blog_id = $_POST['blog_id'];
+	
+	$query 	= "DELETE
+			  FROM blog_posts
+			  WHERE id='$blog_id'";
+	$result = mysqli_query( $conn, $query );
+	
+	echo "Post $blog_id has been deleted!";
+}
+
+if( isset( $_POST['favorite'] ) ) {
+	$blog_id = $_POST['blog_id'];
+	$query 	= "SELECT favorite 
+			  FROM blog_posts
+			  WHERE id='$blog_id'";
+
+	$result = mysqli_query( $conn, $query );
+	
+	if( $result ) {
+		$row	 	= mysqli_fetch_assoc($result);
+		$favorite 	= $row['favorite'];
+		
+		if( !$favorite ) {
+			$favorite = 1;
+		} else {
+			$favorite = 0;
+		}
+		// add blog to db
+		$query = "UPDATE blog_posts 
+				  SET favorite = '$favorite'
+				  WHERE id = '$blog_id'";
+		$result = mysqli_query( $conn, $query );
+
+		if(!$result ) { printf(mysqli_error($conn)); }
+
+		echo "Post $blog_id has been favorited!";
+	}
+}
+
+
+
+
+
 
 
 
@@ -62,10 +111,14 @@ echo $alertMessage;
 
 <?php //echo $alertMessage; ?>
 
-<div class="row">
+<div class="row text-right">
 	<!--<form action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">-->
 		<!--<button type="submit" class="" name="add">-->
-		<span class="sr-only">Add new blog</span><a href="add_blog.php" class="glyphicon glyphicon-plus"></a>
+		
+		
+		<span class="sr-only">Add new blog</span><a href="add_blog.php" class="glyphicon glyphicon-plus btn btn-primary"> New</a>
+		
+		
 		<!--</button>-->
 	<!--	<input type="submit" class="glyphicon glyphicon-plus">-->
 	<!--</form>-->
@@ -75,41 +128,80 @@ echo $alertMessage;
 
 <main class="row">
 	<?php
-	$query 	= "SELECT blog_posts
+	$query 	= "SELECT blog_post
 			  FROM blog_posts
 			  WHERE user_id='$user_id'";
 	$result = mysqli_query( $conn, $query );
+	
+	if(!$result) { printf(mysqli_error($conn)); }
+	
 	if( $result ) {
-	echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
-		<nav>
-			<h4 class="text-center">Your most written about topics</h4>';
-			
-				$query = "SELECT blog_category 
+		$query = "SELECT blog_category 
 				FROM blog_posts
 				WHERE user_id='$user_id'
 				GROUP BY blog_category
 				HAVING COUNT(*) >= 2";
 
-				$result = mysqli_query( $conn, $query );
+		$result = mysqli_query( $conn, $query );
+		
+//echo "This is line " . __LINE__ . " in file " . __FILE__;
+		
+		if( $result ) {
+			echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
+				  <nav>
+				  <h4 class="text-center">Your most written about topics</h4>';
 
 
-				if(!$result) { printf(mysqli_error($conn)); }
-				if( mysqli_num_rows( $result ) > 0 ) {
-							// we have data
-							// output the data
+			if(!$result) { printf(mysqli_error($conn)); }
 
-					while( $row = mysqli_fetch_assoc($result) ) {
-						echo "<ul>";
+			if( mysqli_num_rows( $result ) > 0 ) {
+						// we have data
+						// output the data
 
-						echo "<li><a>" . $row['blog_category'] . "</a></p>";
-						echo "</ul>";			
-					}
+				while( $row = mysqli_fetch_assoc($result) ) {
+					echo "<ul>";
 
-					mysqli_free_result( $result );
+					echo "<li><a>" . $row['blog_category'] . "</a></p>";
+					echo "</ul>";			
 				}
+
+	//			mysqli_free_result( $result );
+			}
+
+//echo "This is line " . __LINE__ . " in file " . __FILE__;
 			
-			
-		echo '</nav></aside>';
+			echo '</nav></aside>';
+		}
+		if( !$result ) {
+			$query = "SELECT blog_category 
+			FROM blog_posts
+			WHERE user_id='$user_id'
+			GROUP BY blog_category
+			HAVING COUNT(*) >= 1";
+
+			$result = mysqli_query( $conn, $query );
+			echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
+				  <nav>
+				  <h4 class="text-center">Your most written about topics</h4>';
+
+//echo "This is line " . __LINE__ . " in file " . __FILE__;
+			if(!$result) { printf(mysqli_error($conn)); }
+
+			if( mysqli_num_rows( $result ) > 0 ) {
+						// we have data
+						// output the data
+
+				while( $row = mysqli_fetch_assoc($result) ) {
+					echo "<ul>";
+
+					echo "<li><a>" . $row['blog_category'] . "</a></p>";
+					echo "</ul>";			
+				}
+
+	//			mysqli_free_result( $result );
+	
+			}
+		}
 	}
 	?>
 	
@@ -121,15 +213,12 @@ echo $alertMessage;
 //}
 
 ?>
-	<!-- Main Blog Article Content -->
-	<section id="blogSection" class="col-sm-8 col-sm-offset-1">
-
-		<small class="text-danger no-blogs">Most Recent Blog Posts...</small>
+	
 		
     
     <?php
 	// query & results
-	$query = "SELECT user_id, blog_title, blog_post, blog_category,
+	$query = "SELECT *,
 		date_format(date_created, '%m/%d/%Y') date_created
 		FROM blog_posts WHERE user_id='$user_id'
 		ORDER BY date_created DESC"; 
@@ -137,20 +226,40 @@ echo $alertMessage;
 	
 	if( mysqli_num_rows( $result ) > 0 ) {
 		
+		echo "<!-- Main Blog Article Content -->
+		<section id='blogSection' class='col-sm-8 col-sm-offset-1'>
+		<small class='text-danger no-blogs'>Most Recent Blog Posts...</small>";
+		
 		// we have data
 		// output the data
 		
 		while( $row = mysqli_fetch_assoc($result) ) {
 			//$date_created = $row['date_created']; /// $row['date_created']
 			//$date = date_format($date_created, 'd-m-Y');
+			$blog_id = $row['id'];
 			echo "<article>";
 			
-			echo "<div class='blog-title'><h2>" . $row['blog_title'] . "</h2><a><p class='date_posted'>". $row['date_created'] . "</p></a></div><p>". $row['blog_post'] . "</p>";
-			echo "</article>";			
+			echo "<div class='blog_title'><h2>" . $row['blog_title'] . "</h2>
+							
+			<a><p class='date_posted'>". $row['date_created'] . "</p></a></div>";
+			echo "<p>". $row['blog_post'] . "</p>";
+			
+			echo "<form class='blog_footer' action='";
+				
+			echo htmlspecialchars( $_SERVER['PHP_SELF'] ) . "' method='POST'>	
+			<span class='sr-only'>Edit this blog</span><button type='submit' class='glyphicon glyphicon-pencil btn btn-lg' name='edit'></button>";
+			
+			echo "<span class='sr-only'>Delete this blog</span><button type='submit' class='glyphicon glyphicon-trash btn btn-lg' name='delete'></button>";
+			
+			echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg' name='favorite'></button>";
+			
+			echo "<input type='number' value='$blog_id' name='blog_id' class='sr-only'>";
+			
+			echo "</form></article>";			
 				//$row['date_created']
 		}
 	} else {
-		echo "<div class='alert alert-danger'>You have no blog posts!</div>";
+		echo "<div class='container'><p class='alert alert-danger col-md-6 col-md-offset-3'>You have no blog posts!</p></div>";
 	}
 	
 	// close the connection
@@ -164,12 +273,14 @@ echo $alertMessage;
         <td colspan="7"><div class="text-center"><a href="add.php" type="button" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus"></span> Add Client</a></div></td>
     </tr>-->
 
-		
+<!--		
+<span class='sr-only'>Add new blog</span><a href='add_blog.php' class='glyphicon glyphicon-plus'></a>
+-->
 
 
 
 
-
+<!--<a href='edit_blog.php'></a>-->
 
 
 

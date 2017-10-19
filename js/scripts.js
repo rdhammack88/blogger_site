@@ -52,13 +52,15 @@ $(document).ready(function() {
 	 $('#newBlog').click(function(e) {
 		var $blog_title = $('#blogTitle');
 		var $blog_topic = $('#blogTopic');
-		var $blog = $('#blog');
+		var $blog		= $('#blog');
+		var public		= $('input[name="public"]');
 		 		
-		if( $blog_title.val() === '' ) {
+		if( !$blog_title.val()) {
 			e.preventDefault();
+			$($blog_title).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
 			$('.titleError').show();
 		} else {
-			$blog_title.addClass('has-success has-feedback');
+			$($blog_title).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
 			$('.titleError').hide();
 		}
 		 
@@ -70,19 +72,27 @@ $(document).ready(function() {
 			$('.inputError').show();
 		}*/
 		
-		if( $blog_topic.val() === '' ) {
+		if( !$blog_topic.val()) {
 			e.preventDefault();
+			$($blog_topic).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
 			$('.topicError').show();
 		} else {
+			$($blog_topic).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
 			$('.topicError').hide();
 		}
 		
-		if( $blog.val() === '' ) {
+		if( !$blog.val()) {
 			e.preventDefault();
+			$($blog).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
 			$('.blogError').show();
 		} else {
+			$($blog).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
 			$('.blogError').hide();
 		}
+		 
+		/*if( !public.valueOf ) {
+			public.value = 'public';
+		}*/
 		
 	});
 	
@@ -96,18 +106,26 @@ $(document).ready(function() {
 	}, 2000);
 	
 	// If page is login or signup, make the footer bottom-fixed
-	if( document.title.includes('Login') ) {
+	/*if( document.title.includes('Login') ) {
 		$('footer').css({ 
-			position: "relative",
+			position: "absolute",
 			bottom: 0,
 			left: 0
 		});		//.addClass('navbar-fixed-bottom');
+	}*/
+	
+	if( $('body').height() < 600 ) {
+		$('footer').css({ 
+			position: "absolute",
+			bottom: 0,
+			left: 0
+		});	
 	}
 	
 	// If the main content is less than 500px, fix the navbar to bottom of page
 	/*if( $('main').height() < 500 ) {
 		$('footer').css({ 
-			position: "relative",
+			position: "absolute",
 			bottom: 0,
 			left: 0
 		});		//.addClass('navbar-fixed-bottom');
@@ -117,6 +135,10 @@ $(document).ready(function() {
 	if( $('#blogSection').has('div.alert') ) {
 		$('.no-blogs').hide();
 	}
+	
+	$('.glyphicon-bookmark').click(function() {
+		$(this).color = 'red';
+	})
 	
 	
 });

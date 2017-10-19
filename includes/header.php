@@ -33,7 +33,7 @@
 	<!--<link rel="shortcut icon" href="favicon.ico">-->
 	
 
-	<title>Blogger.com - <?php echo $title; ?></title>
+	<title>Blogger.com - <?php echo TITLE; ?></title>
 	<!--<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>-->
 	<!--<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">-->
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Indie+Flower|Nosifer|Shadows+Into+Light" rel="stylesheet">
@@ -69,7 +69,7 @@
             <div class="collapse navbar-collapse" id="navbar-collapse">
 
                	<?php
-//				$_SESSION['loggedInUser'] = NULL;
+				//$_SESSION['loggedInUser'] = "";
                 if( $_SESSION['loggedInUser'] ) { // if user is logged in
                 ?>
                 <ul class="nav navbar-nav">

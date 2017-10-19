@@ -113,6 +113,7 @@ include('includes/header.php');
 			
 			
 			
+			
 			//if( mysqli_multi_query( $conn, $query) ) {
 			if( mysqli_num_rows( $result ) > 0 ) {
 				//while ($row = mysqli_fetch_assoc($result) ) {
@@ -162,6 +163,7 @@ include('includes/header.php');
 	$query = "SELECT blog_title, blog_post, blog_category,
 		date_format(date_created, '%m/%d/%Y') date_created
 		FROM blog_posts 
+		WHERE public = 'public'
 		ORDER BY date_created DESC
 		LIMIT 10"; 
 		//. "$_SESSION[" . 'id' . "]"		// %W 
