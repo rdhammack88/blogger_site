@@ -156,13 +156,22 @@ footer.col-sm-12 {
 
 
 /* SIGNUP FORM STYLES */
-.inputError {
-	display: none;
-}
+
 
 /* ADD BLOG STYLES */
-.titleError, .topicError, .blogError {
+.titleError, 
+.topicError, 
+.blogError,
+.nameError,
+.nameEditError,
+.emailError,
+.emailEditError,
+.passwordError,
+.passwordErrorRepeat,
+.passwordErrorBoth {
+	
 	display: none;
+	
 }
 
 /* USER INFO EDIT PAGE STYLES */
