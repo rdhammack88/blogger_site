@@ -28,11 +28,11 @@ if( isset( $_POST['edit'] ) ) {
 }
 
 if( isset( $_POST['delete'] ) ) {
-	$blog_id = $_POST['blog_id'];
+	$blog_id = $_POST['blogid'];
 	
 	$query 	= "DELETE
-			  FROM blog_posts
-			  WHERE id='$blog_id'";
+			   FROM blog_posts
+			   WHERE id='$blog_id'";
 	$result = mysqli_query( $conn, $query );
 	
 	echo "Post $blog_id has been deleted!";
@@ -112,7 +112,7 @@ echo $alertMessage;
 <?php //echo $alertMessage; ?>
 
 <div class="row text-right">
-	<!--<form action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">-->
+	<!--<form action="<?php //echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">-->
 		<!--<button type="submit" class="" name="add">-->
 		
 		
@@ -125,6 +125,33 @@ echo $alertMessage;
 </div>
 
 <br/>
+
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <form class="modal-dialog" method="post">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirm deletion of blog post</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this blog post? <strong class="text-danger">This cannot be undone!</strong></p>
+        <input type='number' value='<?php echo $blog_id; ?>' name='blogid' class=''>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default" name="delete">Confirm Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+
 
 <main class="row">
 	<?php
@@ -249,7 +276,7 @@ echo $alertMessage;
 			echo htmlspecialchars( $_SERVER['PHP_SELF'] ) . "' method='POST'>	
 			<span class='sr-only'>Edit this blog</span><button type='submit' class='glyphicon glyphicon-pencil btn btn-lg' name='edit'></button>";
 			
-			echo "<span class='sr-only'>Delete this blog</span><button type='submit' class='glyphicon glyphicon-trash btn btn-lg' name='delete'></button>";
+			echo "<span class='sr-only'>Delete this blog</span><button type='button' class='glyphicon glyphicon-trash btn btn-lg' name='deletePost' data-toggle='modal' data-target='#myModal'></button>";
 			
 			echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg' name='favorite'></button>";
 			

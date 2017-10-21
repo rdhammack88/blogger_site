@@ -20,7 +20,7 @@ if( isset( $_POST["newBlog"] ) ) {
 	if( !$_POST["public"] ) {
 		$public = "public";
 	} else {
-		$public	= $_POST["public"];
+		$public	= validateFormData( $_POST["public"] );
 	}
 	
 	if( $blog_title && $blog_topic && $blog ) {
@@ -39,7 +39,7 @@ if( isset( $_POST["newBlog"] ) ) {
 	mysqli_close( $conn );
 }
 
-if( isset( $_POST['cancel'] ) ) {
+if( isset( $_POST["cancel"] ) ) {
 	header( "Location: blogs.php" );
 }
 
@@ -58,16 +58,16 @@ include('includes/header.php');
 
 <form action="" class="col-sm-8 col-sm-offset-2" method="post">
 	
-	<small class="text-danger titleError">* </small>
-	<small class="text-danger titleError">Please enter a title <br/></small>
+	<small class="text-danger titleError">* Please enter a title <br/></small>
+<!--	<small class="text-danger titleError">Please enter a title <br/></small>-->
 	<div class="form-group input-group">
 		<label for="blogTitle" class="input-group-addon"><strong>Title:</strong></label>
 		<input type="text" class="form-control input-lg" name="blogTitle" id="blogTitle" maxlength="150"> <br/>  <!--placeholder="Title"-->
 	</div>
 	<br/>
 	
-	<small class="text-danger topicError">* </small>
-	<small class="text-danger topicError">Please enter a blog topic <br/></small>
+	<small class="text-danger topicError">* Please enter a blog topic <br/></small>
+<!--	<small class="text-danger topicError">Please enter a blog topic <br/></small>-->
 	
 	<div class="form-group input-group">
 		<label for="blogTopic" class="input-group-addon"><strong>Topic:</strong></label>
@@ -77,8 +77,8 @@ include('includes/header.php');
 	
 	<div class="form-group">
 		<label for="blog" class="sr-only">Write your content below:</label>
-		<small class="text-danger blogError">* </small>
-		<small class="text-danger blogError">Did you forget to write a blog?</small> <br/>
+		<small class="text-danger blogError">* Did you forget to write a blog?</small>
+<!--		<small class="text-danger blogError">Did you forget to write a blog?</small> <br/>-->
 		<textarea name="blog" class="form-control input-lg" id="blog" cols="30" rows="15" placeholder="Start writing your blog here..."></textarea>
 	</div>
 	
@@ -90,7 +90,7 @@ include('includes/header.php');
 	<br/><br/><br><br>
 	
 	<input type="submit" name="newBlog" id="newBlog" class="btn btn-success btn-lg col-xs-4 col-xs-offset-1"><!--Submit</button>-->
-	<input type="reset"  name="cancel" class="btn btn-danger btn-lg col-xs-4 col-xs-offset-2" value="Cancel"><!--Cancel</button>-->
+	<input type="submit"  name="cancel" id="cancel" class="btn btn-danger btn-lg col-xs-4 col-xs-offset-2" value="Cancel"><!--Cancel</button>-->
 	
 </form>
 

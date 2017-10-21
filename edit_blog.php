@@ -75,16 +75,16 @@ include('includes/header.php');
 
 <form action="" class="col-sm-8 col-sm-offset-2" method="post">
 	
-	<small class="text-danger titleError">* </small>
-	<small class="text-danger titleError">Please enter a blog title <br/></small>
+	<small class="text-danger titleError">* Please enter a blog title <br/></small>
+<!--	<small class="text-danger titleError">Please enter a blog title <br/></small>-->
 	<div class="form-group input-group">
 		<label for="blogTitle" class="input-group-addon"><strong>Title:</strong></label>
 		<input type="text" class="form-control input-lg" name="blogTitle" id="blogTitle" maxlength="150" value="<?php echo $title; ?>"> <br/>  <!--placeholder="Title"-->
 	</div>
 	<br/>
 	
-	<small class="text-danger topicError">* </small>
-	<small class="text-danger topicError">Please enter a blog topic <br/></small>
+	<small class="text-danger topicError">* Please enter a blog topic <br/></small>
+<!--	<small class="text-danger topicError">Please enter a blog topic <br/></small>-->
 	
 	<div class="form-group input-group">
 		<label for="blogTopic" class="input-group-addon"><strong>Topic:</strong></label>
@@ -94,8 +94,9 @@ include('includes/header.php');
 	
 	<div class="form-group">
 		<label for="blog" class="sr-only">Current post says - <?php echo $post; ?></label>
-		<small class="text-danger blogError">* </small>
-		<small class="text-danger blogError">Did you forget to write a blog?</small> <br/>
+		<small class="text-danger blogError">* Did you forget to write a blog?</small>
+<!--		<small class="text-danger blogError">Did you forget to write a blog?</small> <br/>-->
+	
 		<textarea name="blog" class="form-control input-lg" id="blog" cols="30" rows="15" placeholder="Start writing your blog here..."><?php echo $post; ?></textarea>
 	</div>
 	

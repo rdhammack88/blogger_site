@@ -148,7 +148,7 @@ include('includes/header.php');
 			<label for="first_name" class="sr-only">First Name</label>
 			<input type="text" name="first_name" id="first_name" placeholder="First Name">
 			<small class="text-danger">* </small> <br/>
-			<small class="text-danger inputError">Please enter your first name <br/></small> <br/>
+			<small class="text-danger nameError">Please enter your first name <br/></small> <br/>
 			
 			<label for="last_name" class="sr-only">Last Name</label>
 			<input type="text" name="last_name" placeholder="Last Name"> <br/><br/>
@@ -160,12 +160,12 @@ include('includes/header.php');
 			<label for="email" class="sr-only">Email</label>
 			<input type="text" name="email" id="email" placeholder="Email">
 			<small class="text-danger">*</small> <br/>
-			<small class="text-danger inputError">Please enter your email <br/></small> <br/>
+			<small class="text-danger emailError">Please enter your email <br/></small> <br/>
 			
 			<label for="password" class="sr-only">Password</label>
 			<input type="password" name="password" id="password" placeholder="Password">
 			<small class="text-danger">*</small> <br/>
-			<small class="text-danger inputError">Please enter a password <br/></small> <br/>
+			<small class="text-danger passwordError">Please enter a password <br/></small> <br/>
 			
 			<input type="file" name="avatar"> <br/><br/>
 			
