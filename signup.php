@@ -52,18 +52,51 @@ if( isset( $_POST["signup"] ) ) {
 	} else {
 		$password = password_hash( $_POST['password'], PASSWORD_DEFAULT );
 	}
-
-	if( $_POST["avatar"] ) {
-		$avatar = validateFormData( $_POST["avatar"] );
-	} /*else {
-		$avatar = "NULL";
-	}*/
+//
+//	if( $_POST["avatar"] ) {
+//		$avatar = validateFormData( $_POST["avatar"] );
+//	} /*else {
+//		$avatar = "NULL";
+//	}*/
 
 	if( $_POST["biography"] ) {
 		$biography = validateFormData( $_POST["biography"] );
 	} /*else {
 		$biography = "NULL";
 	}*/
+	
+	
+//	if( isset( $_POST['avatar'] ) ) {
+		include('image_upload.php');
+		// CHECK TO VERIFY UPLOADED FILE HAS PASSED ALL TESTS
+		if( $uploadPass == 0 ) {
+			$uploadError .= "<br/>File could not be uploaded. Line: " . __LINE__;
+			echo $uploadError;
+		} else {	// UPLOAD PASSED ALL TESTS
+			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $user_avatar ) ) {
+				$avatar = $_FILES['avatar']['name'];
+				/*$query 	= "UPDATE users
+						  SET avatar = '$avatar'
+						  WHERE id = '$user_id'";
+				$result = mysqli_query( $conn, $query );*/
+			} else {
+				//$avatar = 'userAvatarDefault.png';
+				$uploadError .= "<br/>File could not be uploaded. Line: " . __LINE__;
+				echo $uploadError;
+			}
+		}
+//	} else {
+//		$avatar = 'userAvatarDefault.png';
+//	}
+
+	if( !$avatar ) {
+		$avatar = 'userAvatarDefault.png';
+	//	$avatar = 'images/Male_User_Filled.png';
+	} 
+//	else {
+//		$avatar = 'images/user_profile_images/' . $avatar;
+//	}
+
 
 	// CHECK TO SEE IF EACH VARIABLE HAS DATA
 	if( $first_name && $email && $password ) {
@@ -78,11 +111,14 @@ if( isset( $_POST["signup"] ) ) {
 
 //			echo "This is line " . __LINE__ . " in file " . __FILE__;
 
-		if( mysqli_query( $conn, $query ) )	{
+		if( $result = mysqli_query( $conn, $query ) )	{
 //				echo "This is line " . __LINE__ . " in file " . __FILE__;
-			
+			/*$row 		= mysqli_fetch_assoc($result);
+			$user_id	= $row['id'];
+			$first_name = $row['first_name'];*/
 			// redirect user to blogs page
-			header( "Location: blogs.php?alert=new_user" );
+			//////header( "Location: blogs.php?alert=new_user" );
+			header( "Location: login.php" );
 //				header( "Location: blogs.php?alert=success");
 //				echo "<div class='alert alert-success'>New record in database!</div>";
 		} else {
@@ -106,6 +142,17 @@ if( isset( $_POST["signup"] ) ) {
 
 
 }
+
+/*if( isset( $_POST['avatar'] ) ) {
+	
+	if( !$avatar ) {
+		$avatar = 'images/userAvatarDefault.png';
+	//	$avatar = 'images/Male_User_Filled.png';
+	} else {
+		$avatar = 'images/user_profile_images/' . $avatar;
+	}
+}*/
+
 
 
 /*$query = INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `user_name`, `password`, `avatar`, `biography`, `signup_date`) VALUES (NULL, 'Brutus', 'Hammack', 'brutus@email.com', 'brutusthedog', 'rusty', NULL, 'This is a section all about Brutus the dog!', CURRENT_TIMESTAMP);*/
@@ -141,9 +188,10 @@ include('includes/header.php');
 
 		?>
 		
+		
 		<p class="text-danger col-sm-4 col-sm-offset-4">* Required fields</p>
 		
-		<form class="col-sm-4 col-sm-offset-4" id="signupForm" action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">
+		<form class="col-sm-4 col-sm-offset-4" id="signupForm" action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post" enctype="multipart/form-data">
 			
 			<label for="first_name" class="sr-only">First Name</label>
 			<input type="text" name="first_name" id="first_name" placeholder="First Name">
@@ -167,7 +215,14 @@ include('includes/header.php');
 			<small class="text-danger">*</small> <br/>
 			<small class="text-danger passwordError">Please enter a password <br/></small> <br/>
 			
-			<input type="file" name="avatar"> <br/><br/>
+<!--			<input type="file" name="avatar"> <br/><br/>-->
+			
+			<img src="<?php echo $avatar ?>" alt="User profile avatar" height="100px" width="100px" style='border-radius=40%;'> <br/><br/>
+			<label for="avatar">Bio picture:</label>
+			<input type="file" name="avatar"> <br/>
+			<!--<button type="submit" name="avatarUpload" class="btn btn-info btn-sm">Upload Avatar</button>-->
+			<br/><br/>
+			
 			
 			<label for="biography">Biography:</label> <br/>
 			<textarea name="biography" id="biography" cols="30" rows="10"></textarea>

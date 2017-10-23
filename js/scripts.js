@@ -161,6 +161,25 @@ $(document).ready(function() {
 		}
 		
 	});*/
+	
+	
+	
+	$('button.glyphicon-trash').click(function() {
+		//$('#deleteBlogModal > form > div.modal-body > input[type="number"]').val() === 23;
+		var $blog_id = $(this).next().next().next().val();
+		$('#blogID').val($blog_id);
+		
+		//console.log($(this).next().next().next().val());
+		console.log($blog_id);
+		//console.log('clicked');
+	});
+	
+	
+	
+	
+	
+	
+	
 	 
 	$('#newBlog').click(function(e) {
 		var $blog_title = $('#blogTitle');

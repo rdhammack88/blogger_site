@@ -5,6 +5,7 @@ $user_name = $_SESSION['loggedInUser'];
 include('includes/functions.php');
 include('includes/connection.php');
 $user_id = $_SESSION['user_id'];
+$uploadError = '';
 //echo $_SESSION['user_id'];
 
 $query 	= "SELECT *
@@ -23,31 +24,82 @@ if( $result ) {
 	$hashed_pass 	= $row['password'];
 }
 
+
+//if( isset( $_POST['avatarUpload'] ) ) {
+//	include('image_upload.php');
+//	// CHECK TO VERIFY UPLOADED FILE HAS PASSED ALL TESTS
+//	if( $uploadPass == 0 ) {
+//		$uploadError = "File could not be uploaded";
+//		echo $uploadError;
+//	} else {	// UPLOAD PASSED ALL TESTS
+//		if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $user_avatar ) ) {
+//			$avatar = $_FILES['avatar']['name'];
+//			$query 	= "UPDATE users
+//					  SET avatar = '$avatar'
+//					  WHERE id = '$user_id'";
+//			$result = mysqli_query( $conn, $query );
+//		} else {
+//			$uploadError = "File could not be uploaded";
+//			echo $uploadError;
+//		}
+//	}
+//}
+
+
+if( !$avatar ) {
+	$avatar = 'userAvatarDefault.png';
+//	$avatar = 'images/Male_User_Filled.png';
+} else {
+	$avatar = $avatar;
+}
+
 if( isset( $_POST['save'] ) ) {
 	$first_name	= validateFormData( $_POST['first_name'] );
 	$last_name	= validateFormData( $_POST['last_name'] );
 	$email		= validateFormData( $_POST['email'] );
 	$user_name	= validateFormData( $_POST['user_name'] );
-	$avatar		= validateFormData( $_POST['avatar'] );
+//	$avatar		= validateFormData( $_POST['avatar'] );
 	$bio		= validateFormData( $_POST['bio'] );
 	
-	if( isset( $_POST['newpassword'] ) ) {
-		
-		$password_check = validateFormData( $_POST['current_password'] );
-		
-		if( !$password_check ) {
-			return FALSE;
-		} else {
-			// verify hashed password with submitted password
-			if( password_verify( $password_check, $hashed_pass ) ) {
-				$newpassword = password_hash( $_POST['newpassword'], PASSWORD_DEFAULT );
-				$query	= "UPDATE users
-						   SET password = '$newpassword'
-						   WHERE id = '$user_id'";
-				$result	= mysqli_query( $conn, $query );
+	//if( isset( $_POST['avatar'] ) ) {
+		include('image_upload.php');
+		// CHECK TO VERIFY UPLOADED FILE HAS PASSED ALL TESTS
+		if( $uploadPass == 0 ) {
+			$uploadError .= "<br/>File could not be uploaded. Line: " . __LINE__;
+			echo $uploadError;
+		} else {	// UPLOAD PASSED ALL TESTS
+			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $user_avatar ) ) {
+				$avatar = $_FILES['avatar']['name'];
+//				$query 	= "UPDATE users
+//						  SET avatar = '$avatar'
+//						  WHERE id = '$user_id'";
+//				$result = mysqli_query( $conn, $query );
+			} else {
+				$uploadError .= "<br/>File could not be uploaded. Line: " . __LINE__;
+				echo $uploadError;
 			}
-		}		
-	}
+		}
+	//}
+	
+//	if( isset( $_POST['newpassword'] ) ) {
+//		
+//		$password_check = validateFormData( $_POST['current_password'] );
+//		
+//		if( !$password_check ) {
+//			return FALSE;
+//		} else {
+//			// verify hashed password with submitted password
+//			if( password_verify( $password_check, $hashed_pass ) ) {
+//				$newpassword = password_hash( $_POST['newpassword'], PASSWORD_DEFAULT );
+//				$query	= "UPDATE users
+//						   SET password = '$newpassword'
+//						   WHERE id = '$user_id'";
+//				$result	= mysqli_query( $conn, $query );
+//			}
+//		}		
+//	}
+	
+//	avatar	  = '$avatar',
 	
 	$query	= "UPDATE users
 			   SET first_name = '$first_name',
@@ -56,12 +108,13 @@ if( isset( $_POST['save'] ) ) {
 				   user_name  = '$user_name',
 				   avatar	  = '$avatar',
 				   biography  = '$bio'
-			  WHERE id = '$user_id'";
+			   WHERE id = '$user_id'";
 	$result	= mysqli_query( $conn, $query );
 	
 	if(!$result ) { printf(mysqli_error($conn)); }
 	
-	if( $result ){
+	if( $result && $uploadPass === 1 ){
+		//echo $user_avatar;
 		header("Location: blogs.php");
 	}
 }
@@ -86,10 +139,10 @@ include("includes/header.php");
 
 
 <!-- Trigger the modal with a button -->
-<button type="button" class="btn  btn-sm btn-danger col-sm-offset-9" data-toggle="modal" data-target="#myModal">Delete Account</button>
+<button type="button" class="btn  btn-sm btn-danger col-xs-offset-9" data-toggle="modal" data-target="#deleteUserAccountModal">Delete Account</button>
 
 <!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
+<div id="deleteUserAccountModal" class="modal fade" role="dialog">
   <form class="modal-dialog" method="post">
 
     <!-- Modal content-->
@@ -110,24 +163,40 @@ include("includes/header.php");
   </form>
 </div>
 
-
-
-
-
-
-
-
-
-
 <!--
 <form action="" method="post">
 <button type="submit" name="delete" class="btn btn-sm btn-danger col-sm-offset-9">Delete Account</button>
 </form>
 -->
 
+
+
+
 <h3 class="text-center add_blog clearfix">User Info for <?php echo $first_name ?> </h3>
 
-<form action="" class="col-sm-8 col-sm-offset-2" method="post">
+<!--<div class="row">
+	<form action="" class="col-sm-8 col-sm-offset-2" method="post" enctype="multipart/form-data">
+		<img src="<?php //echo $avatar ?>" alt="User profile avatar" id="userAvatar"> <br/><br/>
+		<label for="avatar">Bio picture:</label>
+		<input type="file" name="avatar"> <br/>
+		<button type="submit" name="avatarUpload" class="btn btn-info btn-sm">Upload Avatar</button>
+
+	</form>
+</div>-->
+
+
+
+<br/><br/>
+
+<form action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" class="col-sm-8 col-sm-offset-2" method="post" enctype="multipart/form-data">
+
+	<div class="form-group input-group">
+		<img src="images/user_profile_images/<?php echo $avatar; ?>" alt="User profile avatar" id="userAvatar"> <br/><br/>
+		<label for="avatar">Bio picture:</label>
+		<input type="file" name="avatar"> <br/>
+		<p class="text-danger"><?php echo $uploadError; ?> </p> <br/>
+		<!--<button type="submit" name="avatarUpload" class="btn btn-info btn-sm">Upload Avatar</button>-->
+	</div>
 	
 	<small class="text-danger nameEditError">* Please enter your first name<br/></small>
 <!--	<small class="text-danger inputError">Please enter your first name<br/></small>-->
@@ -179,10 +248,7 @@ include("includes/header.php");
 		</div>
 	</fieldset>
 	<br/>
-	
-	<label for="avatar">Bio picture:</label>
-	<input type="file" name="avatar" > <br/><br/>
-	
+		
 	<div class="form-group">
 		<label for="bio" class="sr-only">Current user biography says - <?php echo $bio; ?></label>
 		<textarea name="bio" class="form-control input-lg" id="bio" cols="30" rows="15" placeholder="Start writing your bio here..."><?php echo $bio; ?></textarea>

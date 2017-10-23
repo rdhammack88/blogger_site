@@ -129,7 +129,7 @@ echo $alertMessage;
 
 
 <!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
+<div id="deleteBlogModal" class="modal fade" role="dialog">
   <form class="modal-dialog" method="post">
 
     <!-- Modal content-->
@@ -140,7 +140,7 @@ echo $alertMessage;
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete this blog post? <strong class="text-danger">This cannot be undone!</strong></p>
-        <input type='number' value='<?php echo $blog_id; ?>' name='blogid' class=''>
+        <input type='number' value='<?php echo $_SESSION["user_id"] ?>' id="blogID" name='blogid' class=''>
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default" name="delete">Confirm Delete</button>
@@ -263,7 +263,7 @@ echo $alertMessage;
 		while( $row = mysqli_fetch_assoc($result) ) {
 			//$date_created = $row['date_created']; /// $row['date_created']
 			//$date = date_format($date_created, 'd-m-Y');
-			$blog_id = $row['id'];
+			//$blog_id = $row['id'];
 			echo "<article>";
 			
 			echo "<div class='blog_title'><h2>" . $row['blog_title'] . "</h2>
@@ -276,17 +276,17 @@ echo $alertMessage;
 			echo htmlspecialchars( $_SERVER['PHP_SELF'] ) . "' method='POST'>	
 			<span class='sr-only'>Edit this blog</span><button type='submit' class='glyphicon glyphicon-pencil btn btn-lg' name='edit'></button>";
 			
-			echo "<span class='sr-only'>Delete this blog</span><button type='button' class='glyphicon glyphicon-trash btn btn-lg' name='deletePost' data-toggle='modal' data-target='#myModal'></button>";
+			echo "<span class='sr-only'>Delete this blog</span><button type='button' class='glyphicon glyphicon-trash btn btn-lg' id='" . $row['id'] . "'  name='deletePost' data-toggle='modal' data-target='#deleteBlogModal'></button>";
 			
 			echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg' name='favorite'></button>";
 			
-			echo "<input type='number' value='$blog_id' name='blog_id' class='sr-only'>";
+			echo "<input type='number' value='" . $row['id'] . "' name='blog_id' class='sr-only'>";
 			
 			echo "</form></article>";			
 				//$row['date_created']
 		}
 	} else {
-		echo "<div class='container'><p class='alert alert-danger col-md-6 col-md-offset-3'>You have no blog posts!</p></div>";
+		echo "<div class='container'><p class='alert alert-danger col-md-8 col-md-offset-1'>You have no blog posts!</p></div>";
 	}
 	
 	// close the connection

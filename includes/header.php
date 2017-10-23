@@ -1,5 +1,10 @@
-<?php  //define( "TITLE", "Home" ); ?>
-<?php //session_start(); ?>
+<?php  //define( "TITLE", "Home" ); 
+/*echo phpversion();
+echo '<br>';
+echo session_status();*/
+?>
+<?php //if(!session_status){session_start();} ?>
+<?php //$_SESSION['loggedInUser'] = ""; ?>
 <!DOCTYPE html>
 <html>
 <head>

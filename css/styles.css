@@ -6,7 +6,7 @@ font-family: 'Nosifer', cursive;
 */
 
 body {
-	height: 100vh;
+	height: 100%;
 	margin: 0;
 	padding: 0;
 	font-size: 16px;
@@ -175,10 +175,18 @@ footer.col-sm-12 {
 }
 
 /* USER INFO EDIT PAGE STYLES */
+/*
 .input-group-addon {
 	background-color: #d9edf7;
 }
+*/
 
+img#userAvatar  {
+	width: 256px;
+	height: 256px;
+	border: 5px inset #000;
+	border-radius: 50%;
+}
 
 @media only screen and ( min-width: 450px) {
 	#mainNav {
