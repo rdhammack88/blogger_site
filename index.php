@@ -1,10 +1,10 @@
 <?php
-
-
 session_start();
 
 // connect to the database
 include('includes/connection.php');
+include('includes/functions.php');
+$avatar = 'userAvatarDefault.png';
 
 //if( !$_SESSION['loggedInUser'] ) {
 	$alertMessage = '';
@@ -74,34 +74,59 @@ include('includes/connection.php');
 
 }*/
 	
+//////////////////////////////////
+
+
+
+
+
+ 
+//else {
+//	echo "<p class='text-danger'>No results found!</p>";
+//}
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////
+
+
+
+
 
 include('includes/header.php');
 ?>
 
 
-<?php echo $alertMessage; ?>
+<?php //echo $alertMessage; ?>
 
-<div class="row"></div>
+<!--<div class="row"></div>-->
 
 <br/><br/>
 
-<div class="row text-right">
-	<small class="text-danger">Most Recent Blog Posts...</small>
+<div class="row text-right"> <!--  js 373  -->
+	<small class="text-danger slide_text">Most Recent Blog Posts...</small>
 </div>
 
 <main class="row">
 
 	<!-- aside>nav.blogTopics>ul>li*8>a[href=#] -->
-	<aside id="blogTopics" class="col-sm-3 col-md-3">
+	<aside id="blogTopics" class="col-sm-3"><!--  col-md-3 -->
 		<nav>
-			<h4 class="text-center">Most Popular Topics</h4>
+			<h4 class="text-center">Popular Topics</h4><!-- Most -->
 			<?php
 			
 			$query = "SELECT blog_category 
 			FROM blog_posts
 			GROUP BY blog_category
-			HAVING COUNT(*) >= 2";
-			//HAVING COUNT(*) > 2 ";
+			HAVING COUNT(*) > 1";
+			//HAVING COUNT(*) >= 2 ";
 			$result = mysqli_query( $conn, $query );
 			//mysqli_close( $conn );
 
@@ -122,36 +147,24 @@ include('includes/header.php');
 
 						// we have data
 						// output the data
-
+				echo "<ul>";
 				while( $row = mysqli_fetch_assoc($result) ) {
 					//$date_created = $row['date_created']; /// $row['date_created']
 					//$date = date_format($date_created, 'd-m-Y');
-					echo "<ul>";
+					
 
-					echo "<li><a>" . $row['blog_category'] . "</a></p>";
-					echo "</ul>";			
+					echo "<li><a href='index.php?topic=" . $row['blog_category'] . "'>" . $row['blog_category'] . "</a></li>";
+								
 				}
-
+				echo "</ul>";
 				mysqli_free_result( $result );
 			}
 			
 				//}
 				
 			?>
-<!--
-			<ul>
-				<li><a href="#">Lorem</a></li>
-				<li><a href="#">Hic</a></li>
-				<li><a href="#">Cum</a></li>
-				<li><a href="#">Esse</a></li>
-				<li><a href="#">Fugiat</a></li>
-				<li><a href="#">Quibusdam</a></li>
-				<li><a href="#">Totam</a></li>
-				<li><a href="#">Soluta</a></li>
-			</ul>
--->
 		</nav>
-	</aside>
+	</aside> <!-- End of Blog Topics Section -->
 	
 	<!-- Main Blog Article Content -->
 	<section id="blogSection" class="col-sm-8 col-sm-offset-1">
@@ -160,14 +173,116 @@ include('includes/header.php');
 		
 			
 	<?php
-	$query = "SELECT blog_title, blog_post, blog_category,
-		date_format(date_created, '%m/%d/%Y') date_created
-		FROM blog_posts 
-		WHERE public = 'public'
-		ORDER BY date_created DESC
-		LIMIT 10"; 
+	///////	FALL BACK CODE FOR USERS WITH JAVASCRIPT DISABLED /////////
+	//////  FOR BOTH POPULAR TOPICS ASIDE BAR, AND SEARCH    /////////
+	if(isset($_GET['topic'])) {
+		$topic = $_GET['topic'];
+		//$query 		= "SELECT * FROM blog_posts WHERE blog_category = '$topic'";
+//		$query 	= "SELECT blog_title, blog_post, blog_category,
+//				   date_format(date_created, '%m/%d/%Y') date_created
+//				   FROM blog_posts 
+//				   WHERE public = 'public'
+//				   AND blog_category = '$topic'
+//				   ORDER BY date_created DESC";
+		$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+				   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+				   blog_posts.blog_category, blog_posts.id AS blog_id,  blog_posts.user_id, users.avatar, users.id,
+				   users.email, users.user_name
+				   FROM blog_posts
+				   LEFT JOIN users ON blog_posts.user_id = users.id
+				   WHERE public = 'public'
+				   AND blog_category = '$topic'
+				   ORDER BY blog_posts.date_created DESC";
+		
+		queryCaller($conn, $query);
+		
+		
+		//////////////////////////////
+			/*PROPERLY WORKS BELOW*/
+		/////////////////////////////
+		/*$blogs 	= mysqli_query($conn, $query);
+
+		while( $row = mysqli_fetch_assoc($blogs) ) {
+			if (!$row['avatar']) {
+				$avatar = 'userAvatarDefault.png';
+			} else {
+				$avatar = $row['avatar'];
+			}
+			echo "<article>";
+			echo "<div class='blog_title'><img src='images/user_profile_images/" . $avatar . "'/><h2 class='title'>" . $row['blog_title'] . "</h2><a href='index.php?date=" . $row['date_created'] . "' class='date'><p class='date_posted'>". $row['date_created'] . "</p></a></div><p class='post'>". $row['blog_post'] . "</p>";
+			echo "</article>";			
+		}*/
+	}
+		
+	if(isset($_GET['search'])) {
+		$search_query 	= $_GET['search'];
+//		$query			= "SELECT blog_title, blog_post, blog_category,
+//						   date_format(date_created, '%m/%d/%Y') date_created
+//						   FROM blog_posts 
+//						   WHERE public = 'public'
+//						   AND (blog_title = '$search_query'
+//						   OR blog_post = '$search_query'
+//						   OR blog_category = '$search_query')
+//						   ORDER BY date_created DESC";
+		$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+				   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+				   blog_posts.blog_category, blog_posts.id AS blog_id,  blog_posts.user_id, users.avatar, users.id,
+				   users.email, users.user_name
+				   FROM blog_posts
+				   LEFT JOIN users ON blog_posts.user_id = users.id
+				   WHERE public = 'public'
+				   AND (blog_title = '$search_query'
+				   OR blog_post = '$search_query'
+				   OR blog_category = '$search_query')
+				   ORDER BY blog_posts.date_created DESC";
+
+		queryCaller($conn, $query);
+		
+		
+		//////////////////////////////
+			/*PROPERLY WORKS BELOW*/
+		/////////////////////////////
+		/*$blogs 	= mysqli_query($conn, $query);
+
+		while( $row = mysqli_fetch_assoc($blogs) ) {
+			if (!$row['avatar']) {
+				$avatar = 'userAvatarDefault.png';
+			} else {
+				$avatar = $row['avatar'];
+			}
+			echo "<article>";
+			echo "<div class='blog_title'><img src='images/user_profile_images/" . $avatar . "'/><h2 class='title'>" . $row['blog_title'] . "</h2><a href='index.php?date=" . $row['date_created'] . "' class='date'><p class='date_posted'>". $row['date_created'] . "</p></a></div><p class='post'>". $row['blog_post'] . "</p>";
+			echo "</article>";			
+		}*/
+	} // END OF FALLBACK CODE FOR DISABLED JAVASCRIPT USERS
+		
+		
+//	$query = "SELECT blog_title, blog_post, blog_category,
+//		date_format(date_created, '%m/%d/%Y') date_created
+//		FROM blog_posts 
+//		WHERE public = 'public'
+//		ORDER BY date_created DESC
+//		LIMIT 10";
+	
+	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,  blog_posts.user_id, users.avatar, users.id,
+			   users.email, users.user_name
+			   FROM blog_posts
+			   LEFT JOIN users ON blog_posts.user_id = users.id
+			   WHERE public = 'public'
+			   ORDER BY blog_posts.date_created DESC
+			   LIMIT 10;";
+	
 		//. "$_SESSION[" . 'id' . "]"		// %W 
-	$result = mysqli_query( $conn, $query );
+		
+		queryCaller($conn, $query);
+		
+		
+		//////////////////////////////
+			/*PROPERLY WORKS BELOW*/
+		/////////////////////////////
+	/*$result = mysqli_query( $conn, $query );
 	mysqli_close( $conn );
 
 	if( mysqli_num_rows( $result ) > 0 ) {
@@ -177,14 +292,19 @@ include('includes/header.php');
 			
 		//while( mysqli_next_result( $conn ) ) {
 		while( $row = mysqli_fetch_assoc($result) ) {
+			if (!$row['avatar']) {
+				$avatar = 'userAvatarDefault.png';
+			} else {
+				$avatar = $row['avatar'];
+			}
 			echo "<article>";
-			echo "<div class='blog_title'><h2>" . $row['blog_title'] . "</h2><a><p class='date_posted'>". $row['date_created'] . "</p></a></div><p>". $row['blog_post'] . "</p>";
+			echo "<div class='blog_title'><img src='images/user_profile_images/" . $avatar . "'/><h2 class='title'>" . $row['blog_title'] . "</h2><a href='index.php?date=" . $row['date_created'] . "' class='date'><p class='date_posted'>". $row['date_created'] . "</p></a></div><p class='post'>". $row['blog_post'] . "</p>";
 			echo "</article>";			
 		}
 
 	} else {
 		echo "<div class='alert alert-danger'>You have no blog posts!</div>";
-	}
+	}*/
 	
 //	mysqli_close($conn);
 	

@@ -17,16 +17,19 @@ if( !$_SESSION['loggedInUser'] ) {
 include('includes/connection.php');
 
 $user_id = $_SESSION['user_id'];
+//echo $user_id;
 
 //if( isset( $_POST['add'] ) ) {
 //	header("Location: add_blog.php");
 //}
 
+/* Edit user Blog */
 if( isset( $_POST['edit'] ) ) {
 	$blog_id = $_POST['blog_id'];
 	header("Location: edit_blog.php?id=$blog_id");
 }
 
+/* Delete user Blog */
 if( isset( $_POST['delete'] ) ) {
 	$blog_id = $_POST['blogid'];
 	
@@ -38,6 +41,7 @@ if( isset( $_POST['delete'] ) ) {
 	echo "Post $blog_id has been deleted!";
 }
 
+/* Favorite user Blog */
 if( isset( $_POST['favorite'] ) ) {
 	$blog_id = $_POST['blog_id'];
 	$query 	= "SELECT favorite 
@@ -140,7 +144,7 @@ echo $alertMessage;
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete this blog post? <strong class="text-danger">This cannot be undone!</strong></p>
-        <input type='number' value='<?php echo $_SESSION["user_id"] ?>' id="blogID" name='blogid' class=''>
+        <input type='number' value='<?php //echo $_SESSION["user_id"] ?>' id="blogID" name='blogid' class='hidden'><!-- hidden -->
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default" name="delete">Confirm Delete</button>
@@ -182,8 +186,8 @@ echo $alertMessage;
 			if(!$result) { printf(mysqli_error($conn)); }
 
 			if( mysqli_num_rows( $result ) > 0 ) {
-						// we have data
-						// output the data
+				// we have data
+				// output the data
 
 				while( $row = mysqli_fetch_assoc($result) ) {
 					echo "<ul>";
@@ -215,8 +219,8 @@ echo $alertMessage;
 			if(!$result) { printf(mysqli_error($conn)); }
 
 			if( mysqli_num_rows( $result ) > 0 ) {
-						// we have data
-						// output the data
+				// we have data
+				// output the data
 
 				while( $row = mysqli_fetch_assoc($result) ) {
 					echo "<ul>";
@@ -242,7 +246,7 @@ echo $alertMessage;
 ?>
 	
 		
-    
+    <!-- Blog Section for user blogss -->
     <?php
 	// query & results
 	$query = "SELECT *,
@@ -280,7 +284,7 @@ echo $alertMessage;
 			
 			echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg' name='favorite'></button>";
 			
-			echo "<input type='number' value='" . $row['id'] . "' name='blog_id' class='sr-only'>";
+			echo "<input type='number' value='" . $row['id'] . "' name='blog_id' class='hidden'>";
 			
 			echo "</form></article>";			
 				//$row['date_created']

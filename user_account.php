@@ -67,9 +67,12 @@ if( isset( $_POST['save'] ) ) {
 		if( $uploadPass == 0 ) {
 			$uploadError .= "<br/>File could not be uploaded. Line: " . __LINE__;
 			echo $uploadError;
+//		} elseif ( !$_POST['avatar'] ) {
+//			$uploadPass = 1;
 		} else {	// UPLOAD PASSED ALL TESTS
-			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $user_avatar ) ) {
-				$avatar = $_FILES['avatar']['name'];
+			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $target_path ) ) {
+//				$avatar = $_FILES['avatar']['name'];
+				$avatar = $user_image;
 //				$query 	= "UPDATE users
 //						  SET avatar = '$avatar'
 //						  WHERE id = '$user_id'";

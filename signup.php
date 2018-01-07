@@ -4,6 +4,7 @@
 session_start();
 
 include('includes/functions.php');
+$avatar = 'userAvatarDefault.png';
 
 if( isset( $_POST["signup"] ) ) {
 		
@@ -44,7 +45,17 @@ if( isset( $_POST["signup"] ) ) {
 	if( !$_POST["email"] ) {
 		$emailError = "Please enter your email <br/>";
 	} else {
-		$email = validateFormData( $_POST["email"] );
+		$user_selected_email = $_POST["email"];
+		$query 	= "SELECT *
+				   FROM users
+				   WHERE email = $user_selected_email";
+		$result	= mysqli_query( $conn, $query );
+		
+		if( !$result ) {
+			$emailError = "That email is already in use. Please use another email address";
+		} else {		
+			$email = validateFormData( $_POST["email"] );
+		}
 	}
 
 	if( !$_POST["password"] ) {
@@ -73,8 +84,8 @@ if( isset( $_POST["signup"] ) ) {
 			$uploadError .= "<br/>File could not be uploaded. Line: " . __LINE__;
 			echo $uploadError;
 		} else {	// UPLOAD PASSED ALL TESTS
-			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $user_avatar ) ) {
-				$avatar = $_FILES['avatar']['name'];
+			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $target_path ) ) {
+				$avatar = $user_image;
 				/*$query 	= "UPDATE users
 						  SET avatar = '$avatar'
 						  WHERE id = '$user_id'";
@@ -118,6 +129,12 @@ if( isset( $_POST["signup"] ) ) {
 			$first_name = $row['first_name'];*/
 			// redirect user to blogs page
 			//////header( "Location: blogs.php?alert=new_user" );
+			$row = mysqli_fetch_assoc( $result );
+			$user_id = $row['id'];
+			$query	= "UPDATE users
+					   SET avatar = 'user$user_id$image_type',
+					   WHERE id = '$user_id'";
+			
 			header( "Location: login.php" );
 //				header( "Location: blogs.php?alert=success");
 //				echo "<div class='alert alert-success'>New record in database!</div>";
@@ -217,7 +234,7 @@ include('includes/header.php');
 			
 <!--			<input type="file" name="avatar"> <br/><br/>-->
 			
-			<img src="<?php echo $avatar ?>" alt="User profile avatar" height="100px" width="100px" style='border-radius=40%;'> <br/><br/>
+			<img src="images/user_profile_images/<?php echo $avatar ?>" alt="User profile avatar" height="100px" width="100px" style='border-radius=40%;'> <br/><br/>
 			<label for="avatar">Bio picture:</label>
 			<input type="file" name="avatar"> <br/>
 			<!--<button type="submit" name="avatarUpload" class="btn btn-info btn-sm">Upload Avatar</button>-->

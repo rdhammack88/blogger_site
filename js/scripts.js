@@ -180,7 +180,7 @@ $(document).ready(function() {
 	
 	
 	
-	 
+	 // Adding a new blog post
 	$('#newBlog').click(function(e) {
 		var $blog_title = $('#blogTitle');
 		var $blog_topic = $('#blogTopic');
@@ -231,9 +231,9 @@ $(document).ready(function() {
 	
 	
 	
-	if( $('#mainNav > div').hasClass('col-xs-12') ) {
-		$('#mainNav > div').toggle();
-	}
+//	if( $('#mainNav > div').hasClass('col-xs-12') ) {
+//		$('#mainNav > div').toggle();
+//	}
 	
 	// User login conformation animation
 	setTimeout(function() {
@@ -275,5 +275,161 @@ $(document).ready(function() {
 		$(this).color = 'red';
 	})
 	
+	
+	$('#searchButton').click(function(e) {
+		e.preventDefault();
+		var searchQuery = $('#search').val();
+		$.ajax({
+			url: "./includes/ajax.php?search="+searchQuery,
+			method: "GET",
+			success: function(res) {
+				$('#blogSection').html(res);
+			}
+		});
+	});
+	
+	$('#blogTopics a').click(function(e) {
+		e.preventDefault();
+		var topic = $(this).html();
+		console.log(topic);
+		$.ajax({
+			url: "./includes/ajax.php?topic="+topic,
+			method: "GET",
+			success: function(res) {
+				$('#blogSection').html(res);
+			}
+		});
+	});
+	
+	
+	$('#blogSection a.avatar').click(function(e) {
+		e.preventDefault();
+//		var searchQuery = $(this).text();
+		var user_name = $(this).next().text();
+			//this.previousElementSibling.previousElementSibling.innerHTML;
+//		console.log(searchQuery);
+		console.log(user_name);
+		$.ajax({
+			url: "./includes/ajax.php?username="+ user_name,
+			method: "GET",
+			success: function(res) {
+				$('#blogSection').html(res);
+			}
+		})
+	});
+	
+	$('#blogSection a.name').click(function(e) {
+		e.preventDefault();
+//		var searchQuery = $(this).text();
+		var user_name = $(this).text();
+			//this.previousElementSibling.previousElementSibling.innerHTML;
+//		console.log(searchQuery);
+		console.log(user_name);
+		$.ajax({
+			url: "./includes/ajax.php?username="+ user_name,
+			method: "GET",
+			success: function(res) {
+				$('#blogSection').html(res);
+			}
+		})
+	});
+	
+	$('#blogSection a.title').click(function(e) {
+		e.preventDefault();
+		var searchQuery = $(this).text();
+		var user_name = $(this).prev().prev().text();
+			//this.previousElementSibling.previousElementSibling.innerHTML;
+		console.log(searchQuery);
+		console.log(user_name);
+		$.ajax({
+			url: "./includes/ajax.php?username="+ user_name + "&title="+searchQuery,
+			method: "GET",
+			success: function(res) {
+				$('#blogSection').html(res);
+			}
+		})
+	});
+	
+	
+	$('#blogSection a.date').click(function(e) {
+		e.preventDefault();
+//		console.log(this.text);
+		var searchQuery = $(this).children('.date_posted').text();
+//		console.log(searchQuery);
+		console.log(searchQuery);
+//		console.log(user_name);
+		$.ajax({
+			url: "./includes/ajax.php?date="+searchQuery,
+			method: "GET",
+			success: function(res) {
+				$('#blogSection').html(res);
+//				console.log(res);
+			}
+		});
+	});
+	
+	
+	
+	
+	$('.slide_text').slideUp(5000);
+	
+	// Click for more on blog posts
+	$.each($('.post'), function() {
+		var post = $(this).text();
+//		var postCopy = post;
+//		console.log(post.length);
+		if(post.length > 300 && !$('.post').hasClass('activeText')) {
+//			post = post.substr(0, 300) + "....(click for more)";
+			post = post.substr(0, 300) + ".... <a href='#' role='button' class='postLink'>(click for more)</a>";
+			//		console.log(post);
+			$(this).html(post);
+		}
+//		$(this).html("<a href='#' class='post'>"+post+"</a>");
+//		$(this).html(post);
+	});
+	
+//	$('#blogSection a.postLink').click(function(e) {
+//		console.log("Line 404");
+//		e.preventDefault();
+//	});
+	
+	$('#blogSection a.postLink').click(function(e) {
+//		console.log("Line 394");
+		e.preventDefault();
+//		var remove = $('p.post').hasClass('activeText');
+//		remove.removeClass('activeText');
+		
+		$.each($('.post'), function() {
+			console.log($(this));
+			if($(this).hasClass('activeLink')) {
+				$(this).removeClass('activeLink');
+			}
+			
+		})
+		
+		$(this).parent().addClass('activeText');
+//		var searchQuery = $(this).parent().prev().children('.title').text();
+//		var user_name = $(this).parent().prev().children('.name').text();
+		var blog_id = $(this).parent().next().children('.blog_id').val();
+		var post = $(this).parent();
+//		console.log(blog_id);
+			//this.previousElementSibling.previousElementSibling.innerHTML;
+//		console.log(searchQuery);
+//		console.log(user_name);
+//		console.log($(this).parent());
+		$.ajax({
+			//url: "./includes/ajax.php?username="+ user_name + "&title="+searchQuery,
+			url: "./includes/ajax.php?blog_id=" + blog_id,
+			method: "GET",
+			success: function(res) {
+//				$(this).parent().addClass('activeText');
+//				$('#blogSection').html(res);
+//				$(this).parent().html(res);
+//				$('.activeText').html(res);
+				post.html(res);
+				console.log(res);
+			}
+		})
+	});
 	
 });

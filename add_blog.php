@@ -64,13 +64,12 @@ include('includes/header.php');
 		<label for="blogTitle" class="input-group-addon"><strong>Title:</strong></label>
 		<input type="text" class="form-control input-lg" name="blogTitle" id="blogTitle" maxlength="150"> <br/>  <!--placeholder="Title"-->
 	</div>
-	<br/>
 	
-	<small class="text-danger topicError">* Please enter a blog topic <br/></small>
+	<small class="text-danger topicError">* Please enter a blog topic tag <br/></small>
 <!--	<small class="text-danger topicError">Please enter a blog topic <br/></small>-->
 	
 	<div class="form-group input-group">
-		<label for="blogTopic" class="input-group-addon"><strong>Topic:</strong></label>
+		<label for="blogTopic" class="input-group-addon"><strong>Tags:</strong></label>
 		<input type="text" class="form-control input-lg" name="blogTopic" id="blogTopic" maxlength="100"> <!--<br/>-->  <!--placeholder="Tags"-->
 	</div>
 	<!--<br/>-->
