@@ -410,7 +410,7 @@ $(document).ready(function() {
 		$(this).parent().addClass('activeText');
 //		var searchQuery = $(this).parent().prev().children('.title').text();
 //		var user_name = $(this).parent().prev().children('.name').text();
-		var blog_id = $(this).parent().next().children('.blog_id').val();
+		var blog_id = $(this).parent().parent().next().children('.blog_id').val();
 		var post = $(this).parent();
 //		console.log(blog_id);
 			//this.previousElementSibling.previousElementSibling.innerHTML;
