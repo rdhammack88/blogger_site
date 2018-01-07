@@ -1,22 +1,15 @@
 <?php
-
+/* Database Variables */
 $server 	= "localhost";
-$username 	= "######";
-$password 	= "######";
+$username 	= "Dustin";
+$password 	= "rusty";
 $db 		= "blogger";
 
-// create connection
+/* create connection */
 $conn = mysqli_connect( $server, $username, $password, $db );
 
-// check connection
+/* check connection */
 if( !$conn ) {
 	die( "Connection failed: " . mysqli_connect_error() ) ;
-} /*else {
-	echo "Connected to $db!<br/>";
-}*/
-
+}
 ?>
-
-<!--
-$users = "SELECT * FROM users";
-$blogs = "SELECT * FROM blog_posts";-->
