@@ -45,7 +45,9 @@ if( isset( $_POST['login'] ) ) {
 			$_SESSION['loggedInUser'] 	= $first_name;
 			
 			// redirect user to blogs page
-			header( "Location: blogs.php?alert=logged_in" );
+//			header( "Location: blogs.php?alert=logged_in" );
+			header( "Location: index.php?alert=logged_in" );
+			
 		} else { // hashed password didn't verify
 			
 			// error message
@@ -85,8 +87,14 @@ include('includes/header.php');
         <label for="login-password" class="sr-only">Password</label>
         <input type="password" class="form-control" id="login-password" placeholder="password" name="password">
     </div>
-    <button type="submit" class="btn btn-primary" name="login">Login</button>
+    <div class="form-group col-sm-4 col-sm-offset-4">
+    	<button type="submit" class="btn btn-primary col-xs-6 col-xs-offset-6" name="login">Login</button>
+	</div>
 </form>
+<div class="col-sm-5 col-sm-offset-4">
+	<br><br>
+	<p>Don't have an account? <a href="signup.php">Create one</a></p>
+</div>
 
 <?php
 include('includes/footer.php');

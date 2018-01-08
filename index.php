@@ -99,8 +99,17 @@ $avatar = 'userAvatarDefault.png';
 
 
 
+// check for query string
+if( isset( $_GET['alert'] ) ) {
+	// User logged in successfully
+	if( $_GET['alert'] == 'logged_in') {
+//		$alertMessage = "<div class='alert alert-success'>You are logged in! <a class='close' data-dismiss='alert'>&times;</a></div>";
+		$alertMessage = "<div class='alert alert-success'>Welcome " . $_SESSION['loggedInUser'] . "! <a class='close' data-dismiss='alert'>&times;</a></div>";
+	}
+}
 
 include('includes/header.php');
+echo $alertMessage; 
 ?>
 
 
@@ -117,13 +126,14 @@ include('includes/header.php');
 <main class="row">
 
 	<!-- aside>nav.blogTopics>ul>li*8>a[href=#] -->
-	<aside id="blogTopics" class="col-sm-3"><!--  col-md-3 -->
+	<aside id="blogTopics" class="col-md-3 hidden-sm"><!--  col-sm-3 -->
 		<nav>
 			<h4 class="text-center">Popular Topics</h4><!-- Most -->
 			<?php
 			
 			$query = "SELECT blog_category 
 			FROM blog_posts
+			WHERE public = 'public'
 			GROUP BY blog_category
 			HAVING COUNT(*) > 1";
 			//HAVING COUNT(*) >= 2 ";
@@ -167,7 +177,7 @@ include('includes/header.php');
 	</aside> <!-- End of Blog Topics Section -->
 	
 	<!-- Main Blog Article Content -->
-	<section id="blogSection" class="col-sm-8 col-sm-offset-1">
+	<section id="blogSection" class="col-sm-12 col-md-8 col-md-offset-1">
 		
 <!--		<small class="text-danger">Most Recent Blog Posts...</small>-->
 		
@@ -186,7 +196,10 @@ include('includes/header.php');
 //				   ORDER BY date_created DESC";
 		$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 				   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
-				   blog_posts.blog_category, blog_posts.id AS blog_id,  blog_posts.user_id, users.avatar, users.id,
+				   blog_posts.blog_category, blog_posts.id AS blog_id,
+				   blog_posts.user_id, blog_posts.likes,
+				   blog_posts.dislikes, blog_posts.total_comments,
+				   users.avatar, users.id,
 				   users.email, users.user_name
 				   FROM blog_posts
 				   LEFT JOIN users ON blog_posts.user_id = users.id
@@ -224,9 +237,23 @@ include('includes/header.php');
 //						   OR blog_post = '$search_query'
 //						   OR blog_category = '$search_query')
 //						   ORDER BY date_created DESC";
+		
+		
+//		SELECT blog_posts.blog_title, blog_posts.blog_post,
+//			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+//			   blog_posts.blog_category, blog_posts.id AS blog_id,
+//			   blog_posts.user_id, blog_posts.likes, blog_posts.dislikes,
+//			   blog_posts.total_comments, users.avatar, users.id,
+//			   users.email, users.user_name
+//			   FROM blog_posts
+//			   LEFT JOIN users ON blog_posts.user_id = users.id
+		
+		
 		$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 				   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
-				   blog_posts.blog_category, blog_posts.id AS blog_id,  blog_posts.user_id, users.avatar, users.id,
+				   blog_posts.blog_category, blog_posts.id AS blog_id,
+				   blog_posts.user_id, blog_posts.likes, blog_posts.dislikes,
+				   blog_posts.total_comments, users.avatar, users.id,
 				   users.email, users.user_name
 				   FROM blog_posts
 				   LEFT JOIN users ON blog_posts.user_id = users.id
@@ -266,7 +293,9 @@ include('includes/header.php');
 	
 	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
-			   blog_posts.blog_category, blog_posts.id AS blog_id,  blog_posts.user_id, users.avatar, users.id,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,
+			   blog_posts.user_id, blog_posts.likes, blog_posts.dislikes,
+			   blog_posts.total_comments, users.avatar, users.id,
 			   users.email, users.user_name
 			   FROM blog_posts
 			   LEFT JOIN users ON blog_posts.user_id = users.id

@@ -56,7 +56,7 @@ include('includes/header.php');
 
 <h3 class="text-center add_blog">Add your new blog!</h3>
 
-<form action="" class="col-sm-8 col-sm-offset-2" method="post">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" class="col-sm-8 col-sm-offset-2" method="post">
 	
 	<small class="text-danger titleError">* Please enter a title <br/></small>
 <!--	<small class="text-danger titleError">Please enter a title <br/></small>-->
