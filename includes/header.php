@@ -102,7 +102,7 @@
 			
 			<!-- Search Form -->
 			<!--<form class="col-sm-4 col-sm-offset-2 col-xs-12 searchForm" >-->
-			<form class="col-md-6 col-md-offset-3 searchForm" method="get" >
+			<form class="col-md-6 col-md-offset-3" id="searchForm" method="get" autocomplete="off">
 			<!-- action="includes/ajax.php?search=" -->
 				<!--<div class="form-group">-->
 					<label for="search" class="sr-only">Search site</label>
@@ -112,6 +112,7 @@
 							<button type="submit" class="btn btn-default" id="searchButton" name="searchButton"><span class="glyphicon glyphicon-search"></span></button>	<!--Go! col-sm-1 btn btn-success-->
 						</span>
 					</div> <!-- End of .input-group -->
+					<ul class="search-list list-group hidden"></ul>
 				<!--</div>-->
 			</form>
 		</div> <!-- End of Row -->
