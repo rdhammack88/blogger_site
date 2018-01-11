@@ -1,4 +1,3 @@
-
 <?php
 
 session_start();
@@ -16,18 +15,19 @@ if( isset( $_POST["newBlog"] ) ) {
 	$blog		= validateFormData( $_POST["blog"] );
 	
 	$user_id	= $_SESSION["user_id"];
+	$public		= $_POST["public"];
 	
-	if( !$_POST["public"] ) {
+	if( !$public ) {
 		$public = "public";
 	} else {
-		$public	= validateFormData( $_POST["public"] );
+		$public	= validateFormData( $public );
 	}
 	
 	if( $blog_title && $blog_topic && $blog ) {
 		// add blog to db
 		$query = "INSERT INTO blog_posts (id, user_id, blog_title,
-				  blog_category, public, favorite, blog_post, date_created)
-				  VALUES (NULL, '$user_id', '$blog_title', '$blog_topic', '$public', NULL, '$blog', CURRENT_TIMESTAMP)";
+				  blog_category, public, favorite, likes, dislikes, total_comments, blog_post, date_created, date_updated)
+				  VALUES (NULL, '$user_id', '$blog_title', '$blog_topic', '$public', NULL, NULL, NULL, NULL, '$blog', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
 		
 		//if(!mysqli_query( $conn, $query ) ) { printf(mysqli_error($conn)); }
 		

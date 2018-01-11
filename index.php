@@ -117,10 +117,36 @@ echo $alertMessage;
 
 <!--<div class="row"></div>-->
 
+
+<!-- Modal -->
+<div id="deleteBlogModal" class="modal fade" role="dialog">
+  <form class="modal-dialog" method="post">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirm deletion of blog post</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this blog post? <strong class="text-danger">This cannot be undone!</strong></p>
+        <input type='number' value='<?php //echo $_SESSION["user_id"] ?>' id="blogID" name='blogid' class='hidden'><!-- hidden -->
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default" name="delete">Confirm Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+
+
 <br/><br/>
 
 <div class="row text-right"> <!--  js 373  -->
-	<small class="text-danger slide_text">Most Recent Blog Posts...</small>
+	<small class="text-danger fade-text">Most Recent Blog Posts...</small>
 </div>
 
 <main class="row">
@@ -197,7 +223,7 @@ echo $alertMessage;
 		$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 				   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
 				   blog_posts.blog_category, blog_posts.id AS blog_id,
-				   blog_posts.user_id, blog_posts.likes,
+				   blog_posts.user_id, blog_posts.favorite, blog_posts.likes,
 				   blog_posts.dislikes, blog_posts.total_comments,
 				   users.avatar, users.id,
 				   users.email, users.user_name
@@ -252,7 +278,7 @@ echo $alertMessage;
 		$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 				   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
 				   blog_posts.blog_category, blog_posts.id AS blog_id,
-				   blog_posts.user_id, blog_posts.likes, blog_posts.dislikes,
+				   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
 				   blog_posts.total_comments, users.avatar, users.id,
 				   users.email, users.user_name
 				   FROM blog_posts
@@ -294,7 +320,7 @@ echo $alertMessage;
 	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
 			   blog_posts.blog_category, blog_posts.id AS blog_id,
-			   blog_posts.user_id, blog_posts.likes, blog_posts.dislikes,
+			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
 			   blog_posts.total_comments, users.avatar, users.id,
 			   users.email, users.user_name
 			   FROM blog_posts

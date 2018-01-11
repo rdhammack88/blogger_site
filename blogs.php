@@ -16,6 +16,10 @@ if( !$_SESSION['loggedInUser'] ) {
 // connect to the database
 include('includes/connection.php');
 
+// Incluce Functions
+include('includes/functions.php');
+
+
 $user_id = $_SESSION['user_id'];
 //echo $user_id;
 
@@ -23,54 +27,56 @@ $user_id = $_SESSION['user_id'];
 //	header("Location: add_blog.php");
 //}
 
-/* Edit user Blog */
-if( isset( $_POST['edit'] ) ) {
-	$blog_id = $_POST['blog_id'];
-	header("Location: edit_blog.php?id=$blog_id");
-}
 
-/* Delete user Blog */
-if( isset( $_POST['delete'] ) ) {
-	$blog_id = $_POST['blogid'];
-	
-	$query 	= "DELETE
-			   FROM blog_posts
-			   WHERE id='$blog_id'";
-	$result = mysqli_query( $conn, $query );
-	
-	echo "Post $blog_id has been deleted!";
-}
 
-/* Favorite user Blog */
-if( isset( $_POST['favorite'] ) ) {
-	$blog_id = $_POST['blog_id'];
-	$query 	= "SELECT favorite 
-			  FROM blog_posts
-			  WHERE id='$blog_id'";
-
-	$result = mysqli_query( $conn, $query );
-	
-	if( $result ) {
-		$row	 	= mysqli_fetch_assoc($result);
-		$favorite 	= $row['favorite'];
-		
-		if( !$favorite ) {
-			$favorite = 1;
-		} else {
-			$favorite = 0;
-		}
-		// update blog favorite 
-		$query = "UPDATE blog_posts 
-				  SET favorite = '$favorite'
-				  WHERE id = '$blog_id'";
-		$result = mysqli_query( $conn, $query );
-
-		if(!$result ) { printf(mysqli_error($conn)); }
-
-//		echo "Post $blog_id has been favorited!";
-	}
-}
-
+///* Edit user Blog */
+//if( isset( $_POST['edit'] ) ) {
+//	$blog_id = $_POST['blog_id'];
+//	header("Location: edit_blog.php?id=$blog_id");
+//}
+//
+///* Delete user Blog */
+//if( isset( $_POST['delete'] ) ) {
+//	$blog_id = $_POST['blogid'];
+//	
+//	$query 	= "DELETE
+//			   FROM blog_posts
+//			   WHERE id='$blog_id'";
+//	$result = mysqli_query( $conn, $query );
+//	
+//	echo "Post $blog_id has been deleted!";
+//}
+//
+///* Favorite user Blog */
+//if( isset( $_POST['favorite'] ) ) {
+//	$blog_id = $_POST['blog_id'];
+//	$query 	= "SELECT favorite 
+//			  FROM blog_posts
+//			  WHERE id='$blog_id'";
+//
+//	$result = mysqli_query( $conn, $query );
+//	
+//	if( $result ) {
+//		$row	 	= mysqli_fetch_assoc($result);
+//		$favorite 	= $row['favorite'];
+//		
+//		if( !$favorite ) {
+//			$favorite = 1;
+//		} else {
+//			$favorite = 0;
+//		}
+//		// update blog favorite 
+//		$query = "UPDATE blog_posts 
+//				  SET favorite = '$favorite'
+//				  WHERE id = '$blog_id'";
+//		$result = mysqli_query( $conn, $query );
+//
+//		if(!$result ) { printf(mysqli_error($conn)); }
+//
+////		echo "Post $blog_id has been favorited!";
+//	}
+//}
+//
 
 
 
@@ -96,7 +102,10 @@ if( isset( $_GET['alert'] ) ) {
 }
 
 include('includes/header.php');
-echo $alertMessage; 
+echo $alertMessage;
+//echo $_SESSION['loggedInUser'];
+//echo "<br/>";
+//echo $_SESSION['user_id'];
 ?>
 
 <div class="row text-right">
@@ -134,83 +143,137 @@ echo $alertMessage;
 
 <main class="row">
 	<?php
-	$query 	= "SELECT blog_post
-			  FROM blog_posts
-			  WHERE user_id='$user_id'";
-	$result = mysqli_query( $conn, $query );
+	// Original Aside for Topics
+//	$query 	= "SELECT blog_post
+//			  FROM blog_posts
+//			  WHERE user_id='$user_id'";
+//	$result = mysqli_query( $conn, $query );
+//	
+//	if(!$result) { printf(mysqli_error($conn)); }
+//	
+//	if( $result ) {
+//		$query = "SELECT blog_category 
+//				FROM blog_posts
+//				WHERE user_id='$user_id'
+//				GROUP BY blog_category
+//				HAVING COUNT(*) >= 2";
+//
+//		$result = mysqli_query( $conn, $query );
+//		
+////echo "This is line " . __LINE__ . " in file " . __FILE__;
+//		
+//		if( $result ) {
+//			echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
+//				  <nav>
+//				  <h4 class="text-center">Your most written about topics</h4>';
+//
+//
+//			if(!$result) { printf(mysqli_error($conn)); }
+//
+//			if( mysqli_num_rows( $result ) > 0 ) {
+//				// we have data
+//				// output the data
+//				echo "<ul>";
+//				while( $row = mysqli_fetch_assoc($result) ) {
+//					
+//
+//					echo "<li><a>" . $row['blog_category'] . "</a>";
+//				
+//				}
+//				echo "</ul>";			
+//	//			mysqli_free_result( $result );
+//			}
+//
+////echo "This is line " . __LINE__ . " in file " . __FILE__;
+//			
+//			echo '</nav></aside>';
+//		}
+//		if( !$result ) {
+//			$query = "SELECT blog_category 
+//			FROM blog_posts
+//			WHERE user_id='$user_id'
+//			GROUP BY blog_category
+//			HAVING COUNT(*) >= 1";
+//
+//			$result = mysqli_query( $conn, $query );
+//			echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
+//				  <nav>
+//				  <h4 class="text-center">Your most written about topics</h4>';
+//
+////echo "This is line " . __LINE__ . " in file " . __FILE__;
+//			if(!$result) { printf(mysqli_error($conn)); }
+//
+//			if( mysqli_num_rows( $result ) > 0 ) {
+//				// we have data
+//				// output the data
+//
+//				while( $row = mysqli_fetch_assoc($result) ) {
+//					echo "<ul>";
+//
+//					echo "<li><a>" . $row['blog_category'] . "</a></p>";
+//					echo "</ul>";			
+//				}
+//
+//	//			mysqli_free_result( $result );
+//	
+//			}
+//		}
+//	}
+	?>
 	
-	if(!$result) { printf(mysqli_error($conn)); }
-	
-	if( $result ) {
-		$query = "SELECT blog_category 
-				FROM blog_posts
-				WHERE user_id='$user_id'
-				GROUP BY blog_category
-				HAVING COUNT(*) >= 2";
-
-		$result = mysqli_query( $conn, $query );
-		
-//echo "This is line " . __LINE__ . " in file " . __FILE__;
-		
-		if( $result ) {
-			echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
-				  <nav>
-				  <h4 class="text-center">Your most written about topics</h4>';
-
-
-			if(!$result) { printf(mysqli_error($conn)); }
-
-			if( mysqli_num_rows( $result ) > 0 ) {
-				// we have data
-				// output the data
-				echo "<ul>";
-				while( $row = mysqli_fetch_assoc($result) ) {
-					
-
-					echo "<li><a>" . $row['blog_category'] . "</a>";
-				
-				}
-				echo "</ul>";			
-	//			mysqli_free_result( $result );
-			}
-
-//echo "This is line " . __LINE__ . " in file " . __FILE__;
+		<!-- aside>nav.blogTopics>ul>li*8>a[href=#] -->
+		<aside id="blogTopics" class="col-md-3 hidden-sm"><!--  col-sm-3 -->
+		<nav>
+			<h4 class="text-center">Your most written topics</h4><!-- Most -->
+			<?php
 			
-			echo '</nav></aside>';
-		}
-		if( !$result ) {
 			$query = "SELECT blog_category 
 			FROM blog_posts
 			WHERE user_id='$user_id'
 			GROUP BY blog_category
 			HAVING COUNT(*) >= 1";
-
+			//HAVING COUNT(*) >= 2 ";
 			$result = mysqli_query( $conn, $query );
-			echo '<aside id="blogTopics" class="col-sm-3 col-md-3">
-				  <nav>
-				  <h4 class="text-center">Your most written about topics</h4>';
+			//mysqli_close( $conn );
 
-//echo "This is line " . __LINE__ . " in file " . __FILE__;
+			
+			/*if ($result = mysqli_query($conn, $query)) { printf("Select returned %d rows.\n", mysqli_num_rows($result));}*/
+			
+			
 			if(!$result) { printf(mysqli_error($conn)); }
-
+			
+			
+			
+			
+			//if( mysqli_multi_query( $conn, $query) ) {
 			if( mysqli_num_rows( $result ) > 0 ) {
-				// we have data
-				// output the data
+				//while ($row = mysqli_fetch_assoc($result) ) {
+//				do {
+//					if( $result = mysqli_store_result( $conn ) ) {
 
+						// we have data
+						// output the data
+				echo "<ul>";
 				while( $row = mysqli_fetch_assoc($result) ) {
-					echo "<ul>";
+					//$date_created = $row['date_created']; /// $row['date_created']
+					//$date = date_format($date_created, 'd-m-Y');
+					
 
-					echo "<li><a>" . $row['blog_category'] . "</a></p>";
-					echo "</ul>";			
+					echo "<li><a href='index.php?topic=" . $row['blog_category'] . "'>" . $row['blog_category'] . "</a></li>";
+								
 				}
-
-	//			mysqli_free_result( $result );
-	
+				echo "</ul>";
+				mysqli_free_result( $result );
 			}
-		}
-	}
-	?>
+			
+				//}
+				
+			?>
+		</nav>
+	</aside> <!-- End of Blog Topics Section -->
 	
+	<!-- Main Blog Article Content -->
+	<section id="blogSection" class="col-sm-12 col-md-8 col-md-offset-1">
 <?php
 		
 		
@@ -230,61 +293,77 @@ echo $alertMessage;
 -->
     <!-- Blog Section for user blogss -->
     <?php
-	// query & results
-	$query = "SELECT *
-			  FROM blog_posts
+	// query & results TESTER
+	$query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
+		      date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+		      blog_posts.blog_category, blog_posts.id AS blog_id,
+		      blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+		      blog_posts.total_comments, users.avatar, users.id,
+		      users.email, users.user_name
+		      FROM blog_posts
+		      LEFT JOIN users ON blog_posts.user_id = users.id
 			  WHERE user_id='$user_id'
-			  ORDER BY date_created DESC"; 
-	$result = mysqli_query( $conn, $query );
+			  ORDER BY blog_posts.date_created DESC"; 
 	
-	if( mysqli_num_rows( $result ) > 0 ) {
-		
-		echo "<!-- Main Blog Article Content -->
-		<section id='blogSection' class='col-sm-8 col-sm-offset-1'>
-		<small class='text-danger no-blogs'>Most Recent Blog Posts...</small>";
-		
-		// we have data
-		// output the data
-		
-		while( $row = mysqli_fetch_assoc($result) ) {
-			$date_created = date_create($row['date_created']); /// $row['date_created']
-			$date = date_format($date_created, 'm/d/Y');
-			//$blog_id = $row['id'];
-			
-//			$favorite = $row['favorite'];
-//			echo $favorite;
-			
-			echo "<article>";//$row['date_created']
-			
-			echo "<div class='blog_title'><h2>" . $row['blog_title'] . "</h2>
-							
-			<a><p class='date_posted'>". $date . "</p></a></div>";
-			echo "<p>". $row['blog_post'] . "</p>";
-			
-			echo "<form class='blog_footer' action='";
-				
-			echo htmlspecialchars( $_SERVER['PHP_SELF'] ) . "' method='POST'>	
-			<span class='sr-only'>Edit this blog</span><button type='submit' class='glyphicon glyphicon-pencil btn btn-lg' name='edit'></button>";
-			
-			echo "<span class='sr-only'>Delete this blog</span><button type='button' class='glyphicon glyphicon-trash btn btn-lg' id='" . $row['id'] . "'  name='deletePost' data-toggle='modal' data-target='#deleteBlogModal'></button>";
-			
-			if($row['favorite']) {
-				echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg favorite' id='favorite' name='favorite'></button>";
-			} else {
-				echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg' id='favorite' name='favorite'></button>";
-			}
-						
-			echo "<input type='number' value='" . $row['id'] . "' name='blog_id' class='hidden'>";
-			
-			echo "</form></article>";			
-				//$row['date_created']
-		}
-	} else {
-		echo "<div class='container'><p class='alert alert-danger col-md-8 col-md-offset-1'>You have no blog posts!</p></div>";
-	}
+	queryCaller($conn, $query);
 	
-	// close the connection
-	mysqli_close( $conn );
+	
+//	$query = "SELECT *
+//			  FROM blog_posts
+//			  WHERE user_id='$user_id'
+//			  ORDER BY date_created DESC"; 
+//	$result = mysqli_query( $conn, $query );
+//	
+//	if( mysqli_num_rows( $result ) > 0 ) {
+//		
+//		echo "<!-- Main Blog Article Content -->
+//		<section id='blogSection' class='col-sm-8 col-sm-offset-1'>
+//		<small class='text-danger no-blogs'>Most Recent Blog Posts...</small>";
+//		
+//		// we have data
+//		// output the data
+//		
+//		while( $row = mysqli_fetch_assoc($result) ) {
+//			$date_created = date_create($row['date_created']); /// $row['date_created']
+//			$date = date_format($date_created, 'm/d/Y');
+//			//$blog_id = $row['id'];
+//			
+////			$favorite = $row['favorite'];
+////			echo $favorite;
+//			
+//			echo "<article>";//$row['date_created']
+//			
+//			echo "<div class='blog_title'><h2>" . $row['blog_title'] . "</h2>
+//							
+//			<a><p class='date_posted'>". $date . "</p></a></div>";
+//			echo "<p>". $row['blog_post'] . "</p>";
+//			
+//			echo "<form class='blog_footer' action='";
+//				
+//			echo htmlspecialchars( $_SERVER['PHP_SELF'] ) . "' method='POST'>	
+//			<span class='sr-only'>Edit this blog</span><button type='submit' class='glyphicon glyphicon-pencil btn btn-lg' name='edit'></button>";
+//			
+//			echo "<span class='sr-only'>Delete this blog</span><button type='button' class='glyphicon glyphicon-trash btn btn-lg' id='" . $row['id'] . "'  name='deletePost' data-toggle='modal' data-target='#deleteBlogModal'></button>";
+//			
+//			if($row['favorite']) {
+//				echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg favorite' id='favorite' name='favorite'></button>";
+//			} else {
+//				echo "<span class='sr-only'>Favorite this blog</span><button type='submit' class='glyphicon glyphicon-bookmark btn btn-lg' id='favorite' name='favorite'></button>";
+//			}
+//						
+//			echo "<input type='number' value='" . $row['id'] . "' name='blog_id' class='hidden'>";
+//			
+//			echo "</form></article>";			
+//				//$row['date_created']
+//		}
+//	} else {
+//		echo "<div class='container'><p class='alert alert-danger col-md-8 col-md-offset-1'>You have no blog posts!</p></div>";
+//	}
+//	
+//	
+//	
+//	// close the connection
+//	mysqli_close( $conn );
 //	mysqli_close($conn);
 	
 //include('includes/header.php');
@@ -302,7 +381,7 @@ echo $alertMessage;
 
 
 <!--<a href='edit_blog.php'></a>-->
-
+	</section>
 
 
 

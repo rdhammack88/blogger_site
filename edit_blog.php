@@ -49,7 +49,7 @@ if( isset( $_POST['save'] ) ) {
 				  blog_category = '$blog_topic',
 				  public = '$public',
 				  blog_post = '$blog',
-				  date_created = CURRENT_TIMESTAMP
+				  date_updated = CURRENT_TIMESTAMP
 			  WHERE id = '$blog_id'";
 	$result = mysqli_query( $conn, $query );
 

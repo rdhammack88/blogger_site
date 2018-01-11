@@ -91,9 +91,9 @@ include('includes/header.php');
     	<button type="submit" class="btn btn-primary col-xs-6 col-xs-offset-6" name="login">Login</button>
 	</div>
 </form>
-<div class="col-sm-5 col-sm-offset-4">
+<div class="col-sm-4 col-sm-offset-4">
 	<br><br>
-	<p>Don't have an account? <a href="signup.php">Create one</a></p>
+	<p class="text-center">Don't have an account? <a href="signup.php">Create one</a></p>
 </div>
 
 <?php
