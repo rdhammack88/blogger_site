@@ -74,14 +74,19 @@
                     <li><a href="blogs.php">My Blogs</a></li>
 -->
                 </ul>
-<p class="navbar-text">Welcome, <?php echo $_SESSION['loggedInUser'];?></p> 
+				<p class="navbar-text">Welcome, <?php echo $_SESSION['loggedInUser'];?></p> 
                 <ul class="nav navbar-nav navbar-right">
 <!--                    <p class="navbar-text">Welcome, <?php //echo $_SESSION['loggedInUser'];?></p> -->
                     <li><a href="index.php">Home</a></li>
                     <li><a href="blogs.php">My Blogs</a></li>
 
-                    <li><a href="user_account.php">Account</a></li>
-                    <li><a href="logout.php">Log out</a></li>
+					<li class="account"><a role='listitem'>Account</a>
+                    	<ul class='hidden account-dropdown'>
+                    		<li><a href="user_account.php">Edit Profile</li></a>
+                    		<li>Manage Blogs</li>
+                    		<li><a href="logout.php">Log out</a></li>
+                    	</ul>
+                    </li>
                 </ul>
                 <?php
                 } else { /* If user is not logged in */
@@ -102,7 +107,7 @@
 			
 			<!-- Search Form -->
 			<!--<form class="col-sm-4 col-sm-offset-2 col-xs-12 searchForm" >-->
-			<form class="col-md-6 col-md-offset-3" id="searchForm" method="get" autocomplete="off">
+			<form class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4" id="searchForm" method="get" autocomplete="off">
 			<!-- action="includes/ajax.php?search=" -->
 				<!--<div class="form-group">-->
 					<label for="search" class="sr-only">Search site</label>
@@ -118,5 +123,5 @@
 		</div> <!-- End of Row -->
     </nav> <!-- End of Navigation Menu -->
 	
-	<div class="container">
+	<div class="container body-container clear-fix">
 	<br/>
