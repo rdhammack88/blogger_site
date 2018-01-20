@@ -1,4 +1,4 @@
-<?php define( "TITLE", "Login" ); ?>
+<?php $TITLE = "Login"; ?>
 <?php
 session_start();
 
@@ -74,18 +74,18 @@ include('includes/header.php');
 
 ?>
 
-<p class="lead text-center">Log in to your account.</p>
+<p class="lead text-center">Log in to your account</p>
 
 <?php echo $loginError; ?>
 
 <form class="" action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">
     <div class="form-group col-sm-4 col-sm-offset-4">
         <label for="login-email" class="sr-only">Email</label>
-        <input type="text" class="form-control" id="login-email" placeholder="email" name="email" value="<?php //echo $formEmail; ?>">
+        <input type="text" class="form-control" id="login-email" placeholder="email" name="email" value="<?php //echo $formEmail; ?>" autocomplete="username" autofocus>
     </div>
     <div class="form-group col-sm-4 col-sm-offset-4">
         <label for="login-password" class="sr-only">Password</label>
-        <input type="password" class="form-control" id="login-password" placeholder="password" name="password">
+        <input type="password" class="form-control" id="login-password" placeholder="password" name="password" autocomplete="current-password">
     </div>
     <div class="form-group col-sm-4 col-sm-offset-4">
     	<button type="submit" class="btn btn-primary col-xs-6 col-xs-offset-6" name="login">Login</button>
@@ -93,7 +93,12 @@ include('includes/header.php');
 </form>
 <div class="col-sm-4 col-sm-offset-4">
 	<br><br>
-	<p class="text-center">Don't have an account? <a href="signup.php">Create one</a></p>
+	<div class="row">
+		<p class="text-center">Don't have an account? <a href="signup.php">Create one</a></p>
+	</div>
+	<div class="row">
+		<p class="text-center">Forgot <a href="account_recovery.php">username/password?</a></p>
+	</div>
 </div>
 
 <?php

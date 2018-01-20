@@ -1,9 +1,11 @@
 <?php
+$TITLE = "Edit User Account";
 session_start();
 $user_name = $_SESSION['loggedInUser'];
 
 include('includes/functions.php');
 include('includes/connection.php');
+include("includes/header.php");
 $user_id = $_SESSION['user_id'];
 $uploadError = '';
 //echo $_SESSION['user_id'];
@@ -61,7 +63,7 @@ if( isset( $_POST['save'] ) ) {
 //	$avatar		= validateFormData( $_POST['avatar'] );
 	$bio		= validateFormData( $_POST['bio'] );
 	
-	//if( isset( $_POST['avatar'] ) ) {
+//	if( isset( $_POST['avatar'] ) ) {
 		include('image_upload.php');
 		// CHECK TO VERIFY UPLOADED FILE HAS PASSED ALL TESTS
 		if( $uploadPass == 0 ) {
@@ -82,7 +84,7 @@ if( isset( $_POST['save'] ) ) {
 				echo $uploadError;
 			}
 		}
-	//}
+//	}
 	
 //	if( isset( $_POST['newpassword'] ) ) {
 //		
@@ -116,9 +118,9 @@ if( isset( $_POST['save'] ) ) {
 	
 	if(!$result ) { printf(mysqli_error($conn)); }
 	
-	if( $result && $uploadPass === 1 ){
+	if( $result && (isset($uploadPass) && $uploadPass === 1 )) {
 		//echo $user_avatar;
-		header("Location: blogs.php");
+//		header("Location: blogs.php");
 	}
 }
 
@@ -136,7 +138,6 @@ if( isset( $_POST["delete"] ) ) {
 }
 
 mysqli_close( $conn );
-include("includes/header.php");
 ?>
 
 
@@ -194,10 +195,12 @@ include("includes/header.php");
 <form action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" class="col-sm-8 col-sm-offset-2" method="post" enctype="multipart/form-data">
 
 	<div class="form-group input-group">
-		<img src="images/user_profile_images/<?php echo $avatar; ?>" alt="User profile avatar" id="userAvatar"> <br/><br/>
+		<img src="images/user_profile_images/<?php echo $avatar; ?>" alt="User profile avatar" id="userAvatar" class="user_avatar_preview"> <br/><br/>
 		<label for="avatar">Bio picture:</label>
-		<input type="file" name="avatar"> <br/>
-		<p class="text-danger"><?php echo $uploadError; ?> </p> <br/>
+		<input type="file" name="avatar">
+		<p class="text-danger"><?php echo $uploadError; ?> </p>
+		<small class="text-danger imageTypeError hidden"> Please only use image file types ('jpg', 'jpeg', 'png', 'gif).</small>
+		<small class="text-danger imageSizeError hidden"> File size too large. (Max 5Mb)</small> <br/>
 		<!--<button type="submit" name="avatarUpload" class="btn btn-info btn-sm">Upload Avatar</button>-->
 	</div>
 	

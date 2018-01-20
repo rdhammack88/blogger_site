@@ -1,4 +1,4 @@
-<?php define( "TITLE", "User blogs" ); ?>
+<?php $TITLE = "User blogs"; ?>
 <?php
 
 session_start();
@@ -108,19 +108,22 @@ echo $alertMessage;
 //echo $_SESSION['user_id'];
 ?>
 
+<!--
 <div class="row text-right">
 		<span class="sr-only">Add new blog</span><a href="add_blog.php" class="glyphicon glyphicon-plus btn btn-primary add-btn"> New</a>
 </div>
+-->
 
 <br/>
 
 
 
-<!-- Modal -->
+<!--
+ Modal 
 <div id="deleteBlogModal" class="modal fade" role="dialog">
-  <form class="modal-dialog" method="post">
+  <form class="modal-dialog" method="post" action="includes/ajax.php">
 
-    <!-- Modal content-->
+     Modal content
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -128,7 +131,7 @@ echo $alertMessage;
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete this blog post? <strong class="text-danger">This cannot be undone!</strong></p>
-        <input type='number' value='<?php //echo $_SESSION["user_id"] ?>' id="blogID" name='blogid' class='hidden'><!-- hidden -->
+        <input type='number' value='' id="blogID" name='blogid' class='hidden'>
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default" name="delete">Confirm Delete</button>
@@ -138,10 +141,11 @@ echo $alertMessage;
 
   </form>
 </div>
+-->
 
 
 
-<main class="row">
+<!--<main class="row">-->
 	<?php
 	// Original Aside for Topics
 //	$query 	= "SELECT blog_post
@@ -220,69 +224,24 @@ echo $alertMessage;
 //		}
 //	}
 	?>
+<?php
 	
-		<!-- aside>nav.blogTopics>ul>li*8>a[href=#] -->
-		<aside id="blogTopics" class="col-md-3 hidden-sm"><!--  col-sm-3 -->
-		<nav>
-			<h4 class="text-center">Your most written topics</h4><!-- Most -->
-			<?php
-			
-			$query = "SELECT blog_category 
-			FROM blog_posts
-			WHERE user_id='$user_id'
-			GROUP BY blog_category
-			HAVING COUNT(*) >= 1";
-			//HAVING COUNT(*) >= 2 ";
-			$result = mysqli_query( $conn, $query );
-			//mysqli_close( $conn );
+//	$query = "SELECT blog_category 
+//			FROM blog_posts
+//			WHERE user_id='$user_id'
+//			GROUP BY blog_category
+//			HAVING COUNT(*) >= 1";
+	sidebarCaller($conn);	
+echo '<section id="blogSection" class="col-sm-12 col-md-8 col-md-offset-1">';
+?>
 
-			
-			/*if ($result = mysqli_query($conn, $query)) { printf("Select returned %d rows.\n", mysqli_num_rows($result));}*/
-			
-			
-			if(!$result) { printf(mysqli_error($conn)); }
-			
-			
-			
-			
-			//if( mysqli_multi_query( $conn, $query) ) {
-			if( mysqli_num_rows( $result ) > 0 ) {
-				//while ($row = mysqli_fetch_assoc($result) ) {
-//				do {
-//					if( $result = mysqli_store_result( $conn ) ) {
-
-						// we have data
-						// output the data
-				echo "<ul>";
-				while( $row = mysqli_fetch_assoc($result) ) {
-					//$date_created = $row['date_created']; /// $row['date_created']
-					//$date = date_format($date_created, 'd-m-Y');
-					
-
-					echo "<li><a href='index.php?topic=" . $row['blog_category'] . "'>" . $row['blog_category'] . "</a></li>";
-								
-				}
-				echo "</ul>";
-				mysqli_free_result( $result );
-			}
-			
-				//}
-				
-			?>
-		</nav>
-	</aside> <!-- End of Blog Topics Section -->
+	<!--BLOG TOPICS ASIDE BAR FULL CODE HERE-->
+		
 	
 	<!-- Main Blog Article Content -->
-	<section id="blogSection" class="col-sm-12 col-md-8 col-md-offset-1">
-<?php
-		
-		
-//if( isset( $_POST['addblog'] ) ) {
-//	header('Location: add_blog.php');
-//}
+<!--	<section id="blogSection" class="col-sm-12 col-md-8 col-md-offset-1">-->
 
-?>
-	
+		
 		
 <!--
 			,
@@ -367,6 +326,8 @@ echo $alertMessage;
 //	mysqli_close($conn);
 	
 //include('includes/header.php');
+
+echo '</section></main>';
 	?>
     
     <!--<tr>
@@ -381,8 +342,8 @@ echo $alertMessage;
 
 
 <!--<a href='edit_blog.php'></a>-->
-	</section>
-
+<!--	</section>-->
+<!--</main>-->
 
 
 

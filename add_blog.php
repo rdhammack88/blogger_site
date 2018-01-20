@@ -1,5 +1,5 @@
 <?php
-
+$TITLE = "Add Blog"; 
 session_start();
 
 include('includes/functions.php');
@@ -31,7 +31,7 @@ if( isset( $_POST["newBlog"] ) ) {
 		
 		//if(!mysqli_query( $conn, $query ) ) { printf(mysqli_error($conn)); }
 		
-		if( mysqli_query( $conn, $query ) ) {
+		if($result = mysqli_query( $conn, $query ) ) {
 			header( "Location: blogs.php" );
 		}		
 	}
