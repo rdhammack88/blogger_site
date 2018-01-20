@@ -30,7 +30,7 @@
 
 	<!--<link rel="shortcut icon" href="favicon.ico">-->
 	
-	<title>Blogger.com - <?php echo TITLE; ?></title>
+	<title>Blogger.com - <?php echo $TITLE; ?></title>
 	<!--<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>-->
 	<!--<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">-->
 	<link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Indie+Flower|Nosifer|Shadows+Into+Light" rel="stylesheet">
@@ -46,13 +46,13 @@
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 </head>
-<body>
+<body data-offset-top="80px">
 	<!-- Navigation Bar -->
 	<nav class="navbar navbar-default ">
         <div class="container">
 			<!-- Navbar Header -->
             <div class="navbar-header">
-            	<a class="navbar-brand" href="index.php"><strong>BLOGGER</strong>.com</a>
+            	<a class="navbar-brand homeLink" href="index.php"><strong>BLOGGER</strong>.com</a>
                
 				<!-- Mobile Devices Navbar Hamburger Icon -->
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
@@ -68,31 +68,43 @@
 				/* If user is logged in, display user name */
                 if( isset( $_SESSION['loggedInUser'] ) ) { // if user is logged in
                 ?>
-                <ul class="nav navbar-nav">
-<!--
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="blogs.php">My Blogs</a></li>
--->
-                </ul>
-				<p class="navbar-text">Welcome, <?php echo $_SESSION['loggedInUser'];?></p> 
+				<p class="navbar-text">Welcome, <?php echo ucfirst($_SESSION['loggedInUser']);?></p> 
                 <ul class="nav navbar-nav navbar-right">
 <!--                    <p class="navbar-text">Welcome, <?php //echo $_SESSION['loggedInUser'];?></p> -->
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="blogs.php">My Blogs</a></li>
+                    <li><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
+                    <li><a href="blogs.php" class="blogsLink">My Blogs</a></li>
 
 					<li class="account"><a role='listitem'>Account</a>
                     	<ul class='hidden account-dropdown'>
+<!--
                     		<li><a href="user_account.php">Edit Profile</li></a>
-                    		<li>Manage Blogs</li>
+                    		<li><a href="blog_manager.php">Manage Blogs</a></li>
                     		<li><a href="logout.php">Log out</a></li>
+-->
+                   			<a href="blog_manager.php"><li>Manage Blogs</li></a>
+							<a href="user_account.php"><li>Edit Profile</li></a>
+							<a href="logout.php"><li>Log out</li></a>
                     	</ul>
                     </li>
+                    
+<!--
+                    <a href="index.php" class="homeLink"><li>Home</li></a>
+					<a href="blogs.php" class="blogsLink"><li>My Blogs</li></a>
+
+					<li class="account"><a role='listitem'>Account</a>
+                    	<ul class='hidden account-dropdown'>
+                    		<a href="user_account.php"><li>Edit Profile</li></a>
+							<a href="blog_manager.php"><li>Manage Blogs</li></a>
+							<a href="logout.php"><li>Log out</li></a>
+                    	</ul>
+                    </li>
+-->
                 </ul>
                 <?php
                 } else { /* If user is not logged in */
                 ?>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="index.php">Home</a></li>
+					<li><a href="index.php"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
 					<li><a href="login.php">Log In</a></li>
 					<li><a href="signup.php">Sign Up</a></li>
                 </ul>
@@ -107,12 +119,12 @@
 			
 			<!-- Search Form -->
 			<!--<form class="col-sm-4 col-sm-offset-2 col-xs-12 searchForm" >-->
-			<form class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4" id="searchForm" method="get" autocomplete="off">
+			<form class="col-sm-6 col-sm-offset-3 col-lg-4 col-lg-offset-4" id="searchForm" method="get" autocomplete="off">
 			<!-- action="includes/ajax.php?search=" -->
 				<!--<div class="form-group">-->
-					<label for="search" class="sr-only">Search site</label>
+					<label for="search" class="sr-only">Search site by blog title, blog category, blog post, username, or user email</label>
 					<div class="input-group">
-						<input type="search" name="search" id="search" class="form-control" placeholder="Search Site">
+						<input type="search" name="search" id="search" class="form-control" placeholder="Search...">
 						<span class="input-group-btn">	<!--input-sm col-sm-6 col-sm-offset-4 -->
 							<button type="submit" class="btn btn-default" id="searchButton" name="searchButton"><span class="glyphicon glyphicon-search"></span></button>	<!--Go! col-sm-1 btn btn-success-->
 						</span>
@@ -124,4 +136,3 @@
     </nav> <!-- End of Navigation Menu -->
 	
 	<div class="container body-container clear-fix">
-	<br/>

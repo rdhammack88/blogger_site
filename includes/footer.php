@@ -2,7 +2,7 @@
 
 <!-- Footer -->
 <footer class="text-center col-sm-12"> <!--</footer> navbar-fixed-bottom navbar-inverse">-->
-	<hr>
+<!--	<hr>-->
 	<small>Created with &hearts; by <a href="http://www.dustinhammack.com/">Dustin Hammack</a>!</small>  
 
 </footer>

@@ -44,6 +44,43 @@ $avatar = 'userAvatarDefault.png';
 	}*/
 //}
 
+if(isset($_GET['user_blogs'])) {
+	$user_id = $_SESSION['user_id'];
+	$_SERVER['SCRIPT_NAME'] = '/fullSiteProjects/blogger/blogs.php';
+	sidebarCaller($conn);
+	$query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
+		      date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+		      blog_posts.blog_category, blog_posts.id AS blog_id,
+		      blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+		      blog_posts.total_comments, users.avatar, users.id,
+		      users.email, users.user_name
+		      FROM blog_posts
+		      LEFT JOIN users ON blog_posts.user_id = users.id
+			  WHERE user_id='$user_id'
+			  ORDER BY blog_posts.date_created DESC"; 
+	
+	queryCaller($conn, $query);
+}
+
+if(isset($_GET['index'])) {
+	sidebarCaller($conn);
+//	$user_id = $_SESSION['user_id'];
+	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,
+			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+			   blog_posts.total_comments, users.avatar, users.id,
+			   users.email, users.user_name
+			   FROM blog_posts
+			   LEFT JOIN users ON blog_posts.user_id = users.id
+			   WHERE public = 'public'
+			   ORDER BY blog_posts.date_created DESC
+			   LIMIT 10;";
+	
+		//. "$_SESSION[" . 'id' . "]"		// %W 
+		
+	queryCaller($conn, $query);
+}
 
 
 if(isset($_GET['search'])) {
@@ -140,17 +177,17 @@ if(isset($_GET['topic'])) {
 	
 //	echo "welcome home";
 //}
-if(isset($_GET['blog_id'])) {
-
-	$blog_id = $_GET['blog_id'];
-	$query = "SELECT blog_post
-			  FROM blog_posts
-			  WHERE id = '$blog_id'";
-	$result = mysqli_query($conn, $query);
-	while($row = mysqli_fetch_assoc($result)) {
-		echo $row['blog_post'];
-	}	
-}
+//if(isset($_GET['blog_id'])) {
+//
+//	$blog_id = $_GET['blog_id'];
+//	$query = "SELECT blog_post
+//			  FROM blog_posts
+//			  WHERE id = '$blog_id'";
+//	$result = mysqli_query($conn, $query);
+//	while($row = mysqli_fetch_assoc($result)) {
+//		echo $row['blog_post'];
+//	}	
+//}
 
 /* If user clicks the post username, show posts from said user */
 if(isset($_GET['username'])) {
@@ -168,38 +205,6 @@ if(isset($_GET['username'])) {
 			   OR users.email = '$username')";
 	queryCaller($conn, $query);
 }
-
-/* If user clicks the like, update likes in DB */
-//if(isset($_POST['like'])) {
-////	echo $_SESSION['loggedInUser'];
-//	if(isset($_SESSION['loggedInUser'])) {
-//		$blog_id = $_POST['blog_id'];
-//		$user_id = $_SESSION['user_id'];
-//		$query 	 = "INSERT INTO blog_post_likes
-//				    (id, blog_id, user_id)
-//				    VALUES (NULL, '$blog_id', '$user_id')";
-//		$result  = mysqli_query( $conn, $query );
-//		$query 	 = "SELECT likes 
-//				    FROM blog_posts
-//				    WHERE id='$blog_id'";
-//		$result  = mysqli_query( $conn, $query );
-//
-//		if( $result ) {
-//			$row	 	= mysqli_fetch_assoc($result);
-//			$likes	 	= $row['likes'];
-//			// Add 1 to likes
-//			$likes += 1;
-//			// update blog likes 
-//			$query = "UPDATE blog_posts 
-//					  SET likes = '$likes'
-//					  WHERE id = '$blog_id'";
-//			$result = mysqli_query( $conn, $query );
-//		}
-//		header("Location: ../index.php");
-//	} else {
-//		header("Location: ../login.php");
-//	}
-//}
 
 /* If user clicks on blog post date, show other posts from same date */
 if(isset($_GET['date'])) {
@@ -253,12 +258,77 @@ if(isset($_GET['date'])) {
 
 
 
+/* Set HTTP GET variables as long as user has JS enabled */
+/* Delete user Blog */
+if( isset( $_GET['delete'] ) ) {
+	$comment_or_blog = $_GET['comment_or_blog'];
+	
+	if($comment_or_blog == 'delete_post') {
+		$blog_id = $_GET['delete'];
+
+		$query 	= "DELETE
+				   FROM blog_post_dislikes
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
+
+		$query 	= "DELETE
+				   FROM blog_post_likes
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
+
+		$query 	= "DELETE
+				   FROM comments
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
+
+		$query 	= "DELETE
+				   FROM comment_likes
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
+
+		$query 	= "DELETE
+				   FROM user_favorites
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
+
+		$query 	= "DELETE
+				   FROM blog_posts
+				   WHERE id='$blog_id'";
+		$result = mysqli_query( $conn, $query );
+		//$comment_or_blog = $_POST['comment_or_blog'];
+	} elseif( $comment_or_blog == 'delete_comment') {
+		$comment_id = $_GET['delete'];
+		$query 	= "DELETE
+				   FROM comments
+				   WHERE id = $comment_id";
+		$result = mysqli_query($conn, $query);
+		
+		$blog_id	= $_GET['blogID'];
+		$query = "SELECT total_comments FROM blog_posts WHERE id = $blog_id";
+		$result = mysqli_query($conn, $query);
+		$row = mysqli_fetch_assoc($result);
+		$comment_count = $row['total_comments'];
+		$comment_count = $comment_count <= 1 ? 0 : $comment_count -= 1;
+
+//		$comment_count -= 1;
+		/* Update blog comment count */
+		$query = "UPDATE blog_posts 
+				  SET total_comments = '$comment_count'
+				  WHERE id = '$blog_id'";
+		$result = mysqli_query( $conn, $query );
+	}
+	
+//	if(!$result) {
+//		echo "The query is failing";
+//	} else {
+//		echo $comment_or_blog_id . ' SHOULD HAVE BEEN DELETED';
+//	}
+}
+
+/* If user clicks the like, update likes in DB */
 if(isset($_GET['like'])) {
-//if(isset($_POST['like'])) {
-	echo $_SESSION['loggedInUser'];
 	if(isset($_SESSION['loggedInUser'])) {
 		$blog_id = $_GET['like'];
-//		$blog_id = $_POST['like'];
 		$user_id = $_SESSION['user_id'];
 		
 		$query	= "SELECT *
@@ -272,7 +342,7 @@ if(isset($_GET['like'])) {
 					   FROM blog_posts
 					   WHERE id='$blog_id'";
 		$like_count = mysqli_query( $conn, $query );
-//		$row	 	= mysqli_fetch_assoc($favorite_count);
+		$row	 	= mysqli_fetch_assoc($like_count);
 		$likes		= $row['likes'];
 
 		if( !$row_count ) {
@@ -281,7 +351,7 @@ if(isset($_GET['like'])) {
 						VALUES (NULL, '$blog_id', '$user_id')";
 			$result  = mysqli_query( $conn, $query );
 
-			// Add 1 to likes
+			/* Add 1 to likes */
 			$likes += 1;
 		} else {
 			$query 	= "DELETE FROM blog_post_likes
@@ -291,12 +361,11 @@ if(isset($_GET['like'])) {
 
 			$likes = $likes <= 1 ? 0 : $likes -= 1;
 		}
-		// update blog likes 
+		/* Update blog likes */
 		$query = "UPDATE blog_posts 
 				  SET likes = '$likes'
 				  WHERE id = '$blog_id'";
 		$result = mysqli_query( $conn, $query );
-//		header("Location: ../index.php");
 	} else {
 		header("Location: ../login.php");
 	}
@@ -319,8 +388,8 @@ if(isset($_GET['dislike'])) {
 						   FROM blog_posts
 						   WHERE id='$blog_id'";
 		$dislike_count 	= mysqli_query( $conn, $query );
-//		$row	 		= mysqli_fetch_assoc($dislike_count);
-		$dislikes			= $row['dislikes'];
+		$row	 		= mysqli_fetch_assoc($dislike_count);
+		$dislikes		= $row['dislikes'];
 
 		if( !$row_count ) {
 			$query 	 = "INSERT INTO blog_post_dislikes
@@ -328,7 +397,7 @@ if(isset($_GET['dislike'])) {
 						VALUES (NULL, '$blog_id', '$user_id')";
 			$result  = mysqli_query( $conn, $query );
 
-			// Add 1 to likes
+			/* Add 1 to likes */
 			$dislikes += 1;
 		} else {
 			$query 	= "DELETE FROM blog_post_dislikes
@@ -338,7 +407,7 @@ if(isset($_GET['dislike'])) {
 
 			$dislikes = $dislikes <= 1 ? 0 : $dislikes -= 1;
 		}
-		// update blog likes 
+		/* Update blog likes */
 		$query = "UPDATE blog_posts 
 				  SET dislikes = '$dislikes'
 				  WHERE id = '$blog_id'";
@@ -348,24 +417,240 @@ if(isset($_GET['dislike'])) {
 	}
 }
 
-if(isset($_GET['favorite'])) {
-	
-}
-
-
-/* Fall code for users that have javascript disabled */
-/* If user clicks to comment but is not logged in, redirect to login */
-if(isset($_POST['comment'])) {
+/* If user clicks the favorite, update favorites in DB */
+if(isset($_GET['favorite'])) {	
 	if(isset($_SESSION['loggedInUser'])) {
-		header("Location: ../index.php");
+		$blog_id = $_GET['favorite'];
+		$user_id = $_SESSION['user_id'];
+		
+		$query	= "SELECT *
+				   FROM user_favorites
+				   WHERE blog_id = '$blog_id'
+				   AND user_id = '$user_id'";
+		$result = mysqli_query( $conn, $query );
+		$row_count = mysqli_num_rows($result);
+		
+		$query 	= "SELECT favorite 
+				  FROM blog_posts
+				  WHERE id='$blog_id'";
+		$favorite_count = mysqli_query( $conn, $query );
+		$row	 	= mysqli_fetch_assoc($favorite_count);
+		$favorite 	= $row['favorite'];
+
+		if( !$row_count ) {
+			$query 	= "INSERT INTO user_favorites
+					   (id, blog_id, user_id)
+					   VALUES
+					   (NULL, '$blog_id', '$user_id')";
+			$result = mysqli_query( $conn, $query );
+
+			if( !$favorite ) {
+				$favorite = 1;
+			} elseif( $favorite >= 1 ) {
+				$favorite += 1;			
+			} else {
+				$favorite = 0;
+			}
+
+		} else {
+			$query 	= "DELETE FROM user_favorites
+					   WHERE blog_id = '$blog_id'
+					   AND user_id = '$user_id'";
+			$result = mysqli_query( $conn, $query );
+
+			$favorite = $favorite <= 1 ? 0 : $favorite -= 1;
+		}
+		/* Update blog favorite */
+		$query = "UPDATE blog_posts 
+				  SET favorite = '$favorite'
+				  WHERE id = '$blog_id'";
+		$result = mysqli_query( $conn, $query );
 	} else {
 		header("Location: ../login.php");
 	}
 }
 
+if(isset($_POST['comment'])) {
+	if(!isset($_SESSION['loggedInUser'])) {
+		header("Location ../login.php");
+	}
+}
 
+/* If user clicks to comment but is not logged in, redirect to login */
+/* If not, then add comment to DB and echo comment to comment section */
+if(isset($_POST['commentInput']) && $_POST['commentInput'] != '') {
+	if(isset($_SESSION['loggedInUser'])) {
+//		$data		= $_POST['serialize'];
+		$blog_id 	= $_POST['blog_id'];
+		$comment	= $_POST['commentInput'];
+		$user_id	= $_SESSION['user_id'];
+		$current_date = date('M d, Y');
+		$current_time = date('g:ma');
+		
+//		echo 'blog id '.$blog_id . '<br/>';
+//		echo 'comment '.$comment . '<br/>';
+//		echo 'user id '.$user_id . '<br/>';
+		
+		$query 			= "SELECT total_comments 
+						   FROM blog_posts
+						   WHERE id=$blog_id";
+	 	$comments		= mysqli_query( $conn, $query );
+		
+//		echo '$comment =<pre>';
+//		print_r($comments);
+//		echo '</pre><br/>';		
+				
+		$row	 		= mysqli_fetch_assoc($comments);
+		$comment_count	= $row['total_comments'];
+//		echo '$comment_count = ' . $comment_count . '<br/>';
+		$comment_count += 1;
+//		echo '$comment_count = ' . $comment_count . '<br/>';
+		
+		$query		= "INSERT INTO comments 
+					   (id, blog_id, user_id, comment, date_entered)
+					   VALUES (NULL, '$blog_id', '$user_id', '$comment', CURRENT_TIMESTAMP)";
+		$result		= mysqli_query($conn, $query);
+		
+		$query		= "UPDATE blog_posts
+					   SET total_comments = $comment_count
+					   WHERE id = $blog_id";
+		$result		= mysqli_query($conn, $query);
+
+		// Return info for jquery to append to dom
+		if($result) {
+			
+			/*$query = "SELECT users.id, users.email,
+					  users.user_name, users.avatar
+					  FROM users
+					  WHERE id = $user_id";*/
+			$query = "SELECT comments.id AS comment_id, comments.user_id,
+					  users.id, users.email,
+					  users.user_name, users.avatar
+					  FROM comments
+					  LEFT JOIN users ON comments.user_id = users.id
+					  WHERE user_id = $user_id
+					  AND comment = '$comment'";
+//					  AND user_id = (SELECT MAX(id) FROM comments
+//					  WHERE user_id = $user_id)";
+			$result = mysqli_query($conn, $query);
+			$row = mysqli_fetch_assoc($result);
+			
+			
+		  /*LEFT JOIN comments on users.id = 
+		  (SELECT MAX(id) FROM comments
+		  WHERE comments.user_id = $user_id)*/
+			
+			
+//			if($image) {
+//				echo $image . ' Image found';
+//			} else {
+//				echo ' NO IMAGE FOUND ';
+//			}
+			
+			if ($row['avatar'] == null) {
+				$avatar = 'userAvatarDefault.png';
+				$class 	= '';
+			} else {
+				$avatar = $row['avatar'];
+				$class 	= 'image-border';
+			}
+			
+			if($row['user_name'] == null) {
+				$user_name = $row['email'];
+			} else {
+				$user_name = $row['user_name'];
+			}
+			
+			$comment_post = "<li class='comment list-group-item'><p class='col-xs-8'>";
+			$comment_post .= "<img src='images/user_profile_images/" . $avatar;
+			$comment_post .= "' alt='User " . $user_name;
+			$comment_post .= "s profile photo' class='comment_user_avatar ";
+			$comment_post .= $class . "'/>";
+			$comment_post .= "<span class='user-name'>";
+			$comment_post .= $user_name . "</span></p>";
+			
+			if(isset($_SESSION['user_id']) && $row['id'] == $_SESSION['user_id']) {
+				$comment_post .= "<p class='settings row hidden col-xs-4'><span class='sr-only'>Settings</span><button class='glyphicon glyphicon-cog btn btn-sm'><small class='glyphicon glyphicon-chevron-down down-arrow'></small></button></p><form method='post' action='./includes/ajax.php'><ul class='hidden settingsList'><span class='sr-only'>Edit this comment</span><li><button type='submit' class='btn edit_comment' name='edit_comment' title='Edit this comment'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> &nbsp;&nbsp; Edit comment</button></li><span class='sr-only'>Delete this comment</span><li><button type='button' class='btn delete' id='" . $row['comment_id'] . "'  name='delete_comment' data-toggle='modal' data-target='#deleteBlogModal' title='Delete this comment'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> &nbsp;&nbsp; Delete comment</button></li><input type='number' value='" . $row['comment_id'] . "' name='comment_id' class='hidden comment_id'></ul></form>";
+			}
+
+			$comment_post .= "<hr/><p class='comment'><span class='comment-text'>";
+			$comment_post .= $comment;
+			$comment_post .= "</span><p class='comment'><small class='date-posted'>";
+			$comment_post .= "<em>&nbsp;";
+			$comment_post .= $current_date . '&nbsp;&nbsp;' . $current_time;
+			$comment_post .= "</em></small>";
+			$comment_post .= "</p></li>";
+			
+			echo $comment_post;
+		}
+				
+//		header("Location: ../index.php");
+	} else {
+		header("Location: ../login.php");
+	}
+}
+
+// && $_POST['newCommentInput'] != ''
+
+/* User clicks Edit Comment Button or clicks on the comment itself */
+if(isset($_POST['newCommentInput']) && isset($_POST['comment_id']) && $_POST['newCommentInput'] != '') {
+	$comment = $_POST['newCommentInput'];
+	$comment_id = $_POST['comment_id'];
+	
+	echo "<form class='' id='commentForm' action='./includes/ajax.php' method='post'><div class='form-group col-xs-12 input-group'><label class='sr-only'>Leave a comment</label><input type='text' value='$comment' placeholder='$comment' name='newCommentInput' class='form-control input-group newCommentInput' id='comment$comment_id' placeholder='Leave a comment...'><input type='number' value='$comment_id' name='commentId' class='hidden commentId'><span class='input-group-btn'><span class='sr-only'>Post comment</span><button type='submit' class='btn btn-default update-comment-post-btn' name='update_comment_post_btn'><span class='glyphicon glyphicon-comment' aria-hidden='true'></span></button></span></div></form>";
+	
+//	echo $edit_comment;
+}
+
+/* User submits Editted Comment */
+if(isset($_POST['update_comment_post']) && isset($_POST['comment_id'])) {
+	$comment = $_POST['update_comment_post'];
+	$comment_id = $_POST['comment_id'];
+//	echo $current_date . "<br>". $current_time;
+	
+	$query = "UPDATE comments
+			  SET comment = '$comment'
+			  WHERE id = $comment_id";
+	$result = mysqli_query($conn, $query);
+	
+	if($result) {
+		$query = "SELECT comment,
+				  date_format(date_entered, '%M %d, %Y g:ma')
+				  date_entered
+				  FROM comments
+				  WHERE id = $comment_id";
+		$result = mysqli_query($conn, $query);
+		
+		if($result) {
+			$row = mysqli_fetch_assoc($result);
+			$comment = $row['comment'];
+			$date_time = $row['date_entered'];
+//			$current_date = date('M d, Y');
+//			$current_time = date('g:ma');
+			
+			echo "<span class='comment-text'>$comment</span>";
+			//<small class='date-posted><em>$date_time</em></small>";
+//			<em>&nbsp;$current_date&nbsp;&nbsp;$current_time</em></small>";
+		}
+	}
+}
+
+if(isset($_GET['delete_comment'])) {
+	
+}
+
+if(isset($_POST['delete_comment'])) {
+	
+}
+
+
+if(isset($_GET['edit_comment'])) {
+	
+}
+
+/* Fall back code for users that have javascript disabled */
+/* If user clicks the like, update likes in DB */
 if(isset($_POST['like'])) {
-//	echo $_SESSION['loggedInUser'];
 	if(isset($_SESSION['loggedInUser'])) {
 		$blog_id = $_POST['blog_id'];
 		$user_id = $_SESSION['user_id'];
@@ -377,12 +662,11 @@ if(isset($_POST['like'])) {
 		$result = mysqli_query( $conn, $query );
 		$row_count = mysqli_num_rows($result);
 		
-		
 		$query 		= "SELECT likes 
 					   FROM blog_posts
 					   WHERE id='$blog_id'";
 		$like_count = mysqli_query( $conn, $query );
-		$row	 	= mysqli_fetch_assoc($favorite_count);
+		$row	 	= mysqli_fetch_assoc($like_count);
 		$likes		= $row['likes'];
 
 		if( !$row_count ) {
@@ -391,7 +675,7 @@ if(isset($_POST['like'])) {
 						VALUES (NULL, '$blog_id', '$user_id')";
 			$result  = mysqli_query( $conn, $query );
 
-			// Add 1 to likes
+			/* Add 1 to likes */
 			$likes += 1;
 		} else {
 			$query 	= "DELETE FROM blog_post_likes
@@ -401,7 +685,7 @@ if(isset($_POST['like'])) {
 
 			$likes = $likes <= 1 ? 0 : $likes -= 1;
 		}
-		// update blog likes 
+		/* Update blog likes */
 		$query = "UPDATE blog_posts 
 				  SET likes = '$likes'
 				  WHERE id = '$blog_id'";
@@ -412,9 +696,8 @@ if(isset($_POST['like'])) {
 	}
 }
 
-
+/* If user clicks the dislike, update dislikes in DB */
 if(isset($_POST['dislike'])) {
-//	echo $_SESSION['loggedInUser'];
 	if(isset($_SESSION['loggedInUser'])) {
 		$blog_id = $_POST['blog_id'];
 		$user_id = $_SESSION['user_id'];
@@ -430,7 +713,6 @@ if(isset($_POST['dislike'])) {
 						   FROM blog_posts
 						   WHERE id='$blog_id'";
 		$dislike_count 	= mysqli_query( $conn, $query );
-//		$row	 		= mysqli_fetch_assoc($dislike_count);
 		$dislikes			= $row['dislikes'];
 
 		if( !$row_count ) {
@@ -438,8 +720,8 @@ if(isset($_POST['dislike'])) {
 						(id, blog_id, user_id)
 						VALUES (NULL, '$blog_id', '$user_id')";
 			$result  = mysqli_query( $conn, $query );
-
-			// Add 1 to likes
+			
+			/* Add 1 to likes */
 			$dislikes += 1;
 		} else {
 			$query 	= "DELETE FROM blog_post_dislikes
@@ -449,7 +731,7 @@ if(isset($_POST['dislike'])) {
 
 			$dislikes = $dislikes <= 1 ? 0 : $dislikes -= 1;
 		}
-		// update blog likes 
+		/* update blog likes */
 		$query = "UPDATE blog_posts 
 				  SET dislikes = '$dislikes'
 				  WHERE id = '$blog_id'";
@@ -460,66 +742,9 @@ if(isset($_POST['dislike'])) {
 	}
 }
 
-/* If user clicks the dislike, update dislikes in DB */
-/*if(isset($_POST['dislike'])) {
-	if(isset($_SESSION['loggedInUser'])) {
-		$blog_id = $_POST['blog_id'];
-		$query 	= "SELECT dislikes 
-				  FROM blog_posts
-				  WHERE id='$blog_id'";
-		$result = mysqli_query( $conn, $query );
-
-		if( $result ) {
-			$row	 	= mysqli_fetch_assoc($result);
-			$dislikes	 	= $row['dislikes'];
-			// Add 1 to likes
-			$dislikes += 1;
-			// update blog likes 
-			$query = "UPDATE blog_posts 
-					  SET dislikes = '$dislikes'
-					  WHERE id = '$blog_id'";
-			$result = mysqli_query( $conn, $query );
-		}
-		header("Location: ../index.php");
-	} else {
-		header("Location: ../login.php");
-	}
-}*/
-
-/* If user clicks to comment but is not logged in, redirect to login */
-if(isset($_POST['comment'])) {
-	if(isset($_SESSION['loggedInUser'])) {
-		header("Location: ../index.php");
-	} else {
-		header("Location: ../login.php");
-	}
-}
-
-
-
-
-/* Edit user Blog */
-if( isset( $_POST['edit'] ) ) {
-	$blog_id = $_POST['blog_id'];
-	header("Location: ../edit_blog.php?id=$blog_id");
-}
-
-/* Delete user Blog */
-if( isset( $_POST['delete'] ) ) {
-	$blog_id = $_POST['blogid'];
-	
-	$query 	= "DELETE
-			   FROM blog_posts
-			   WHERE id='$blog_id'";
-	$result = mysqli_query( $conn, $query );
-	
-//	echo "Post $blog_id has been deleted!";
-}
-
-/* Favorite user Blog */
+/* If user clicks the favorite, update favorites in DB */
 if( isset( $_POST['favorite'] ) ) {
 	if(isset($_SESSION['loggedInUser'])) {
-//		$blog_id = $_POST['blog_id'];
 		$blog_id = $_POST['favorite'];
 		$user_id = $_SESSION['user_id'];
 
@@ -560,118 +785,75 @@ if( isset( $_POST['favorite'] ) ) {
 
 			$favorite = $favorite <= 1 ? 0 : $favorite -= 1;
 		}
-		// update blog favorite 
+		/* Update blog favorite */
 		$query = "UPDATE blog_posts 
 				  SET favorite = '$favorite'
 				  WHERE id = '$blog_id'";
 		$result = mysqli_query( $conn, $query );
-		
-//		if($_SERVER['SCRIPT_FILENAME'] == '../index.php') {
-			header("Location: ../index.php");
-//		} elseif($_SERVER['SCRIPT_FILENAME'] == '../blogs.php') {
-//			header("Location: ../blogs.php");
-//		}
+		header("Location: ../index.php#$blog_id");
 	} else {
 		header("Location: ../login.php");
 	}
-	
-	////// WORKS BELOW HERE, JUST FOR UPDATING blog_post favorite COLUMN
-/*	$query 	= "SELECT favorite 
-			  FROM blog_posts
-			  WHERE id='$blog_id'";
-	$result = mysqli_query( $conn, $query );
-	
-	if( $result ) {
-		$row	 	= mysqli_fetch_assoc($result);
-		$favorite 	= $row['favorite'];
-		
-		if( !$favorite ) {
-			$favorite = 1;
-		} else {
-//			$favorite = 0;
-			$favorite += 1;
-		}
-		// update blog favorite 
-		$query = "UPDATE blog_posts 
-				  SET favorite = '$favorite'
-				  WHERE id = '$blog_id'";
-		$result = mysqli_query( $conn, $query );
-
-		if(!$result ) { printf(mysqli_error($conn)); }
-
-		header("Location: ../blogs.php");
-//		echo "Post $blog_id has been favorited!";
-	}*/
 }
 
+/* If user clicks to comment but is not logged in, redirect to login */
+if(isset($_POST['comment'])) {
+	if(isset($_SESSION['loggedInUser'])) {
+		header("Location: ../index.php");
+	} else {
+		header("Location: ../login.php");
+	}
+}
 
+/* Edit user Blog */
+if( isset( $_POST['edit'] ) ) {
+	$blog_id = $_POST['blog_id'];
+	header("Location: ../edit_blog.php?id=$blog_id");
+}
 
-/*
-$query = "SELECT questions.question_number, questions.question, questions.question_category, choices.id, choices.is_correct, choices.answers 
-FROM questions 
-LEFT JOIN choices ON questions.question_number = choices.question_number 
-WHERE questions.question_category = '" . $_SESSION['category'] . "' AND questions.question_number IN (" . implode(", ", $_SESSION["used_questions"]) .")
-ORDER BY field(questions.question_number, " . implode(", ", $_SESSION["used_questions"]) ."), field(id, " . implode(", ", $_SESSION["answer_order"]) .")";*/
+/* Delete user Blog */
+if( isset( $_POST['delete'] ) ) {
+	$comment_or_blog = $_POST['comment_or_blog'];
+	
+	if($comment_or_blog == 'delete_post') {
+		$blog_id = $_POST['blogid'];
+		$query 	= "DELETE
+				   FROM blog_post_dislikes
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
 
+		$query 	= "DELETE
+				   FROM blog_post_likes
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
 
+		$query 	= "DELETE
+				   FROM comments
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
 
+		$query 	= "DELETE
+				   FROM comment_likes
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
 
+		$query 	= "DELETE
+				   FROM user_favorites
+				   WHERE blog_id='$blog_id";
+		$result = mysqli_query($conn, $query);
 
-/*$query			= "SELECT blog_title, blog_post, blog_category,
-					   date_format(date_created, '%m/%d/%Y') date_created
-					   FROM blog_posts 
-					   WHERE public = 'public'
-					   AND INSTR(blog_title, '$search_query')
-					   OR INSTR(blog_post, '$search_query')
-					   OR INSTR(blog_category, '$search_query')
-					   ORDER BY date_created DESC";*/
-
-//DATE(STR_TO_DATE(`date_created`, '%m/%d/%Y'))
-
-
-/*$queries = {
-	SELECT blog_title, blog_post, blog_category,
-		      date_created
-		      FROM blog_posts 
-		      WHERE INSTR(date_created, 10/19/2017) > 0
-			  
-              
-              SELECT blog_title, blog_post, blog_category,
-		      date_format(date_created, '%m/%d/%Y') date_created
-		      FROM blog_posts 
-		      WHERE public = 'public'
-		      AND INSTR(`date_created`, '10/19/2017') > 0
-			  ORDER BY id DESC
-}*/
-
-
-
-
-
-///////////////////////////////
-
-
-/*
-$query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
-			  blog_posts.blog_category,
-		      blog_posts.date_format(date_created, '%m/%d/%Y') date_created, users.avatar
-		      FROM blog_posts
-			  LEFT JOIN users ON blog_posts.user_id = users.id
-		      WHERE public = 'public'
-		      AND date_format(date_created, '%m/%d/%Y')  = '$date'
-			  ORDER BY id DESC";*/
-
-//	$blogs 	= mysqli_query($conn, $query);
-//
-//
-//	while( $row = mysqli_fetch_assoc($blogs) ) {
-//		echo "<article>";
-//		echo "<div class='blog_title'><h2>" . $row['blog_title'] . "</h2><a href='index.php?date=" . $row['date_created'] . "'><img src='". $row['avatar'] ."'/><p class='date_posted'>". $row['date_created'] . "</p></a></div><p>". $row['blog_post'] . "</p>";
-//		echo "</article>";			
-//	}
-
-
-
-//////////////////////////
-
+		$query 	= "DELETE
+				   FROM blog_posts
+				   WHERE id='$blog_id'";
+		$result = mysqli_query( $conn, $query );
+	} elseif( $comment_or_blog == 'delete_comment') {
+		$comment_id = $_POST['comment_id'];
+		$query 	= "DELETE
+				   FROM comments
+				   WHERE id = $comment_id";
+		$result = mysqli_query($conn, $query);
+	}
+	
+	header('Location: ../blogs.php');
+}
 ?>
