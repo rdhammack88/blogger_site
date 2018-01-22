@@ -1,9 +1,9 @@
 </div> <!-- End of #container -->
 
 <!-- Footer -->
-<footer class="text-center col-sm-12"> <!--</footer> navbar-fixed-bottom navbar-inverse">-->
+<footer class="text-center col-sm-12 navbar-fixed-bottom"> <!--</footer> navbar-fixed-bottom navbar-inverse">-->
 <!--	<hr>-->
-	<small>Created with &hearts; by <a href="http://www.dustinhammack.com/">Dustin Hammack</a>!</small>  
+	<small>Created with <span class="love">&hearts;</span> by <a href="http://www.dustinhammack.com/" target="_blank">Dustin Hammack</a>!</small>  
 
 </footer>
 
@@ -27,6 +27,8 @@ ga('send', 'pageview');
 
 <!-- Custom Scripts -->
 <script src="js/scripts.js"></script>
+
+<?php mysqli_close($conn); ?>
 
 </body>
 </html>
