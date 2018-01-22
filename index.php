@@ -28,7 +28,7 @@ echo $alertMessage;
 sidebarCaller($conn);
 
 /*Main Blog Article Content*/
-echo '<section id="blogSection" class="col-sm-12 col-md-8 col-md-offset-1">';
+echo '<section id="blogSection" class="col-xs-12 col-md-8 col-md-offset-1">';
 ///////	FALL BACK CODE FOR USERS WITH JAVASCRIPT DISABLED /////////
 //////  FOR BOTH POPULAR TOPICS ASIDE BAR, AND SEARCH    /////////
 if(isset($_GET['topic'])) {

@@ -18,7 +18,8 @@ if( isset( $_POST['login'] ) ) {
 	include('includes/connection.php');
 
 	// create query
-	$query = "SELECT id, first_name, password 
+	$query = "SELECT id, first_name, last_name, 
+			  email, user_name, password, avatar 
 			  FROM users
 			  WHERE email='$formEmail' 
 			  OR user_name='$formEmail'";
@@ -33,7 +34,28 @@ if( isset( $_POST['login'] ) ) {
 		while( $row = mysqli_fetch_assoc($result) ) {
 			$user_id	= $row['id'];
 			$first_name = $row['first_name'];
+//			$avatar		= $row['avatar'];
 			$hashedPass = $row['password'];
+						
+			if ($row['last_name'] == null) {
+				$last_name = NULL;
+			} else {
+				$last_name 	= $row['last_name'];
+			}
+			
+			if ($row['avatar'] == null) {
+				$avatar = 'userAvatarDefault.png';
+				$class 	= '';
+			} else {
+				$avatar = $row['avatar'];
+				$class 	= 'image-border';
+			}
+			
+			if ($row['user_name'] == null) {
+				$user_name = $row['email'];
+			} else {
+				$user_name = $row['user_name'];
+			}
 		}
 		
 		// verify hashed password with submitted password
@@ -43,6 +65,10 @@ if( isset( $_POST['login'] ) ) {
 			// store data in SESSION variables
 			$_SESSION['user_id']		= $user_id;
 			$_SESSION['loggedInUser'] 	= $first_name;
+			$_SESSION['user_last_name']	= $last_name;
+			$_SESSION['avatar']			= $avatar;
+			$_SESSION['user_name']		= $user_name;
+			
 			
 			// redirect user to blogs page
 //			header( "Location: blogs.php?alert=logged_in" );
@@ -80,11 +106,11 @@ include('includes/header.php');
 
 <form class="" action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post">
     <div class="form-group col-sm-4 col-sm-offset-4">
-        <label for="login-email" class="sr-only">Email</label>
-        <input type="text" class="form-control" id="login-email" placeholder="email" name="email" value="<?php //echo $formEmail; ?>" autocomplete="username" autofocus>
+        <label for="login-email" class="sr-only">Enter email or username to login</label>
+        <input type="text" class="form-control" id="login-email" placeholder="email / username" name="email" value="<?php //echo $formEmail; ?>" autocomplete="username" autofocus>
     </div>
     <div class="form-group col-sm-4 col-sm-offset-4">
-        <label for="login-password" class="sr-only">Password</label>
+        <label for="login-password" class="sr-only">Enter password</label>
         <input type="password" class="form-control" id="login-password" placeholder="password" name="password" autocomplete="current-password">
     </div>
     <div class="form-group col-sm-4 col-sm-offset-4">
