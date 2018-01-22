@@ -4,6 +4,10 @@ session_start();
 
 include('includes/functions.php');
 
+if(!isset($_SESSION['loggedInUser']) || !isset($_SESSION['user_id'])) { 
+	header("Location: login.php");
+}
+
 if( isset( $_POST["newBlog"] ) ) {
 //	echo 'Blog added';
 	
@@ -88,7 +92,7 @@ include('includes/header.php');
 	
 	<br/><br/><br><br>
 	
-	<input type="submit" name="newBlog" id="newBlog" class="btn btn-success btn-lg col-xs-4 col-xs-offset-1"><!--Submit</button>-->
+	<input type="submit" name="newBlog" id="newBlog" class="btn btn-success btn-lg col-xs-4 col-xs-offset-1" value="Submit"><!--Submit</button>-->
 	<input type="submit"  name="cancel" id="cancel" class="btn btn-danger btn-lg col-xs-4 col-xs-offset-2" value="Cancel"><!--Cancel</button>-->
 	
 </form>

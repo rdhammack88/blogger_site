@@ -4,6 +4,11 @@ include('includes/connection.php');
 include('includes/functions.php');
 
 session_start();
+
+if(!isset($_SESSION['loggedInUser']) || !isset($_SESSION['user_id'])) { 
+	header("Location: login.php");
+}
+
 include('includes/header.php');
 
 if(isset($_SESSION['loggedInUser'])) {
