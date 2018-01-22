@@ -177,17 +177,17 @@ if(isset($_GET['topic'])) {
 	
 //	echo "welcome home";
 //}
-//if(isset($_GET['blog_id'])) {
-//
-//	$blog_id = $_GET['blog_id'];
-//	$query = "SELECT blog_post
-//			  FROM blog_posts
-//			  WHERE id = '$blog_id'";
-//	$result = mysqli_query($conn, $query);
-//	while($row = mysqli_fetch_assoc($result)) {
-//		echo $row['blog_post'];
-//	}	
-//}
+if(isset($_GET['full_post'])) {
+
+	$blog_id = $_GET['full_post'];
+	$query = "SELECT blog_post
+			  FROM blog_posts
+			  WHERE id = '$blog_id'";
+	$result = mysqli_query($conn, $query);
+	while($row = mysqli_fetch_assoc($result)) {
+	echo strip_tags($row['blog_post']);
+	}	
+}
 
 /* If user clicks the post username, show posts from said user */
 if(isset($_GET['username'])) {
@@ -255,8 +255,6 @@ if(isset($_GET['date'])) {
 //		echo "</article>";			
 //	}
 }
-
-
 
 /* Set HTTP GET variables as long as user has JS enabled */
 /* Delete user Blog */
@@ -470,6 +468,66 @@ if(isset($_GET['favorite'])) {
 	}
 }
 
+if(isset($_POST['load_blogs'])) {
+	$last_blog_id = $_POST['load_blogs'];
+	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,
+			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+			   blog_posts.total_comments, users.avatar, users.id,
+			   users.email, users.user_name
+			   FROM blog_posts
+			   LEFT JOIN users ON blog_posts.user_id = users.id
+			   WHERE public = 'public'
+			   AND blog_posts.id < $last_blog_id
+			   ORDER BY blog_posts.date_created DESC
+			   LIMIT 10;";
+
+	//. "$_SESSION[" . 'id' . "]"		// %W 
+
+	queryCaller($conn, $query);
+}
+
+if(isset($_POST['public_topic'])) {
+	$topic = $_POST['public_topic'];
+	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,
+			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+			   blog_posts.total_comments, users.avatar, users.id,
+			   users.email, users.user_name
+			   FROM blog_posts
+			   LEFT JOIN users ON blog_posts.user_id = users.id
+			   WHERE public = 'public'
+			   AND blog_posts.blog_category = '$topic'
+			   ORDER BY blog_posts.date_created DESC
+			   LIMIT 10;";
+
+	//. "$_SESSION[" . 'id' . "]"		// %W 
+
+	queryCaller($conn, $query);
+}
+
+if(isset($_POST['user_topic'])) {
+	$topic = $_POST['user_topic'];
+	$user_id = $_SESSION['user_id'];
+	$query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
+		      date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+		      blog_posts.blog_category, blog_posts.id AS blog_id,
+		      blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+		      blog_posts.total_comments, users.avatar, users.id,
+		      users.email, users.user_name
+		      FROM blog_posts
+		      LEFT JOIN users ON blog_posts.user_id = users.id
+			  WHERE blog_posts.user_id='$user_id'
+			  AND blog_posts.blog_category = '$topic'
+			  ORDER BY blog_posts.date_created DESC"; 
+
+	//. "$_SESSION[" . 'id' . "]"		// %W 
+
+	queryCaller($conn, $query);
+}
+
 if(isset($_POST['comment'])) {
 	if(!isset($_SESSION['loggedInUser'])) {
 		header("Location ../login.php");
@@ -562,12 +620,13 @@ if(isset($_POST['commentInput']) && $_POST['commentInput'] != '') {
 			}
 			
 			$comment_post = "<li class='comment list-group-item'><p class='col-xs-8'>";
-			$comment_post .= "<img src='images/user_profile_images/" . $avatar;
+			$comment_post .= "<a href='user_profile.php?user=".$user_id;
+			$comment_post .= "'><img src='images/user_profile_images/" . $avatar;
 			$comment_post .= "' alt='User " . $user_name;
 			$comment_post .= "s profile photo' class='comment_user_avatar ";
 			$comment_post .= $class . "'/>";
 			$comment_post .= "<span class='user-name'>";
-			$comment_post .= $user_name . "</span></p>";
+			$comment_post .= $user_name . "</span></a></p>";
 			
 			if(isset($_SESSION['user_id']) && $row['id'] == $_SESSION['user_id']) {
 				$comment_post .= "<p class='settings row hidden col-xs-4'><span class='sr-only'>Settings</span><button class='glyphicon glyphicon-cog btn btn-sm'><small class='glyphicon glyphicon-chevron-down down-arrow'></small></button></p><form method='post' action='./includes/ajax.php'><ul class='hidden settingsList'><span class='sr-only'>Edit this comment</span><li><button type='submit' class='btn edit_comment' name='edit_comment' title='Edit this comment'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> &nbsp;&nbsp; Edit comment</button></li><span class='sr-only'>Delete this comment</span><li><button type='button' class='btn delete' id='" . $row['comment_id'] . "'  name='delete_comment' data-toggle='modal' data-target='#deleteBlogModal' title='Delete this comment'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> &nbsp;&nbsp; Delete comment</button></li><input type='number' value='" . $row['comment_id'] . "' name='comment_id' class='hidden comment_id'></ul></form>";

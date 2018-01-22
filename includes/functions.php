@@ -43,7 +43,15 @@ function sidebarCaller($conn) {
 	$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;
 	echo '<br/><div class="row text-right">';
 	
-	$page = substr($_SERVER['SCRIPT_NAME'], -9, -4);	
+	
+//	echo strrpos($_SERVER['SCRIPT_NAME'], '/') + 1;
+//	echo strpos($_SERVER['SCRIPT_NAME'], '.') - 1;
+	$start_of_script_name = strrpos($_SERVER['SCRIPT_NAME'], '/') + 1;
+	$page = substr($_SERVER['SCRIPT_NAME'], $start_of_script_name, -4);
+//	echo "<br>";
+//	echo $_SERVER['SCRIPT_NAME'];
+	
+//	$page = substr($_SERVER['SCRIPT_NAME'], -9, -4);	
 	if($page == 'blogs') {
 		echo '<span class="sr-only">Add new blog</span><a href="add_blog.php" class="glyphicon glyphicon-plus btn btn-primary add-btn" aria-hidden="true"> New</a>';
 		$header = "Your most written topics";
@@ -52,7 +60,7 @@ function sidebarCaller($conn) {
 				  WHERE user_id='$user_id'
 				  GROUP BY blog_category
 				  HAVING COUNT(*) >= 1";
-	} else {
+	} else { //if($page == 'index') {
 		echo '<small class="text-danger fade-text">Most Recent Blog Posts...</small>';
 		$header = "Popular Topics";
 		$query = "SELECT blog_category 
@@ -176,7 +184,7 @@ function queryCaller($conn, $query) {
 			echo "<div class='date col-xs-4'><a href='index.php?date=" . $row['date_created'] . "' class='date'><p class='date_posted'>". $row['date_created'] . "</p></a></div>";
 		}
 				
-		echo "</div><div class='row blogPost'><a href='index.php' class='title'><h3 class='title col-xs-12'>" . $row['blog_title'] . "</h3></a><p class='post col-xs-12'>". $row['blog_post'] . "</p><div class=' likes-and-comments'><p class='text-right col-xs-10 likes-and-comments'><span class='total-likes'>" . $like_count . " </span> Likes &nbsp;&nbsp;&nbsp;<span class='total-dislikes'>" . $dislike_count . "  </span> Dislikes &nbsp;&nbsp;&nbsp;<span class='comment-btn " . $cursor_class . " " . $row['blog_id'] . "' title='Comment on this post' data-toggle='tooltip' data-placement='top'><span class='total-comments'>" . $total_comments . "</span> Comments</span></p></div></div>";
+		echo "</div><div class='row blogPost'><a href='index.php' class='title'><h3 class='title col-xs-12'>" . $row['blog_title'] . "</h3></a><p class='post col-xs-12'>". strip_tags($row['blog_post']) . "</p><div class=' likes-and-comments'><p class='text-right col-xs-10 likes-and-comments'><span class='total-likes'>" . $like_count . " </span> Likes &nbsp;&nbsp;&nbsp;<span class='total-dislikes'>" . $dislike_count . "  </span> Dislikes &nbsp;&nbsp;&nbsp;<span class='comment-btn " . $cursor_class . " " . $row['blog_id'] . "' title='Comment on this post' data-toggle='tooltip' data-placement='top'><span class='total-comments'>" . $total_comments . "</span> Comments</span></p></div></div>";
 		
 		if(isset($_SESSION['user_id']) && $row['user_id'] == $_SESSION['user_id']) {
 			echo "<div class='row blog-footer-row'> <form class='blog_footer' action='./includes/ajax.php' method='POST'><p class='col-xs-9'><span class='sr-only'>Like this blog</span><button type='submit' class='btn like-btn' name='like' title='Like this post' data-toggle='tooltip' data-placement='top'><span class='glyphicon";
@@ -254,12 +262,13 @@ function queryCaller($conn, $query) {
 				}
 				
 				echo "<li class='comment list-group-item' id='" . $comment_row['id'] . "'><p class='col-xs-8'>";
+				echo "<a href='user_profile.php?user=".$comment_row['user_id']."'>";
 				echo "<img src='images/user_profile_images/" . $avatar;
 				echo "' alt='User " . $user_name;
 				echo "s profile photo' class='comment_user_avatar ";
 				echo $class . "'/>";
 				echo "<span class='user-name comment-user-name'>";
-				echo $user_name . "</span></p>";
+				echo $user_name . "</span></a></p>";
 				
 				if(isset($_SESSION['user_id']) && $comment_row['user_id'] == $_SESSION['user_id']) {
 				echo "<p class='settings row hidden col-xs-4'><span class='sr-only'>Settings</span><button class='glyphicon glyphicon-cog btn btn-sm' aria-hidden='true'><small class='glyphicon glyphicon-chevron-down down-arrow' aria-hidden='true'></small></button></p><form method='post' action='./includes/ajax.php'><ul class='hidden settingsList'><span class='sr-only'>Edit this comment</span><li><button type='submit' class='btn edit_comment' name='edit_comment' title='Edit this comment'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> &nbsp;&nbsp; Edit comment</button></li><span class='sr-only'>Delete this comment</span><li><button type='button' class='btn delete' id='" . $comment_row['id'] . "'  name='delete_comment' data-toggle='modal' data-target='#deleteBlogModal' title='Delete this comment'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> &nbsp;&nbsp; Delete comment</button></li><input type='number' value='" . $comment_row['id'] . "' name='comment_id' class='hidden comment_id'></ul></form>";
@@ -267,7 +276,7 @@ function queryCaller($conn, $query) {
 				
 				echo "<hr/>";
 				echo "<p class='comment'><span class='comment-text'>";
-				echo $comment_row['comment'];
+				echo htmlspecialchars($comment_row['comment']);
 				echo "</span></p><p class='comment-date'><small class='date-posted'>";
 				echo "<em>";
 				echo $date . '&nbsp;&nbsp;' . $time;
