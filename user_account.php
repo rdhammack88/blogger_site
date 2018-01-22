@@ -1,13 +1,18 @@
 <?php
 $TITLE = "Edit User Account";
 session_start();
-$user_name = $_SESSION['loggedInUser'];
+
+if(!isset($_SESSION['loggedInUser']) || !isset($_SESSION['user_id'])) { 
+	header("Location: login.php");
+}
+
 
 include('includes/functions.php');
 include('includes/connection.php');
-include("includes/header.php");
+$user_name = $_SESSION['loggedInUser'];
 $user_id = $_SESSION['user_id'];
 $uploadError = '';
+include("includes/header.php");
 //echo $_SESSION['user_id'];
 
 $query 	= "SELECT *

@@ -252,7 +252,7 @@ include('includes/header.php');
 		<form class="col-sm-4 col-sm-offset-4" id="signupForm" action="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] ); ?>" method="post" enctype="multipart/form-data">
 			
 			<label for="first_name" class="sr-only">First Name</label>
-			<input type="text" name="first_name" id="first_name" placeholder="First Name">
+			<input type="text" name="first_name" id="first_name" placeholder="First Name" autofocus>
 			<small class="text-danger">* </small> <br/>
 			<small class="text-danger nameError">Please enter your first name <br/></small> <br/>
 			
