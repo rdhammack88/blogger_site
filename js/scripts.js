@@ -13,7 +13,7 @@ $(document).ready(function() {
 	} else if(document.title.includes('User blogs')) {
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.blogsLink').parent().addClass('activeLink');
-	} else if(document.title.includes('Account') || document.title.includes('Manage') || document.title.includes('Edit')) {
+	} else if(document.title.includes('Account') || document.title.includes('Manage') || document.title.includes('Edit') || document.title.includes('Profile')) {
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.account').addClass('activeLink');
 	}	
@@ -124,11 +124,43 @@ $(document).ready(function() {
 			if(window.pageYOffset > navHeight) {
 				aside.css({
 					'position': 'fixed',
-					'top': mainOffset - 110
+					'top': mainOffset - 90 //95 110
 				});
 			}
 		}
+		
+		if($(window).scrollTop() == $(document).height() - $(window).height()) {
+           // ajax call get data from server and append to the div
+			console.log('bottom');
+			var lastBlog = $('.blog').last().children('article').attr('id');
+			console.log($('.blog'));
+			console.log(lastBlog);
+			
+			if(document.title.includes('Home')) {
+//				$.get('./includes/ajax.php', 'GET')
+				
+				$.ajax({
+					method: 'POST',
+					datetype: 'text',
+					url: './includes/ajax.php',			
+					contentType: 'application/x-www-form-urlencoded',
+					data: {
+//						update_comment_post: newComment,
+//						comment_id: commentId,
+						load_blogs: lastBlog
+					},
+					success: function(res) {
+						res = $.parseHTML(res);
+						$('section#blogSection').append(res);
+						$('.blogComments').css('display', 'none');
+						console.log(res);
+					}
+				})
+			}
+			
+    	}
 	});
+	
 	/*var $searchForm = $('.searchForm');
 	var $searchBox = $('#search');
 	var searchWidth = $($searchBox).width();
@@ -312,6 +344,44 @@ $(document).ready(function() {
 		e.preventDefault();
 		var topic = $(this).html();
 		console.log(topic);
+		
+		if(document.title.includes('Home')) {
+
+			$.ajax({
+				method: 'POST',
+				datetype: 'text',
+				url: './includes/ajax.php',			
+				contentType: 'application/x-www-form-urlencoded',
+				data: {
+					public_topic: topic
+				},
+				success: function(res) {
+					res = $.parseHTML(res);
+					$('section#blogSection').append(res);
+					$('.blogComments').css('display', 'none');
+					console.log(res);
+				}
+			});
+		} else if(document.title.includes('User blogs')) {
+
+			$.ajax({
+				method: 'POST',
+				datetype: 'text',
+				url: './includes/ajax.php',			
+				contentType: 'application/x-www-form-urlencoded',
+				data: {
+					user_topic: topic
+				},
+				success: function(res) {
+					res = $.parseHTML(res);
+					$('section#blogSection').append(res);
+					$('.blogComments').css('display', 'none');
+					console.log(res);
+				}
+			});
+		}
+		
+		
 		$.ajax({
 			url: "./includes/ajax.php?topic="+topic,
 			method: "GET",
@@ -319,10 +389,9 @@ $(document).ready(function() {
 				$('#blogSection').html(res);
 				$('.blogComments').css('display', 'none');
 				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
+				$('.body-container').trigger('resize');
 			}
 		}); // End of AJAX call
-		
-		$('.body-container').trigger('resize');
 	}); // End of Blog topic link click
 	
 	// User image clicked, show users public blogs
@@ -593,7 +662,7 @@ $(document).ready(function() {
 		console.log(post);
 		console.log($(this).parent().parent().next());
 		$.ajax({
-			url: "./includes/ajax.php?blog_id=" + blog_id,
+			url: "./includes/ajax.php?full_post=" + blog_id,
 			method: "GET",
 			success: function(res) {
 				post.html(res + " &nbsp;<a href='#' role='button' class='showLess'>(click for less)</a>");
@@ -749,7 +818,7 @@ $(document).ready(function() {
 					success: function(res) {
 						res = $.parseHTML(res);
 						el_holder.html(res).css('margin', 0);
-						$('.newCommentInput').focus();
+						$('.newCommentInput').focus(); //.css('outline', 'none')
 						$('.newCommentInput').blur(function(e) {
 							e.preventDefault();
 							var newComment = $(this).val();
@@ -759,7 +828,7 @@ $(document).ready(function() {
 							console.log(commentId);
 							console.log(el_holder);
 							el_holder.html("<span class='comment-text'>"+newComment+"</span>")
-									.css('margin-left', '9%');
+									.css('padding-left', '9%');
 						});						
 					}
 				});
@@ -818,7 +887,7 @@ $(document).ready(function() {
 						console.log(commentId);
 						console.log(el_holder);
 						el_holder.html("<span class='comment-text'>"+newComment+"</span>")
-								.css('margin-left', '9%');
+								.css('padding-left', '9%');
 					});
 				}
 			});
@@ -858,7 +927,7 @@ $(document).ready(function() {
 //				'update_comment_post='+newComment+'&comment_id='+commentId, 
 			success: function(res) {
 				res = $.parseHTML(res);
-				el_holder.html(res).css('margin-left', '9%');
+				el_holder.html(res).css('padding-left', '9%');
 //				el_holder.html(res);
 //				console.log(res);
 			}
