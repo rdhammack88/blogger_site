@@ -5,13 +5,10 @@ session_start();
 
 $alertMessage = '';
 
-if( !$_SESSION['loggedInUser'] ) {
-	/*echo 'not logged in!';*/
+if( !isset($_SESSION['loggedInUser']) || !isset($_SESSION['user_id']) ) {
 	// send them to the login page
 	header("Location: login.php");
-} //else {
-	/*echo 'logged in';*/
-
+}
 
 // connect to the database
 include('includes/connection.php');
@@ -232,7 +229,7 @@ echo $alertMessage;
 //			GROUP BY blog_category
 //			HAVING COUNT(*) >= 1";
 	sidebarCaller($conn);	
-echo '<section id="blogSection" class="col-sm-12 col-md-8 col-md-offset-1">';
+echo '<section id="blogSection" class="col-xs-12 col-md-8 col-md-offset-1">';
 ?>
 
 	<!--BLOG TOPICS ASIDE BAR FULL CODE HERE-->

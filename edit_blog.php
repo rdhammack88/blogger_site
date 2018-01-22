@@ -5,6 +5,11 @@ session_start();
 include('includes/functions.php');
 //	echo substr(strrchr($_SERVER['HTTP_REFERER'], '/'), 1 );
 //	$reference_page = substr(strrchr($_SERVER['HTTP_REFERER'], '/'), 1);
+
+if(!isset($_SESSION['loggedInUser']) || !isset($_SESSION['user_id'])) { 
+	header("Location: login.php");
+}
+
 	if(isset($_SESSION['reference_page'])) {
 		$reference_page = $_SESSION['reference_page'];
 //		echo $reference_page;
