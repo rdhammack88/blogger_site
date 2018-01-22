@@ -28,7 +28,12 @@ ga('send', 'pageview');
 <!-- Custom Scripts -->
 <script src="js/scripts.js"></script>
 
-<?php mysqli_close($conn); ?>
+<?php 
+if(isset($conn)) {
+	mysqli_close($conn); 
+}
+?>
+
 
 </body>
 </html>
