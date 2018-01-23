@@ -35,7 +35,7 @@ $(document).ready(function() {
 	}
 	
 	$('.body-container').bind('resize', function() {
-		console.log('resized');
+//		console.log('resized');
 		if( $('.body-container').height() > 650 ) {
 			$('footer').css({
 				position: "relative",
@@ -698,13 +698,13 @@ $(document).ready(function() {
 
 			if($(this).parents('.blog').next().css('margin-top') == '100px') {
 				$(this).parents('.blog').next().css({'margin-top': '200px'});
-				$('#blogSection article').css('border-radius', '10px 10px 10px 10px');
-				$('#blogSection .blog_footer').css('border-radius', '0 0 10px 10px');
+				$(this).parents('article').css('border-radius', '10px 10px 10px 10px');
+				$(this).parents('.blog_footer').css('border-radius', '0 0 10px 10px');
 			} 
 			else {
 				$(this).parents('.blog').next().css({'margin-top': '100px'});
-				$('#blogSection article').css('border-radius', '10px 10px 0 0');
-				$('#blogSection .blog_footer').css('border-radius', '0 0 0 0');
+				$(this).parents('article').css('border-radius', '10px 10px 0 0');
+				$(this).parents('.blog_footer').css('border-radius', '0 0 0 0');
 			}
 			
 			
@@ -932,6 +932,41 @@ $(document).ready(function() {
 //				console.log(res);
 			}
 		});
+	});
+	
+	$('body').on('click', 'a.load-more-comments', function(e) {
+		e.stopPropagation();
+		var self = $(this);
+		var blogId = $(this).parents('.blogComments').siblings('article').attr('id');
+		var appendToEl = $(this).parent('li.load-more-comments');
+		var lastCommentShown = appendToEl.prev().attr('id');
+		var commentList = $(this).parents('ul.comment-list');
+//		$(this).parent('li.load-more-comments')
+//		$(this).parents('ul.comment-list').children('li.comment').first().attr('id');
+//		console.log(lastCommentShown);
+		
+		$.ajax({
+			method: 'POST',
+			datatype: 'text',
+			url: './includes/ajax.php',
+			contentType: 'application/x-www-form-urlencoded', //'text/plain',
+			data: {
+				blog_id: blogId,
+				load_more_comments: lastCommentShown
+			},
+			success: function(res) {
+//				console.log(res);
+				appendToEl.before(res);
+//				console.log($('.comment-count').val());
+				var commentCount = $('.comment-count').val();
+				var shownComments = commentList.children('li.comment').length;
+				if(shownComments <= commentCount) {
+//					appendToEl.hide();
+				}
+			}
+			
+		});
+		
 	});
 	
 	/* On click of favorite-btn, update DB with ajax */
