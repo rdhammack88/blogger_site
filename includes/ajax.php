@@ -540,7 +540,7 @@ if(isset($_POST['commentInput']) && $_POST['commentInput'] != '') {
 	if(isset($_SESSION['loggedInUser'])) {
 //		$data		= $_POST['serialize'];
 		$blog_id 	= $_POST['blog_id'];
-		$comment	= $_POST['commentInput'];
+		$comment	= validateFormData($_POST['commentInput']);
 		$user_id	= $_SESSION['user_id'];
 		$current_date = date('M d, Y');
 		$current_time = date('g:ma');
@@ -633,7 +633,7 @@ if(isset($_POST['commentInput']) && $_POST['commentInput'] != '') {
 			}
 
 			$comment_post .= "<hr/><p class='comment'><span class='comment-text'>";
-			$comment_post .= $comment;
+			$comment_post .= strip_tags($comment);
 			$comment_post .= "</span><p class='comment'><small class='date-posted'>";
 			$comment_post .= "<em>&nbsp;";
 			$comment_post .= $current_date . '&nbsp;&nbsp;' . $current_time;
@@ -663,7 +663,7 @@ if(isset($_POST['newCommentInput']) && isset($_POST['comment_id']) && $_POST['ne
 
 /* User submits Editted Comment */
 if(isset($_POST['update_comment_post']) && isset($_POST['comment_id'])) {
-	$comment = $_POST['update_comment_post'];
+	$comment = validateFormData($_POST['update_comment_post']);
 	$comment_id = $_POST['comment_id'];
 //	echo $current_date . "<br>". $current_time;
 	
@@ -687,24 +687,80 @@ if(isset($_POST['update_comment_post']) && isset($_POST['comment_id'])) {
 //			$current_date = date('M d, Y');
 //			$current_time = date('g:ma');
 			
-			echo "<span class='comment-text'>$comment</span>";
+			echo "<span class='comment-text'>" . ucfirst(strip_tags($comment)) . "</span>";
 			//<small class='date-posted><em>$date_time</em></small>";
 //			<em>&nbsp;$current_date&nbsp;&nbsp;$current_time</em></small>";
 		}
 	}
 }
 
-if(isset($_GET['delete_comment'])) {
+if(isset($_POST['load_more_comments'])) {
+	$blog_id			= $_POST['blog_id'];
+	$last_comment_shown	= $_POST['load_more_comments'];
+//	echo $blog_id . "<br>";
+//	echo $last_comment_shown . "<br>";
+//	exit();
+	$query = "SELECT comments.id, comments.comment, comments.blog_id,
+			  comments.user_id, comments.date_entered, 
+			  users.email, users.user_name, users.avatar
+			  FROM comments
+			  LEFT JOIN users ON comments.user_id = users.id
+			  WHERE comments.blog_id = '$blog_id'
+			  AND comments.id < '$last_comment_shown'
+			  ORDER BY date_entered DESC
+			  LIMIT 5";
+	$comments = mysqli_query($conn, $query);
 	
-}
+	if(mysqli_num_rows($comments) >= 1) {
+		while($comment_row = mysqli_fetch_assoc($comments)) {
+			$date_from_server = strtotime($comment_row['date_entered']);
+//				$date = date('M-d-Y  h:i:s a', $date);
+			$date = date('M d, Y', $date_from_server);
+			$time = date('g:ia', $date_from_server);
 
-if(isset($_POST['delete_comment'])) {
-	
-}
+			if ($comment_row['avatar'] == null) {
+				$avatar = 'userAvatarDefault.png';
+				$class 	= '';
+			} else {
+				$avatar = $comment_row['avatar'];
+				$class 	= 'image-border';
+			}
+			if ($comment_row['user_name'] == null) {
+				$user_name = $comment_row['email'];
+			} else {
+				$user_name = $comment_row['user_name'];
+			}
+			echo "<li class='comment list-group-item' id='" . $comment_row['id'] . "'><p class='col-xs-8'>";
+			echo "<a href='user_profile.php?user=".$comment_row['user_id']."'>";
+			echo "<img src='images/user_profile_images/" . $avatar;
+			echo "' alt='User " . $user_name;
+			echo "s profile photo' class='comment_user_avatar ";
+			echo $class . "'/>";
+			echo "<span class='user-name comment-user-name'>";
+			echo $user_name . "</span></a></p>";
 
+			if(isset($_SESSION['user_id']) && $comment_row['user_id'] == $_SESSION['user_id']) {
+				echo "<p class='settings row hidden col-xs-4'><span class='sr-only'>Settings</span><button class='glyphicon glyphicon-cog btn btn-lg' aria-hidden='true'><small class='glyphicon glyphicon-chevron-down down-arrow' aria-hidden='true'></small></button></p><form method='post' action='./includes/ajax.php'><ul class='hidden settingsList'><span class='sr-only'>Edit this comment</span><li><button type='submit' class='btn edit_comment' name='edit_comment' title='Edit this comment'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> &nbsp;&nbsp; Edit comment</button></li><span class='sr-only'>Delete this comment</span><li><button type='button' class='btn delete' id='" . $comment_row['id'] . "'  name='delete_comment' data-toggle='modal' data-target='#deleteBlogModal' title='Delete this comment'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> &nbsp;&nbsp; Delete comment</button></li><input type='number' value='" . $comment_row['id'] . "' name='comment_id' class='hidden comment_id'></ul></form>";
+			}
 
-if(isset($_GET['edit_comment'])) {
-	
+			echo "<hr/>";
+			echo "<p class='comment'><span class='comment-text'>";
+			echo htmlspecialchars($comment_row['comment']);
+			echo "</span></p><p class='comment-date'><small class='date-posted'>";
+			echo "<em>";
+			echo $date . '&nbsp;&nbsp;' . $time;
+			echo "</em></small></p>";
+			echo "</li>";
+			
+				
+			$query = "SELECT COUNT(*)
+					  FROM comments
+					  WHERE blog_id = '$blog_id'";
+			$result = mysqli_query($conn, $query);
+			$comment_count = mysqli_fetch_row($result);
+			echo "<input type='number' class='comment-count hidden' value='$comment_count[0]'/>";
+		}
+	}
 }
 
 /* Fall back code for users that have javascript disabled */

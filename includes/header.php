@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head lang="en">
 	<meta charset="utf-8">        
 	<meta name="author" content="Dustin Hammack">
 	<meta name="description" content="A personal Blogging site!">

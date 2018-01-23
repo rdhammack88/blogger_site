@@ -129,7 +129,8 @@ function queryCaller($conn, $query) {
 				  FROM comments
 				  LEFT JOIN users ON comments.user_id = users.id
 				  WHERE blog_id = $blog_id
-				  ORDER BY date_entered DESC";
+				  ORDER BY date_entered DESC
+				  LIMIT 5";
 		$comments = mysqli_query($conn, $query);
 		
 		
@@ -237,7 +238,7 @@ function queryCaller($conn, $query) {
 		echo "<form class='' id='commentForm' action='./includes/ajax.php' method='post'>
     	<div class='form-group col-xs-12 input-group'>
         <label class='sr-only'>Leave a comment</label>			
-		<input type='text' name='commentInput' class='form-control input-lg input-group commentInput' placeholder='Leave a comment...'><input type='number' value='" . $row['blog_id'] . "' name='blog_id' class='hidden blog_id'><span class='input-group-btn'><span class='sr-only'>Post comment</span><button type='submit' class='btn btn-default btn-lg comment-post-btn' name='commentPost'><span class='glyphicon glyphicon-comment' aria-hidden='true'></span></button></span></div></form>";
+		<input type='text' name='commentInput' class='form-control input-lg input-group commentInput' placeholder='Leave a comment...'><input type='number' value='" . $row['blog_id'] . "' name='blog_id' class='hidden blog_id'><span class='input-group-btn'><span class='sr-only'>Post comment</span><button type='submit' class='btn btn-default btn-lg comment-post-btn' name='commentPost' title='Post comment' data-toggle='tooltip' data-placement='top'><span class='glyphicon glyphicon-comment' aria-hidden='true'></span></button></span></div></form>";
 		
 		echo "<ul class='list-group comment-list'>";
 		
@@ -260,18 +261,26 @@ function queryCaller($conn, $query) {
 				} else {
 					$user_name = $comment_row['user_name'];
 				}
-				
-				echo "<li class='comment list-group-item' id='" . $comment_row['id'] . "'><p class='col-xs-8'>";
-				echo "<a href='user_profile.php?user=".$comment_row['user_id']."'>";
-				echo "<img src='images/user_profile_images/" . $avatar;
-				echo "' alt='User " . $user_name;
-				echo "s profile photo' class='comment_user_avatar ";
-				echo $class . "'/>";
-				echo "<span class='user-name comment-user-name'>";
-				echo $user_name . "</span></a></p>";
-				
+								
 				if(isset($_SESSION['user_id']) && $comment_row['user_id'] == $_SESSION['user_id']) {
-				echo "<p class='settings row hidden col-xs-4'><span class='sr-only'>Settings</span><button class='glyphicon glyphicon-cog btn btn-sm' aria-hidden='true'><small class='glyphicon glyphicon-chevron-down down-arrow' aria-hidden='true'></small></button></p><form method='post' action='./includes/ajax.php'><ul class='hidden settingsList'><span class='sr-only'>Edit this comment</span><li><button type='submit' class='btn edit_comment' name='edit_comment' title='Edit this comment'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> &nbsp;&nbsp; Edit comment</button></li><span class='sr-only'>Delete this comment</span><li><button type='button' class='btn delete' id='" . $comment_row['id'] . "'  name='delete_comment' data-toggle='modal' data-target='#deleteBlogModal' title='Delete this comment'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> &nbsp;&nbsp; Delete comment</button></li><input type='number' value='" . $comment_row['id'] . "' name='comment_id' class='hidden comment_id'></ul></form>";
+					echo "<li class='comment list-group-item' id='" . $comment_row['id'] . "'><p class='col-xs-10'>";
+					echo "<a href='user_profile.php?user=".$comment_row['user_id']."'>";
+					echo "<img src='images/user_profile_images/" . $avatar;
+					echo "' alt='User " . $user_name;
+					echo "s profile photo' class='comment_user_avatar ";
+					echo $class . "'/>";
+					echo "<span class='user-name comment-user-name'>";
+					echo $user_name . "</span></a></p>";
+					echo "<p class='settings row hidden col-xs-2'><span class='sr-only'>Settings</span><button class='glyphicon glyphicon-cog btn btn-sm' aria-hidden='true'><small class='glyphicon glyphicon-chevron-down down-arrow' aria-hidden='true'></small></button></p><form method='post' action='./includes/ajax.php'><ul class='hidden settingsList'><span class='sr-only'>Edit this comment</span><li><button type='submit' class='btn edit_comment' name='edit_comment' title='Edit this comment'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> &nbsp;&nbsp; Edit comment</button></li><span class='sr-only'>Delete this comment</span><li><button type='button' class='btn delete' id='" . $comment_row['id'] . "'  name='delete_comment' data-toggle='modal' data-target='#deleteBlogModal' title='Delete this comment'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> &nbsp;&nbsp; Delete comment</button></li><input type='number' value='" . $comment_row['id'] . "' name='comment_id' class='hidden comment_id'></ul></form>";
+				} else {
+					echo "<li class='comment list-group-item' id='" . $comment_row['id'] . "'><p class='col-xs-12'>";
+					echo "<a href='user_profile.php?user=".$comment_row['user_id']."'>";
+					echo "<img src='images/user_profile_images/" . $avatar;
+					echo "' alt='User " . $user_name;
+					echo "s profile photo' class='comment_user_avatar ";
+					echo $class . "'/>";
+					echo "<span class='user-name comment-user-name'>";
+					echo $user_name . "</span></a></p>";
 				}
 				
 				echo "<hr/>";
@@ -284,6 +293,14 @@ function queryCaller($conn, $query) {
 				echo "</li>";
 			}
 		}
+		
+		if($total_comments >= 11) {
+			echo "<li class='text-right load-more-comments list-group-item'>";
+			echo "<a role='button' title='Load more comments' ";
+			echo "data-toggle='tooltip' data-placement='bottom' ";
+			echo "class='load-more-comments'>Load more comments</a></li>";
+		}
+		
 		echo "</ul>";
 		echo '</div></div>';
 	}
