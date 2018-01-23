@@ -193,8 +193,8 @@ div.body-container {
 	max-width: 250px;
 	font-size: 1em;
 	line-height: 1.4em;
-	background-color: rgba(230, 230, 230, 0.8) ; /*#d7dfd2;*/	/*#b2c6ab;*/		/*rgba(255, 255, 205, .8);*/
-	border: 2px solid #000;
+	background-color: rgba(230, 230, 230, 0.0) ; /*#d7dfd2;*/	/*#b2c6ab;*/		/*rgba(255, 255, 205, .8);*/
+	border: 1px solid #000;
 	border-radius: 10px;
 	padding: 5px;
 	box-shadow: 10px 10px 16px rgba(20,23,28,.25);
@@ -259,7 +259,7 @@ main.row {
 	background-color: #eee;	/* rgba(170, 227, 114, 1); 	/*rgba(240, 173, 78, .3);*/ /*	#f0ad4e;	*/	/*rgba(255, 228, 196, .8);*/
 	border-radius: 10px 10px 10px 10px;
 /*	margin-bottom: 100px;*/
-	border: 2px solid #000;
+	border: 1px solid #000;
 	min-height: 400px;
 	position: relative;
 }
@@ -311,10 +311,10 @@ main.row {
 }
 
 #blogSection img {
-/*
+
 	width: 50px;
 	height: 50px;
-*/
+
 /*	float: left;*/
 }
 
@@ -564,6 +564,7 @@ a.date:hover > p {
 
 #blogSection .blog-footer-row {
 	height: 50px;
+	font-size: .8em;
 /*	margin-top: 30px;*/
 }
 
@@ -638,9 +639,16 @@ a.date:hover > p {
 	margin-left: 15px;
 	vertical-align: bottom;
 	text-transform: uppercase;
-	font-size: 1em;
+	font-size: .8em;
 	font-weight: bolder;
 /*	text-decoration: underline;*/
+}
+
+#blogSection .blogComments ul.list-group li p.settings  {
+	padding: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 #blogSection .blogComments ul.list-group li p.comment,
@@ -649,12 +657,15 @@ a.date:hover > p {
 	padding: 0 9%;
 }
 
+#blogSection .blogComments ul.list-group li a.load-more-comments {
+	color: blue;
+}
 
 #blogSection .blogComments ul.list-group li hr {
 	border-top: 2px solid rgba(200, 200, 200, 0.9);
 /*	border-bottom-style: double;*/
-	width: 40%;
-	margin: 0 0 5px 0;
+	width: 80%;
+	margin: 0 0 5px 15px;
 }
 
 #blogSection .blogComments ul.list-group li p.comment span.comment-text {
@@ -853,6 +864,15 @@ img#userAvatar  {
 		box-shadow: 4px 4px 16px rgba(20,23,28,.25);
 		font-size: .9em;
 		z-index: 99;
+	}
+	
+	
+	#blogSection .blogComments ul.list-group li hr {
+		width: 40%;
+	}
+	
+	#blogSection .blogComments ul.list-group li p span.user-name {
+		font-size: 1em;
 	}
 }
 
