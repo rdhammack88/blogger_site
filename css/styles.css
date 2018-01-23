@@ -201,13 +201,6 @@ div.body-container {
 	/*margin-top: 3.2%;*/
 }
 
-/*
-#blogTopics.sticky {
-	position: fixed;
-	top: -210px;
-}
-*/
-
 #blogTopics ul {
 	padding-left: 10px;
 	font-size: 1.3em;
@@ -274,19 +267,6 @@ main.row {
 	border-left: 2px solid #000;
 	border-radius: 0 0 10px 10px;
 }
-
-/*
-.blogCommentsMargin {
-	margin-bottom: 100px;
-}
-*/
-
-/*
-#blogSection h2.title, #blogSection a.date {
-	width: 80%;
-	float: left;
-}
-*/
 
 #blogSection .blog_title {
 	background: rgba(220, 220, 220, 0.7); /*rgba(111, 208, 31, 1);*/
@@ -465,38 +445,10 @@ main.row {
 */
 }
 
-/*
-.date::before {
-	content: ' - ';
-}
-
-.date::before:hover {
-	text-decoration: none;
-}
-*/
-
 a.date:hover > p {
 	cursor: pointer;
 	color: red;
 }
-
-/*
-.date_posted a:link {
-	color: black;
-}
-
-.date_posted a:visited {
-	color: black;
-}
-
-.date_posted:hover {
-	cursor: pointer;
-}
-
-.date_posted a:active {
-	color: red;
-}
-*/
 
 #blogSection .blogPost {
 	position: relative;
@@ -782,12 +734,6 @@ img#userAvatar  {
 /*		width: 63%;*/
 /*		min-width: 200px;*/
 	}
-	
-/*
-	#blogSection article p.post {
-		margin-bottom: 60px;
-	}
-*/
 }
 
 @media only screen and (max-width: 450px) {
@@ -850,7 +796,6 @@ img#userAvatar  {
 /*		background-color: #000;*/
 	}
 	
-	
 	nav.navbar div.container ul.nav .account:hover .account-dropdown {
 		display: inline-block!important;
 		position: absolute;
@@ -865,7 +810,6 @@ img#userAvatar  {
 		font-size: .9em;
 		z-index: 99;
 	}
-	
 	
 	#blogSection .blogComments ul.list-group li hr {
 		width: 40%;
