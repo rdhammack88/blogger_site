@@ -46,11 +46,8 @@ if(isset($_POST['reset'])) {
 		}
 	} else {
 		$error_message = "There seems to be a problem... <br/> No user with such email exists in our database. Please try again!";
-	}
-	
+	}	
 }
-
-
 ?>
 
 <p class="lead text-center">Reset your password</p>
