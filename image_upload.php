@@ -10,17 +10,17 @@
 	$uploadPass 	= 1;
 	$uploadError	= '';
 
-echo "<pre>";
-print_r($_FILES);
-echo "</pre>";
-var_dump($_FILES);
+//echo "<pre>";
+//print_r($_FILES);
+//echo "</pre>";
+//var_dump($_FILES);
 
 	$verifyImage	= getimagesize( $_FILES['avatar']['tmp_name'] );
-	print_r( $verifyImage );
-	echo "<br>";
-	var_dump($verifyImage);
-	echo "<br>";
-	print_r( $_FILES['avatar'] );
+//	print_r( $verifyImage );
+//	echo "<br>";
+//	var_dump($verifyImage);
+//	echo "<br>";
+//	print_r( $_FILES['avatar'] );
 	if( $verifyImage !== false ) {
 		$uploadPass	= 1;
 	} else {

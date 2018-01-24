@@ -1,4 +1,4 @@
-<?php $TITLE = "Login"; ?>
+<?php $page_title = "Login"; ?>
 <?php
 session_start();
 
@@ -34,7 +34,6 @@ if( isset( $_POST['login'] ) ) {
 		while( $row = mysqli_fetch_assoc($result) ) {
 			$user_id	= $row['id'];
 			$first_name = $row['first_name'];
-//			$avatar		= $row['avatar'];
 			$hashedPass = $row['password'];
 						
 			if ($row['last_name'] == null) {
@@ -58,11 +57,11 @@ if( isset( $_POST['login'] ) ) {
 			}
 		}
 		
-		// verify hashed password with submitted password
+		/* verify hashed password with submitted password */
 		if( password_verify( $formPass, $hashedPass ) ) {
 			
-			// correct login details!
-			// store data in SESSION variables
+			/* correct login details! */
+			/* store data in SESSION variables */
 			$_SESSION['user_id']		= $user_id;
 			$_SESSION['loggedInUser'] 	= $first_name;
 			$_SESSION['user_last_name']	= $last_name;
@@ -70,25 +69,20 @@ if( isset( $_POST['login'] ) ) {
 			$_SESSION['user_name']		= $user_name;
 			
 			
-			// redirect user to blogs page
-//			header( "Location: blogs.php?alert=logged_in" );
+			/* redirect user to index page */
 			header( "Location: index.php?alert=logged_in" );
 			
-		} else { // hashed password didn't verify
+		} else { /* hashed password didn't verify */
 			
 			// error message
 			$loginError = "<div class='alert alert-danger'>Wrong username / password combination. Please try again!</div>";
 		}
 		
-	} else { // there are no results in the database
+	} else { /* there are no results in the database */
 		
 		// error message
 		$loginError = "<div class='alert alert-danger'>No such user in database. Please try again! <a class='close' data-dismiss='alert'>&times;</a></div>";
 	}
-
-	// close connection to database
-	mysqli_close($conn);
-	
 }
 
 
