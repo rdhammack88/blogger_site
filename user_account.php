@@ -1,19 +1,29 @@
 <?php
-$TITLE = "Edit User Account";
+$page_title = "Edit User Account";
 session_start();
 
 if(!isset($_SESSION['loggedInUser']) || !isset($_SESSION['user_id'])) { 
 	header("Location: login.php");
 }
 
-
-include('includes/functions.php');
 include('includes/connection.php');
+include('includes/functions.php');
 $user_name = $_SESSION['loggedInUser'];
 $user_id = $_SESSION['user_id'];
 $uploadError = '';
-include("includes/header.php");
-//echo $_SESSION['user_id'];
+
+if( isset( $_POST["cancel"] ) ) {
+	header("Location: blogs.php");
+}
+
+if( isset( $_POST["delete_user_profile"] ) ) {
+	$query 	= "DELETE
+			  FROM users
+			  WHERE id = '$user_id'";
+	$result = mysqli_query( $conn, $query );
+	
+	header("Location: logout.php?deleted_user=true");
+}
 
 $query 	= "SELECT *
 		  FROM users
@@ -31,28 +41,6 @@ if( $result ) {
 	$hashed_pass 	= $row['password'];
 }
 
-
-//if( isset( $_POST['avatarUpload'] ) ) {
-//	include('image_upload.php');
-//	// CHECK TO VERIFY UPLOADED FILE HAS PASSED ALL TESTS
-//	if( $uploadPass == 0 ) {
-//		$uploadError = "File could not be uploaded";
-//		echo $uploadError;
-//	} else {	// UPLOAD PASSED ALL TESTS
-//		if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $user_avatar ) ) {
-//			$avatar = $_FILES['avatar']['name'];
-//			$query 	= "UPDATE users
-//					  SET avatar = '$avatar'
-//					  WHERE id = '$user_id'";
-//			$result = mysqli_query( $conn, $query );
-//		} else {
-//			$uploadError = "File could not be uploaded";
-//			echo $uploadError;
-//		}
-//	}
-//}
-
-
 if( !$avatar ) {
 	$avatar = 'userAvatarDefault.png';
 //	$avatar = 'images/Male_User_Filled.png';
@@ -61,6 +49,8 @@ if( !$avatar ) {
 }
 
 if( isset( $_POST['save'] ) ) {
+//	var_dump($_POST);
+//	var_dump($_FILES);
 	$first_name	= validateFormData( $_POST['first_name'] );
 	$last_name	= validateFormData( $_POST['last_name'] );
 	$email		= validateFormData( $_POST['email'] );
@@ -68,7 +58,7 @@ if( isset( $_POST['save'] ) ) {
 //	$avatar		= validateFormData( $_POST['avatar'] );
 	$bio		= validateFormData( $_POST['bio'] );
 	
-//	if( isset( $_POST['avatar'] ) ) {
+	if( isset( $_FILES['avatar'] ) && !empty($_FILES['avatar']['name'])) {
 		include('image_upload.php');
 		// CHECK TO VERIFY UPLOADED FILE HAS PASSED ALL TESTS
 		if( $uploadPass == 0 ) {
@@ -89,9 +79,9 @@ if( isset( $_POST['save'] ) ) {
 				echo $uploadError;
 			}
 		}
-//	}
+	}
 	
-//	if( isset( $_POST['newpassword'] ) ) {
+//	if( isset( $_POST['new_password'] ) ) {
 //		
 //		$password_check = validateFormData( $_POST['current_password'] );
 //		
@@ -100,9 +90,9 @@ if( isset( $_POST['save'] ) ) {
 //		} else {
 //			// verify hashed password with submitted password
 //			if( password_verify( $password_check, $hashed_pass ) ) {
-//				$newpassword = password_hash( $_POST['newpassword'], PASSWORD_DEFAULT );
+//				$new_password = password_hash( $_POST['new_password'], PASSWORD_DEFAULT );
 //				$query	= "UPDATE users
-//						   SET password = '$newpassword'
+//						   SET password = '$new_password'
 //						   WHERE id = '$user_id'";
 //				$result	= mysqli_query( $conn, $query );
 //			}
@@ -129,30 +119,11 @@ if( isset( $_POST['save'] ) ) {
 	}
 }
 
-if( isset( $_POST["cancel"] ) ) {
-	header("Location: blogs.php");
-}
-
-if( isset( $_POST["delete"] ) ) {
-	$query 	= "DELETE
-			  FROM users
-			  WHERE id = '$user_id'";
-	$result = mysqli_query( $conn, $query );
-	
-	header("Location: logout.php");
-}
-
-mysqli_close( $conn );
+include("includes/header.php");
 ?>
-
-
-
-<!-- Trigger the modal with a button -->
-<button type="button" class="btn  btn-sm btn-danger col-xs-offset-9" data-toggle="modal" data-target="#deleteUserAccountModal">Delete Account</button>
-
 <!-- Modal -->
 <div id="deleteUserAccountModal" class="modal fade" role="dialog">
-  <form class="modal-dialog" method="post">
+  <form class="modal-dialog" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
 
     <!-- Modal content-->
     <div class="modal-content">
@@ -161,10 +132,11 @@ mysqli_close( $conn );
         <h4 class="modal-title">Confirm deletion of user account</h4>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete this user account? <strong class="text-danger">This cannot be undone!</strong></p>
+		<p>Are you sure you want to delete this user account?</p>
+     	<p> <strong class="text-danger">This cannot be undone!</strong></p>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-default" name="delete">Confirm Delete</button>
+        <button type="submit" class="btn btn-default" name="delete_user_profile">Confirm Delete</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </div>
@@ -179,9 +151,9 @@ mysqli_close( $conn );
 -->
 
 
+<br><br>
 
-
-<h3 class="text-center add_blog clearfix">User Info for <?php echo $first_name ?> </h3>
+<h3 class="text-center add_blog clearfix">User Info for <?php echo $first_name . ' ' . $last_name; ?> </h3>
 
 <!--<div class="row">
 	<form action="" class="col-sm-8 col-sm-offset-2" method="post" enctype="multipart/form-data">
@@ -193,6 +165,10 @@ mysqli_close( $conn );
 	</form>
 </div>-->
 
+
+
+<!-- Trigger the modal with a button -->
+<button type="button" class="btn  btn-sm btn-danger col-xs-offset-9" data-toggle="modal" data-target="#deleteUserAccountModal">Delete Account</button>
 
 
 <br/><br/>
@@ -255,7 +231,7 @@ mysqli_close( $conn );
 
 		<div class="form-group input-group">
 			<label for="new_password" class="input-group-addon"><strong>New Password</strong></label>
-			<input type="password" name="newpassword" id="new_password" class="form-control input-lg">
+			<input type="password" name="new_password" id="new_password" class="form-control input-lg">
 		</div>
 	</fieldset>
 	<br/>
@@ -272,10 +248,5 @@ mysqli_close( $conn );
 	
 </form>
 
-
-<small class="text-danger blogError">* </small>
-<small class="text-danger blogError">Did you forget to write a blog?</small> <br/>
-
-
-
-<?php require('includes/footer.php'); ?>
+<?php// mysqli_close($conn); ?>
+<?php require_once('includes/footer.php'); ?>
