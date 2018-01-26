@@ -18,7 +18,7 @@ if( isset( $_GET['alert'] ) ) {
 	}
 	/* User logged out successfully */
 	if($_GET['alert'] == 'logged_out') {
-		$page_title = "Log Out"; 
+		$page_title = "Home - User Logged Out"; 
 		$alertMessage = "<div class='alert alert-success'>You have successfully logged out! <a class='close' data-dismiss='alert'>&times;</a></div>";
 	}
 	/* User deleted account */
@@ -38,6 +38,9 @@ mainCaller($conn);
 /* Main Blog Article Content */
 echo '<section id="blogSection" class="col-xs-12 col-md-8 col-md-offset-1">';
 
+?>
+<noscript>
+<?php
 /* Select the last 10 publicly posted blog posts and display them */
 $query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 		   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
@@ -49,9 +52,11 @@ $query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 		   LEFT JOIN users ON blog_posts.user_id = users.id
 		   WHERE public = 'public'
 		   ORDER BY blog_posts.date_created DESC
-		   LIMIT 10;";
+		   LIMIT 5;";
 queryCaller($conn, $query);
-
+?>
+</noscript>
+<?php
 echo '</section></main>';
 include('includes/footer.php');
 ?>

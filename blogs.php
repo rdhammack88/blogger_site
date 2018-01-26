@@ -1,4 +1,4 @@
-<?php $TITLE = "User blogs"; ?>
+<?php $page_title = "User blogs"; ?>
 <?php
 
 session_start();
@@ -48,7 +48,8 @@ echo $alertMessage;
 //			WHERE user_id='$user_id'
 //			GROUP BY blog_category
 //			HAVING COUNT(*) >= 1";
-	sidebarCaller($conn);	
+mainCaller($conn);
+//	sidebarCaller($conn);	
 echo '<section id="blogSection" class="col-xs-12 col-md-8 col-md-offset-1">';
 ?>
 
@@ -57,6 +58,8 @@ echo '<section id="blogSection" class="col-xs-12 col-md-8 col-md-offset-1">';
 
 <!-- Main Blog Article Content -->
 
+
+<noscript>
 <!-- Blog Section for user blogss -->
 <?php
 // query & results TESTER
@@ -70,11 +73,10 @@ $query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
 		  LEFT JOIN users ON blog_posts.user_id = users.id
 		  WHERE user_id='$user_id'
 		  ORDER BY blog_posts.date_created DESC"; 
-
 queryCaller($conn, $query);
-
 
 echo '</section></main>';
 ?>
+</noscript>
 
 <?php include('includes/footer.php'); ?>
