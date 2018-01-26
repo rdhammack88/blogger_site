@@ -1,27 +1,53 @@
 $(document).ready(function() {
 
-	$('.homeLink').not('.navbar-brand').parent().addClass('activeLink');
-	$('p.settings').removeClass('hidden');	
-	$('.footerSettings').addClass('hidden');
-	$('.blogComments').css('display', 'none');
-//	$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
-	$('[data-toggle="tooltip"]').tooltip();
+	function loadBlogs(urlQuery) {
+		$.ajax({
+			method: 'GET',
+			url: './includes/ajax.php?'+urlQuery+'=loadBlogs',
+			beforeSend: function() {
+				$('section#blogSection').html("<h4 class='loading-message'>LOADING...</h4>");
+			},
+			success: function(res, status, jqXHR) {
+				$('section#blogSection').html(res);
+				$('p.settings').removeClass('hidden');	
+				$('.footerSettings').addClass('hidden');
+				$('.blogComments').css('display', 'none');
+			}
+		});
+	}
 	
 	if(document.title.includes('Home')) {
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.homeLink').not('.navbar-brand').parent().addClass('activeLink');
+		loadBlogs('index_page');
 	} else if(document.title.includes('User blogs')) {
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.blogsLink').parent().addClass('activeLink');
+		loadBlogs('blogs_page');
 	} else if(document.title.includes('Account') || document.title.includes('Manage') || document.title.includes('Edit') || document.title.includes('Profile')) {
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.account').addClass('activeLink');
 	}	
+
 	
+//	$('.homeLink').not('.navbar-brand').parent().addClass('activeLink');
+//	$('p.settings').removeClass('hidden');	
+//	$('.footerSettings').addClass('hidden');
+//	$('.blogComments').css('display', 'none');
+//	$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
+	$('[data-toggle="tooltip"]').tooltip();
+	
+	$('.password-edit-button').removeClass('hidden').click(function(e) {
+		e.preventDefault();
+		$(this).hide();
+		$('.password-fieldset').show();
+	});
+	$('.password-fieldset').hide();
+		
 	// User login conformation animation
 	setTimeout(function() {
 		$('.alert-success').slideUp();
-	}, 3000);
+	}, 5000);
 	
 	// If the main content is less than 500px, fix the navbar to bottom of page
 //	$('.body-container').trigger('resize');
@@ -109,55 +135,56 @@ $(document).ready(function() {
 	
 	/** On scroll of window, when blog topics are displayed make them sticky **/
 	$(window).scroll(function() {
-		if($('body').has('aside#blogTopics')) {
+//		if($('body').has('aside#blogTopics')) {
+		if(document.title.includes('Home') || document.title.includes('User blogs')) {
 			var aside = $('aside#blogTopics');
 			var mainOffset = $('main.row').offset().top;
 			var navHeight = $('nav.navbar').height();
 
-			if(window.pageYOffset < navHeight + 10) {
+			if(window.pageYOffset < navHeight) { // + 10
 				aside.css({
 					'position': 'relative',
 					'top': 0
 				});
 			}
 			
-			if(window.pageYOffset > navHeight) {
+			if(window.pageYOffset >= navHeight) {
 				aside.css({
 					'position': 'fixed',
-					'top': mainOffset - 90 //95 110
+					'top': mainOffset - navHeight // 133 125 75 95 110
 				});
 			}
-		}
 		
-		if($(window).scrollTop() == $(document).height() - $(window).height()) {
-           // ajax call get data from server and append to the div
-			console.log('bottom');
-			var lastBlog = $('.blog').last().children('article').attr('id');
-			console.log($('.blog'));
-			console.log(lastBlog);
-			
-			if(document.title.includes('Home')) {
-//				$.get('./includes/ajax.php', 'GET')
-				
-				$.ajax({
-					method: 'POST',
-					datetype: 'text',
-					url: './includes/ajax.php',			
-					contentType: 'application/x-www-form-urlencoded',
-					data: {
-//						update_comment_post: newComment,
-//						comment_id: commentId,
-						load_blogs: lastBlog
-					},
-					success: function(res) {
-						res = $.parseHTML(res);
-						$('section#blogSection').append(res);
-						$('.blogComments').css('display', 'none');
-						console.log(res);
-					}
-				})
+		
+			if($(window).scrollTop() == $(document).height() - $(window).height()) {
+			   // ajax call get data from server and append to the div
+				console.log('bottom');
+				var lastBlog = $('.blog').last().children('article').attr('id');
+				console.log($('.blog'));
+				console.log(lastBlog);
+
+				if(document.title.includes('Home')) {
+	//				$.get('./includes/ajax.php', 'GET')
+
+					$.ajax({
+						method: 'POST',
+						datetype: 'text',
+						url: './includes/ajax.php',			
+						contentType: 'application/x-www-form-urlencoded',
+						data: {
+	//						update_comment_post: newComment,
+	//						comment_id: commentId,
+							load_blogs: lastBlog
+						},
+						success: function(res) {
+							res = $.parseHTML(res);
+							$('section#blogSection').append(res);
+							$('.blogComments').css('display', 'none');
+							console.log(res);
+						}
+					})
+				}
 			}
-			
     	}
 	});
 	
@@ -463,60 +490,162 @@ $(document).ready(function() {
 	
 	$('input[name="signup"]').click(function(e) {
 		var $first_name = $('#first_name');
+		var $username = $('#username'); //$usernameError
 		var $email = $('#email');
 		var $password = $('#password');
 		
 		if( $first_name.val() === '' ) {
 			e.preventDefault();
 			$('.nameError').show();
-			$($first_name).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
+			$first_name.parent().removeClass('has-success').addClass('has-error');
+			$first_name.next().addClass('glyphicon-remove').removeClass('glyphicon-ok');
 		} else {
 			$('.nameError').hide();
-			$($first_name).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
+			$first_name.parent().removeClass('has-error').addClass('has-success');
+			$first_name.next().removeClass('glyphicon-remove').addClass('glyphicon-ok');
+		}		
+		if( $username.val() === '' ) {
+			e.preventDefault();
+			$('.usernameError').show();
+			$username.parent().removeClass('has-success').addClass('has-error');
+			$username.next().addClass('glyphicon-remove').removeClass('glyphicon-ok');
+		} else {
+			$('.usernameError').hide();
+			$username.parent().removeClass('has-error').addClass('has-success');
+			$username.next().removeClass('glyphicon-remove').addClass('glyphicon-ok');
 		}		
 		if( $email.val() === '' ) {
 			e.preventDefault();
 			$('.emailError').show();
-			$($email).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
+			$email.parent().removeClass('has-success').addClass('has-error');
+			$email.next().addClass('glyphicon-remove').removeClass('glyphicon-ok');
 		} else {
 			$('.emailError').hide();
-			$($email).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
+			$email.parent().removeClass('has-error').addClass('has-success');
+			$email.next().removeClass('glyphicon-remove').addClass('glyphicon-ok');
 		}
 		if( $password.val() === '' ) {
 			e.preventDefault();
 			$('.passwordError').show();
-			$($password).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
+			$password.parent().removeClass('has-success').addClass('has-error');
+			$password.next().addClass('glyphicon-remove').removeClass('glyphicon-ok');
 		} else {
 			$('.passwordError').hide();
-			$($password).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
+			$password.parent().removeClass('has-error').addClass('has-success');
+			$password.next().removeClass('glyphicon-remove').addClass('glyphicon-ok');
+		}
+		
+		if($first_name.val() && $username.val() && $email.val() && $password.val()) {
+			$(this).unbind('click').submit();
 		}
 	});
 	
-	$('input#username, input#email').keyup(function() {
-		console.log($(this).val());
-	})
+	$('input#username, input#email').on('keyup change', function(e) {
+//		console.log($(this).val());
+//		console.log(e.target);
+//		console.log(e.target.id);
+		var self = $(this);
+		var selfValue = $(this).val();
+		var selfTarget = e.target.id;
+		
+		if(selfTarget == 'username') {
+			$.ajax({
+				method: 'GET',
+				url: './includes/ajax.php?username_is_used='+selfValue,
+				success: function(res) {
+					if(res === 'TRUE') {
+						$('input[name="signup"]').click(function(e) {
+							e.preventDefault();
+						});
+						$('.usernameExistsError').show();
+						self.next().addClass('has-error has-feedback');
+//						console.log('Username is taken!');
+					} else {
+						self.next().addClass('has-success has-feedback');
+					}
+//					console.log(res);
+				}
+			});
+		} else if(selfTarget == 'email') {
+			$.ajax({
+				method: 'GET',
+				url: './includes/ajax.php?email_is_used='+selfValue,
+				success: function(res) {
+					if(res === 'TRUE') {
+						$('input[name="signup"]').click(function(e) {
+							e.preventDefault();
+						});
+						$('.emailExistsError').show();
+						self.next().addClass('has-error has-feedback');
+//						console.log('Email is taken!');
+					} else {
+						self.next().addClass('has-success has-feedback');
+					}
+//					console.log(res);
+				}
+			});
+		}
+		
+	});
 	
 	$('input[name="save"]').click(function(e) {
 		var $first_name = $('#first_name_edit');
+		var $username = $('#username'); //$usernameError
 		var $email = $('#email_edit');
+		var $current_password = $('#current_password');
 		var $newpassword = $('#new_password');
+		var $newpassword_repeat = $('#new_password_repeat');
 		
 		if( $first_name.val() === '' ) {
 			e.preventDefault();
 			$('.nameEditError').show();
-			$($first_name).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
+			$first_name.parent().removeClass('has-success').addClass('has-error');
+			console.log($first_name.next());
+			$first_name.next().removeClass('glyphicon-ok').addClass(' glyphicon-remove');
+			$('.passwordError').hide();
+			$('.passwordErrorRepeat').hide();
+			$('.passwordErrorBoth').hide();
 		} else {
 			$('.nameEditError').hide();
-			$($first_name).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
+			$first_name.parent().removeClass('has-error').addClass('has-success');
+			$first_name.next().removeClass('glyphicon-remove').addClass(' glyphicon-ok');
 		}		
 		if( $email.val() === '' ) {
 			e.preventDefault();
 			$('.emailEditError').show();
-			$($email).parent().removeClass('has-success has-feedback').addClass('has-error has-feedback');
+			$email.parent().removeClass('has-success').addClass('has-error');
+			$email.next().removeClass('glyphicon-ok').addClass(' glyphicon-remove');
+			$('.passwordError').hide();
+			$('.passwordErrorRepeat').hide();
+			$('.passwordErrorBoth').hide();
 		} else {
 			$('.emailEditError').hide();
-			$($email).parent().removeClass('has-error has-feedback').addClass('has-success has-feedback');
+			$email.parent().removeClass('has-error').addClass('has-success');
+			$email.next().removeClass('glyphicon-remove').addClass(' glyphicon-ok');
 		}
+		
+		
+//		if($current_password.val() === '' && (!$new_password.val() !== '' || !$new_password_repeat.val() !== '')) {
+////			var current_password_error = "* Please enter your current password before making changes to it";
+//			e.preventDefault();
+//			$('.passwordError').show();
+//		} else {
+//			
+//		}
+//		if($new_password.val() !== $new_password_repeat.val()) {
+////			var new_password_error = "* Please make sure both New Password fields match exactly";
+//			e.preventDefault();
+//			$('.passwordErrorRepeat').show();
+//		} else {
+//			
+//		}
+//		if($current_password.val() !== '' && ($new_password.val() === '' || $new_password_repeat.val() === '')) {
+////			var new_password_error = "* Please make sure both New Password fields match exactly";
+//			e.preventDefault();
+//			$('.passwordErrorBoth').show();
+//		} else {}
+		
+//		$current_password && $new_password == '') || ($current_password && $new_password_repeat == '')
 		
 		/*if( $newpassword.val() ) {
 			e.preventDefault();
@@ -551,23 +680,42 @@ $(document).ready(function() {
 	/** On upload of image, show image before actual upload **/
 	$('input[name="avatar"]').change(function() {
 		var user_avatar_preview = $('.user_avatar_preview');
-		if(this.files && this.files[0].size < 5242880 && (this.files[0].type == 'image/jpg' || this.files[0].type == 'image/jpeg' || this.files[0].type == 'image/png' || this.files[0].type == 'image/gif')) {
+		var max_file_size = 5242880;
+		// Correct File Type Selected
+		if(this.files && this.files[0].size <= max_file_size && (this.files[0].type == 'image/jpg' || this.files[0].type == 'image/jpeg' || this.files[0].type == 'image/png' || this.files[0].type == 'image/gif')) {
 			var render = new FileReader();
 			render.onload = function(e) {
 				user_avatar_preview.attr('src', e.target.result)
-					.addClass('image-border');
+					.css('border-radius', '50%');
+					//.addClass('image-border');
 				$('.imageTypeError').addClass('hidden');
 				$('.imageSizeError').addClass('hidden');
 			}
 			
 			render.readAsDataURL(this.files[0]);
-		} else if(this.files && !(this.files[0].type == 'image/jpg' || this.files[0].type == 'image/jpeg' || this.files[0].type == 'image/png' || this.files[0].type == 'image/gif')) {
-			$('.imageTypeError').removeClass('hidden');
-			console.log("Wrong file type!");
-			console.log(this.files);
-		} else if(this.files[0].size > 5242881){
+		} 
+		// If the CORRECT File Type but INCORRECT File Size
+		else if(this.files && (this.files[0].type == 'image/jpg' || this.files[0].type == 'image/jpeg' || this.files[0].type == 'image/png' || this.files[0].type == 'image/gif') && this.files[0].size > max_file_size) {
+			$('.imageTypeError').addClass('hidden');
 			$('.imageSizeError').removeClass('hidden');
+//			console.log("Wrong file type!");
+//			console.log(this.files);
 		}
+		// If the INCORRECT File Type but CORRECT File Size
+		else if(this.files && !(this.files[0].type == 'image/jpg' || this.files[0].type == 'image/jpeg' || this.files[0].type == 'image/png' || this.files[0].type == 'image/gif') && this.files[0].size <= max_file_size){
+			$('.imageTypeError').removeClass('hidden').css('margin-bottom', '10px');;
+			$('.imageSizeError').addClass('hidden');
+		}
+		// If the INCORRECT File Type AND INCORRECT File Size
+		else if(this.files && !(this.files[0].type == 'image/jpg' || this.files[0].type == 'image/jpeg' || this.files[0].type == 'image/png' || this.files[0].type == 'image/gif') && this.files[0].size > max_file_size) {
+			$('.imageTypeError').removeClass('hidden').css('margin-bottom', '0');
+			$('.imageSizeError').removeClass('hidden');
+//			console.log("Wrong file type!");
+//			console.log(this.files);
+		}
+//		else if(this.files && this.files[0].size > max_file_size){
+//			$('.imageSizeError').removeClass('hidden');
+//		}
 	});
 		
 	$('body').on('click', 'button.glyphicon-cog', function() {
