@@ -85,11 +85,30 @@
 					<p class="navbar-text hidden">Welcome, <?php echo ucfirst($_SESSION['loggedInUser']);?></p> 
 					
 					<ul class="nav navbar-nav navbar-right">
+						<!-- Nav item for mobile devices -->
+						<li class="visible-xs">
+							<img class="image-border header-profile-image" src="./images/user_profile_images/<?= $profile_avatar; ?>" alt="User <?php $user_name; ?> profile image">
+							<p id="navUserInfo">
+								<span class="nav-full-name">
+								<?= $user_full_name ?>
+								</span>
+								<span class="nav-user-name"><strong><em>
+								<?= $user_name?>
+								</strong></em></span>
+							</p>
+						</li><!-- End of Nav item for mobile devices -->
 						<li><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
-						<li><a href="blogs.php" class="blogsLink">My Blogs</a></li>
+						<li><a href="blogs.php" class="blogsLink"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> My Blogs</a></li>
+						
+						<!-- Nav items for mobile devices -->
+						<li class="visible-xs"><a href="blog_manager.php">Manage Blogs</a></li>
+						<li class="visible-xs"><a href="user_account.php">Edit Profile</a></li>
+						<li class="visible-xs"><a href="logout.php"><span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span> Log out</a></li>
+						<!-- End of Nav item for mobile devices -->
+						
 						<!-- User account dropdown menu -->
-						<li class="account"><a role='listitem'>Account</a>
-							<ul class='hidden account-dropdown'>
+						<li class="account hidden-xs"><a role='listitem'>Account</a>
+							<ul class='hidden account-dropdown hidden-xs'>
 								<a href="user_profile.php"><li>
 								<img class="image-border header-profile-image" src="./images/user_profile_images/<?= $profile_avatar; ?>" alt="User <?php $user_name; ?> profile image">
 									<p id="navUserInfo">
@@ -103,7 +122,7 @@
 								</li></a>
 								<a href="blog_manager.php"><li>Manage Blogs</li></a>
 								<a href="user_account.php"><li>Edit Profile</li></a>
-								<a href="logout.php"><li>Log out</li></a>
+								<a href="logout.php"><li><span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span> Log out</li></a>
 							</ul> <!-- End of .account-dropdown -->
 						</li> <!-- End of .account -->
 					</ul> <!-- End of .navbar-right for user navigation -->
@@ -113,8 +132,8 @@
 				?> <!--  class="activeLink" -->
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
-						<li><a href="login.php">Log In</a></li>
-						<li id="signupButton"><a href="signup.php">Sign Up</a></li>
+						<li><a href="login.php" class="loginLink"><span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span> Log In</a></li>
+						<li id="signupButton"><a href="signup.php" class="signupLink">Sign Up</a></li>
 					</ul> <!-- End of .navbar-right for default navigation -->
 				<?php endif; ?>
 				</div> <!-- End of .navbar-collapse -->
