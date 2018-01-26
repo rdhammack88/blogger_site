@@ -11,6 +11,8 @@ include('includes/functions.php');
 $user_name = $_SESSION['loggedInUser'];
 $user_id = $_SESSION['user_id'];
 $uploadError = '';
+$current_password_error = '';
+$new_password_error = '';
 
 if( isset( $_POST["cancel"] ) ) {
 	header("Location: blogs.php");
@@ -70,6 +72,8 @@ if( isset( $_POST['save'] ) ) {
 			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $target_path ) ) {
 //				$avatar = $_FILES['avatar']['name'];
 				$avatar = $user_image;
+				unset($_SESSION['avatar']);
+				$_SESSION['avatar']	= $avatar;
 //				$query 	= "UPDATE users
 //						  SET avatar = '$avatar'
 //						  WHERE id = '$user_id'";
@@ -81,23 +85,60 @@ if( isset( $_POST['save'] ) ) {
 		}
 	}
 	
-//	if( isset( $_POST['new_password'] ) ) {
-//		
-//		$password_check = validateFormData( $_POST['current_password'] );
-//		
-//		if( !$password_check ) {
-//			return FALSE;
-//		} else {
-//			// verify hashed password with submitted password
-//			if( password_verify( $password_check, $hashed_pass ) ) {
-//				$new_password = password_hash( $_POST['new_password'], PASSWORD_DEFAULT );
-//				$query	= "UPDATE users
-//						   SET password = '$new_password'
-//						   WHERE id = '$user_id'";
-//				$result	= mysqli_query( $conn, $query );
-//			}
-//		}		
-//	}
+	if( isset( $_POST['new_password'] ) && $_POST['new_password'] != '' || isset( $_POST['new_password_repeat'] ) && $_POST['new_password_repeat'] != '' ) {
+		$email_check 	= validateFormData( $_POST['email'] );
+		$old_password = validateFormData( $_POST['current_password'] );
+		$new_password = validateFormData( $_POST['new_password']);
+		$new_password_repeat = validateFormData($_POST['new_password_repeat']);	
+		
+		
+//		echo "New Password = " . $new_password;
+//		echo "<br>";
+//		echo "Old Password = " . $old_password;
+//		echo "<br>";
+//		echo "New Password Repeated = " . $new_password_repeat;
+//		echo "<br>";
+//		exit();
+		
+		if(!$old_password) {
+			$current_password_error = "* Please enter your current password before making changes to it";
+		}
+		if($new_password !== $new_password_repeat) {
+			$new_password_error = "* Please make sure both New Password fields match exactly";
+		}
+		if(($old_password && $new_password == '') || ($old_password && $new_password_repeat == '')) {
+			$new_password_error = "* Please fill in both New Password fields";
+		} 
+		if($old_password !== '' && $new_password === $new_password_repeat) {
+
+			$query = "SELECT email, password
+					  FROM users
+					  WHERE email='$email_check'";
+			// store the result
+			$result = mysqli_query( $conn, $query );
+
+			// verify if result is returned
+			if( mysqli_num_rows($result) > 0 ) {
+				// store basic user data in variables
+				while( $row = mysqli_fetch_assoc($result) ) {
+					$storedHashedPass = $row['password'];
+				}
+			}
+
+			/* verify hashed password with submitted password */
+			if( password_verify( $old_password, $storedHashedPass ) ) {
+
+				$new_password = password_hash( $new_password, PASSWORD_DEFAULT );
+				$query	= "UPDATE users
+						   SET password = '$new_password'
+						   WHERE id = '$user_id'";
+				$result	= mysqli_query( $conn, $query );
+
+			} else {
+				$current_password_error = "* Please correct your current password";
+			}
+		}
+	}
 	
 //	avatar	  = '$avatar',
 	
@@ -188,57 +229,71 @@ include("includes/header.php");
 	<small class="text-danger nameEditError">* Please enter your first name<br/></small>
 <!--	<small class="text-danger inputError">Please enter your first name<br/></small>-->
 	
-	<div class="form-group input-group">
+	<div class="form-group input-group has-feedback">
 		<label for="first_name" class="input-group-addon"><strong>First Name:</strong></label>
-		<input type="text" class="form-control input-lg" name="first_name" id="first_name_edit" maxlength="150" value="<?php echo $first_name; ?>"> <br/>
+		<input type="text" class="form-control input-lg" name="first_name" id="first_name_edit" maxlength="100" value="<?php echo $first_name; ?>" required>
+    	<span class="glyphicon form-control-feedback"></span>
 	</div>
 	<br/>
 	
 	<div class="form-group input-group">
 		<label for="last_name" class="input-group-addon"><strong>Last Name:</strong></label>
-		<input type="text" class="form-control input-lg" name="last_name" id="last_name" maxlength="150" value="<?php echo $last_name; ?>"> <br/>
+		<input type="text" class="form-control input-lg" name="last_name" id="last_name" maxlength="100" value="<?php echo $last_name; ?>"> <br/>
 	</div>
 	<br/>
 	
 	<small class="text-danger emailEditError">* Please enter your email <br/></small>
 <!--	<small class="text-danger inputError">Please enter your email <br/></small>-->
 	
-	<div class="form-group input-group">
+	<div class="form-group input-group has-feedback">
 		<label for="email" class="input-group-addon"><strong>Email:</strong></label>
-		<input type="text" class="form-control input-lg" name="email" id="email_edit" maxlength="150" value="<?php echo $email; ?>"> <br/>
+		<input type="text" class="form-control input-lg" name="email" id="email_edit" maxlength="100" value="<?php echo $email; ?>" required>
+    	<span class="glyphicon form-control-feedback"></span>
 	</div>
 	<br/>
 	
-	<div class="form-group input-group">
+	<div class="form-group input-group has-feedback">
 		<label for="user_name" class="input-group-addon"><strong>User Name:</strong></label>
-		<input type="text" class="form-control input-lg" name="user_name" id="user_name" maxlength="100" value="<?php echo $user_name; ?>"> <!--<br/>-->
+		<input type="text" class="form-control input-lg" name="user_name" id="user_name" maxlength="100" value="<?php echo $user_name; ?>" required> <!--<br/>-->
 	</div>
 	<br/>
 	
+	<?php if($current_password_error != '' || $new_password_error != '') : ?>
+		<fieldset>
+	<?php elseif($current_password_error == '' || $new_password_error == '') : ?>
 	
-	<fieldset>
+		<button type="button" class="btn btn-danger password-edit-button hidden">Change password</button>
+		<fieldset class="password-fieldset">
+	<?php endif; ?>
+	
+<!--	<fieldset class="password-fieldset">-->
 	<!--	<button class="btn btn-sm btn-danger">Change password</button> <br/><br/>-->
-		<small class="text-danger passwordError">* Please enter your current password <br/></small>
+<!--
+		
 		<small class="text-danger passwordErrorRepeat">* Please enter your current password again <br/></small>
+-->
+	
+		<small class="text-danger passwordError">* Please enter your current password <br/></small>
+		<small class="text-danger current-password-error"><?php  echo $current_password_error; ?></small>
+		<div class="form-group input-group">
+			<label for="current_password" class="input-group-addon"><strong>Current Password</strong></label>
+			<input type="password" name="current_password" id="current_password" class="form-control input-lg">
+		</div>
 		<small class="text-danger passwordErrorBoth">* Please enter your current password twice <br/></small>
-
+		<small class="text-danger new-password-error"><?php  echo $new_password_error; ?></small>
 		<div class="form-group input-group">
-			<label for="current_password" class="input-group-addon"><strong>Current Password</strong>
-			<input type="password" name="current_password" id="current_password" class="form-control input-sm"></label>
-			<label for="current_password_repeat" class="input-group-addon"><strong>Current Password Again</strong>
-			<input type="password" name="current_password_repeat" id="current_password_repeat" class="form-control input-sm"></label> 
+			<label for="new_password" class="input-group-addon"><strong>New Password</strong>
+			<input type="password" name="new_password" id="new_password" class="form-control input-sm"></label>
+			<label for="new_password_repeat" class="input-group-addon"><strong>New Password Again</strong>
+			<input type="password" name="new_password_repeat" id="new_password_repeat" class="form-control input-sm"></label> 
 		</div>
 
-		<div class="form-group input-group">
-			<label for="new_password" class="input-group-addon"><strong>New Password</strong></label>
-			<input type="password" name="new_password" id="new_password" class="form-control input-lg">
-		</div>
 	</fieldset>
 	<br/>
 		
-	<div class="form-group">
-		<label for="bio" class="sr-only">Current user biography says - <?php echo $bio; ?></label>
-		<textarea name="bio" class="form-control input-lg" id="bio" cols="30" rows="15" placeholder="Start writing your bio here..."><?php echo $bio; ?></textarea>
+	<div class="form-group input-group">
+		<label for="bio" class="input-group-addon"><span id="bioTextEdit">Biography</span></label>
+		<textarea name="bio" class="form-control input-lg" id="bio" cols="30" rows="7" placeholder="Start writing your bio here..."><?php echo $bio; ?></textarea>
 	</div>
 		
 	<br/><br/><br><br>
