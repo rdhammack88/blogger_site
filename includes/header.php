@@ -85,7 +85,7 @@
 					<p class="navbar-text hidden">Welcome, <?php echo ucfirst($_SESSION['loggedInUser']);?></p> 
 					
 					<ul class="nav navbar-nav navbar-right">
-						<li class="activeLink"><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
+						<li><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
 						<li><a href="blogs.php" class="blogsLink">My Blogs</a></li>
 						<!-- User account dropdown menu -->
 						<li class="account"><a role='listitem'>Account</a>
@@ -110,7 +110,7 @@
 				<?php
 				else :
 				/* If user is not logged in, display default navigation */
-				?>
+				?> <!--  class="activeLink" -->
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="index.php"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
 						<li><a href="login.php">Log In</a></li>
