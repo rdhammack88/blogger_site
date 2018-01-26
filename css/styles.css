@@ -3,20 +3,136 @@ font-family: 'Indie Flower', cursive;
 font-family: 'Gloria Hallelujah', cursive;
 font-family: 'Shadows Into Light', cursive;
 font-family: 'Nosifer', cursive;
+color: #337ab7;
 */
 
+/* Generic Styles */
 html {
-/*	height: 90%;*/
 	height: 100vh;
 }
 
 body {
-/*	height: 100%;*/
 	margin: 0;
 	padding: 0;
 	font-size: 16px;
 }
 
+ul {
+	list-style: none;
+}
+
+input[type='file'] {
+	outline: none;
+}
+
+.loading-message {
+	color: rgba(120, 120, 120, 0.7);
+	margin: auto;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.row {
+	margin: 0;
+}
+
+.text-right {
+	text-align: right;
+	padding-right: 10px;
+}
+
+.text-danger {
+	text-transform: uppercase;
+}
+
+.input-group.has-feedback label~.form-control-feedback {
+	top: 0;
+}
+
+.has-feedback label~.form-control-feedback {
+	top: 35px;
+}
+
+.password-edit-button {
+	margin-bottom: 25px;
+}
+
+#bioTextEdit {
+	writing-mode: vertical-rl;
+	-webkit-text-orientation: sideways-right;
+	font-size: 1.3em;
+}
+
+.table-bordered>tbody>tr>td.text-danger {
+	border: none;
+}
+
+.asterisk {
+	font-size: 1.2em;
+}
+
+.fade-text {
+	font-size: 1.3em;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.image-border {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+}
+
+.user_avatar_preview {
+	display: block;
+	margin: 15px;
+	height: 200px;
+	width: 200px;
+	border-radius: 40%;'
+}
+
+#signupForm p.requiredMessage {
+/*	padding: 0;*/
+	font-size: .8em;
+	position: absolute;
+	top: 5px;
+	right: 0;	
+}
+
+.imageTypeError,
+.imageSizeError {
+	font-size: .9em;
+}
+
+.titleError, 
+.topicError, 
+.blogError,
+.nameError,
+.nameEditError,
+.usernameError,
+.usernameEditError,
+.usernameExistsError,
+.emailError,
+.emailEditError,
+.emailExistsError,
+.passwordError,
+.passwordErrorRepeat,
+.passwordErrorBoth {
+	display: none;
+}
+
+.align-left {
+	float: left;
+}
+
+.align-right {
+	float: right;
+}
+
+/* Navigation Styles */
 nav.navbar::after {
 	clear: both;
 }
@@ -24,29 +140,9 @@ nav.navbar::after {
 nav.navbar div.container div.navbar-collapse p.navbar-text {
 	color: #777;	
 }
-	
-nav.navbar div.container {
-/*	position: sticky;*/
-}
 
 nav.navbar div.container a {
 	color: rgba(220, 0, 0, 0.7);
-}
-
-nav.navbar div.container li a:hover {
-	background-color: rgba(220, 0, 0, 0.3);
-	border-radius: 0 0 8px 8px;
-	color: #eee;
-		box-shadow: 4px 4px 16px rgba(20,23,28,.25);
-}
-
-nav.navbar div.container .activeLink {
-	background: rgba(220, 0, 0, 0.5);/* rgba(255, 80, 0, .7);#f40;*/
-	border-radius: 0 0 8px 8px;
-}
-
-nav.navbar div.container .activeLink a {
-	color: #fff;
 }
 
 nav.navbar div.container div.navbar-header a {
@@ -58,25 +154,38 @@ nav.navbar div.container ul.nav li {
 	height: 100%;
 	z-index: 999;
 	padding-bottom: 0;
+	margin-left: 10px;
+}
+
+nav.navbar div.container ul.nav > li#signupButton {
+	border: 1px solid #d55;
+	border-radius: 0 0 8px 8px;
+	margin-left: 10px;
+}
+
+nav.navbar div.container ul.nav li a:hover {
+	background-color: rgba(220, 0, 0, 0.3);
+	border-radius: 0 0 8px 8px;
+	color: #eee;
+	box-shadow: 4px 4px 16px rgba(20,23,28,.25);
+}
+
+nav.navbar div.container ul.nav .activeLink {
+	background: rgba(220, 0, 0, 0.5);/* rgba(255, 80, 0, .7);#f40;*/
+	border-radius: 0 0 8px 8px;
+}
+
+nav.navbar div.container ul.nav .activeLink a {
+	color: #fff;
 }
 
 nav.navbar div.container ul.nav .account:hover .account-dropdown {
 	display: inline-block!important;
 	position: absolute;
 	left: 0; /* 33% / 40%*/
-/*	margin-top: -10px;*/
-	margin-top: -3px;
 	padding: 0;
-	background-color: #eee; /*rgba(0,0,0,.8);*/ /*rgb(222,222,222) rgba(220, 0, 0, 0.6);  rgba(255, 80, 0, .5);  rgba(122,122, 100, 0.6);*/
-	color: #666; /*#eee;*/
-/*	border: 1px solid #000;*/
+	background-color: #eee; /*rgba(0,0,0,.8); /*rgb(222,222,222) rgba(220, 0, 0, 0.6);  rgba(255, 80, 0, .5);  rgba(122,122, 100, 0.6);*/
 	border-radius: 0 0 5px 5px;
-/*	width: 300px;*/
-/*	width: 130%;*/
-/*	width: 300%;*/
-/*	max-width: 200px;*/
-/*	width: 110%;*/
-/*	height: 300%;s*/
 	font-size: .9em;
 	z-index: 99;
 }
@@ -129,63 +238,29 @@ nav.navbar div.container ul.nav li.account .account-dropdown li .nav-user-name {
 	font-size: .9em;	
 }
 
-/*
-ul.nav li.account .account-dropdown a li {
-	color: #333;
-}
-*/
-
 nav.navbar div.container ul.nav li.account .account-dropdown a:hover li {
 	text-decoration: none;
 	color: #eee;
-/*	line-height: 2em;*/
 }
 
-nav.navbar div.container ul.nav li.account .account-dropdown li a:hover {
-/*	color: #337ab7;;*/
+nav.navbar div.row form > div.form-group .search-list {
+	z-index: 99;
+	position: absolute;
 }
 
-ul {
-	list-style: none;
-}
-
-/*
-#search:focus {
+/*#search:focus {
 	display: block;
 	background: #f00;
 }
 */
 
-nav form > div.input-group {
-/*	max-width: 900px;*/
-}
-
-.search-list {
-	z-index: 999;
-	position: absolute;
-}
-
-.text-right {
-	text-align: right;
-	padding-right: 10px;
-}
-
-.fade-text {
-	font-size: 1.3em;
-}
-
-.add-btn {
-	padding: 15px;
-/*	background: rgba(220, 0, 0, 0.7);*/
-}
-
+/* Body Content Styles */
 div.body-container {
 /*	margin-top: 130px;*/
 }
 
-
 /* BLOG STYLES */
-/* Aside Navigation */
+/* Aside Navigation Styles */
 #blogTopics {
 	display: none;
 	height: 400px;
@@ -210,15 +285,7 @@ div.body-container {
 	padding: 5px 0;
 }
 
-.row {
-	margin: 0;
-}
-
-main.row {
-/*	margin-bottom: 90px;*/
-}
-
-/* Aside Navigation Anchor Links */
+/* Aside Topics Navigation Anchor Links Styles */
 #blogTopics a {
 	text-decoration: none;
 	color: #000;
@@ -229,12 +296,20 @@ main.row {
 	cursor: pointer;
 }
 
-/* Blog Article Content */
+/* Blog Article Content Styles */
 #blogSection {
 	padding: 0;
-	margin-left: 6%;
+/*	margin-left: 6%;*/
+	margin-left: 0;
 	position: relative;
 	float: right;
+	height: 100vh;
+}
+
+.body-container .text-right .add-btn {
+/*	padding: 15px;*/
+/*	background: rgba(220, 0, 0, 0.5);*/
+/*	font-size: 1.3em;*/
 }
 
 #blogSection div.blog {
@@ -298,13 +373,6 @@ main.row {
 /*	float: left;*/
 }
 
-.image-border {
-/*	border: 2px solid #000;*/
-	width: 50px;
-	height: 50px;
-	border-radius: 50%;
-}
-
 #blogSection .user_name::before {
 	content: "@";
 	font-size: .7em;
@@ -350,6 +418,8 @@ main.row {
 	/*margin-bottom: 2px;
 	width: 80%;*/
 /*}*/
+
+/* Blog/Comment Settings Button Styles */
 #blogSection .date_and_settings,
 #blogSection .blogComments .settingsList {
 	padding: 0;
@@ -365,6 +435,7 @@ main.row {
 #blogSection p.settings button {
 	background-color: transparent;
 	outline: none;
+	padding: 10px 20px;
 }
 
 #blogSection p.settings button .down-arrow {
@@ -379,6 +450,7 @@ main.row {
 	position: absolute;
 	z-index: 2;
 	border: 1px solid #444;
+	overflow: hidden;
 }
 
 #blogSection .date_and_settings ul li button span.glyphicon-pencil,
@@ -558,6 +630,8 @@ a.date:hover > p {
 	padding: 0;
 }
 
+
+/* Blog Comments Styles */
 #blogSection .blogComments {
 	padding-bottom: 0;
 }
@@ -647,7 +721,7 @@ a.date:hover > p {
 	outline: none;
 }*/
 
-/* FOOTER STYLES */
+/* PAGE FOOTER STYLES */
 footer.col-sm-12 {
 	color: #888;
 	z-index: -9999;
@@ -673,29 +747,12 @@ footer span.love {
 	margin-bottom: 40px;
 }
 
-.titleError, 
-.topicError, 
-.blogError,
-.nameError,
-.nameEditError,
-.emailError,
-.emailEditError,
-.passwordError,
-.passwordErrorRepeat,
-.passwordErrorBoth {
-	display: none;
-}
-
 /* USER INFO EDIT PAGE STYLES */
-/*
-.input-group-addon {
-	background-color: #d9edf7;
-}
-*/
 
-.cursor-pointer {
-	cursor: pointer;
+.input-group-addon {
+/*	background-color: #d9edf7;*/
 }
+
 
 img#userAvatar  {
 	width: 256px;
@@ -762,7 +819,7 @@ img#userAvatar  {
 /*		margin-bottom: 50px;*/
 	}
 	div.body-container {
-		margin-top: 140px;
+		margin-top: 200px;
 /*
 		position: relative;
 		top: 88px;
