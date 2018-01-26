@@ -3,9 +3,9 @@
 	$user_id = isset( $_SESSION['user_id'] ) ? $_SESSION['user_id'] : 'tmp';
 	$user_image_dir = "images/user_profile_images/";
 	$user_image		= basename( $_FILES['avatar']['name'] );
-	$imageType		= pathinfo( $user_image, PATHINFO_EXTENSION );
-	$imageType		= strtolower($imageType);
-	$user_image		= "user" . $user_id . '.' . $imageType;
+	$image_type		= pathinfo( $user_image, PATHINFO_EXTENSION );
+	$image_type		= strtolower($image_type);
+	$user_image		= "user" . $user_id . '.' . $image_type;
 	$target_path	= $user_image_dir . $user_image;
 	$uploadPass 	= 1;
 	$uploadError	= '';
@@ -35,7 +35,7 @@
 	}
 
 	// VERIFY FILE TYPE IS IMAGE
-	if( $imageType != 'png' && $imageType != 'jpeg' && $imageType != 'jpg' && $imageType != 'gif' ) {
+	if( $image_type != 'png' && $image_type != 'jpeg' && $image_type != 'jpg' && $image_type != 'gif' ) {
 		$uploadError 	.= "<br/>Please only use image file types ('jpg', 'jpeg', 'png', 'gif).";
 		$uploadPass 	= 0;
 	}
