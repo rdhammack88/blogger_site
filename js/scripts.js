@@ -1,5 +1,47 @@
 $(document).ready(function() {
 
+	function init() {
+		$('.body-container').trigger('resize');
+		$('p.settings').removeClass('hidden');	
+		$('.footerSettings').addClass('hidden');
+		$('.blogComments').css('display', 'none');
+		
+		// User login conformation animation
+		setTimeout(function() {
+			$('.alert-success').slideUp();
+		}, 5000);
+
+		// If the main content is less than 500px, fix the navbar to bottom of page
+		if( $('.body-container').height() < 650 ) {
+			$('footer').css({ 
+				top: '80%',
+				position: "absolute",
+				bottom: 0,
+				left: 0
+			});	
+		}
+
+		// Show only the first 300 characters of the blog post on load
+		$.each($('.post'), function() {
+			var post = $(this).text();
+			if(post.length > 300 && !$('.post').hasClass('activeText')) {
+				post = post.substr(0, 300) + ".... <a href='#' role='button' class='showMore'>(click for more)</a>";
+				$(this).html(post);
+			}
+		}); // End of .each function for each post
+
+		$('[data-toggle="tooltip"]').tooltip();
+
+		// Fade "Most recent blogs" text up over 10 seconds
+		$('.fade-text').fadeTo(10000, 0.0);
+
+		// If there are no user blogs, then hide the "most recent blogs" text
+		if( $('#blogSection').has('div.alert') ) {
+			$('.no-blogs').hide();
+		}
+
+	}
+	
 	function loadBlogs(urlQuery) {
 		$.ajax({
 			method: 'GET',
@@ -9,33 +51,46 @@ $(document).ready(function() {
 			},
 			success: function(res, status, jqXHR) {
 				$('section#blogSection').html(res);
-				$('p.settings').removeClass('hidden');	
-				$('.footerSettings').addClass('hidden');
-				$('.blogComments').css('display', 'none');
+				init();
 			}
 		});
 	}
 	
-	if(document.title.includes('Home')) {
+	if(document.title.toLowerCase().includes('home')) {
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.homeLink').not('.navbar-brand').parent().addClass('activeLink');
 		loadBlogs('index_page');
+		init();
+	} else if(document.title.toLowerCase().includes('login')) {
+		$('ul.navbar-right').children('li').removeClass('activeLink');
+		$('.loginLink').parent().addClass('activeLink');
+	} else if(document.title.toLowerCase().includes('signup')) {
+		$('ul.navbar-right').children('li').removeClass('activeLink');
+		$('.signupLink').parent().addClass('activeLink');
 	} else if(document.title.includes('User blogs')) {
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.blogsLink').parent().addClass('activeLink');
+		console.log('user blogs');
 		loadBlogs('blogs_page');
-	} else if(document.title.includes('Account') || document.title.includes('Manage') || document.title.includes('Edit') || document.title.includes('Profile')) {
+		init();
+	} else if(document.title.toLowerCase().includes('account') || 
+			  document.title.toLowerCase().includes('manage user blogs') || 
+			  document.title.toLowerCase().includes('edit') || 
+			  document.title.toLowerCase().includes('profile')) {
+		console.log("manage blogs");
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$('.account').addClass('activeLink');
 	}	
 
+	init();
 	
 //	$('.homeLink').not('.navbar-brand').parent().addClass('activeLink');
 //	$('p.settings').removeClass('hidden');	
 //	$('.footerSettings').addClass('hidden');
 //	$('.blogComments').css('display', 'none');
 //	$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
-	$('[data-toggle="tooltip"]').tooltip();
+//	$('[data-toggle="tooltip"]').tooltip();
+//	$('.body-container').trigger('resize');
 	
 	$('.password-edit-button').removeClass('hidden').click(function(e) {
 		e.preventDefault();
@@ -43,22 +98,9 @@ $(document).ready(function() {
 		$('.password-fieldset').show();
 	});
 	$('.password-fieldset').hide();
-		
-	// User login conformation animation
-	setTimeout(function() {
-		$('.alert-success').slideUp();
-	}, 5000);
 	
-	// If the main content is less than 500px, fix the navbar to bottom of page
-//	$('.body-container').trigger('resize');
-	if( $('.body-container').height() < 650 ) {
-		$('footer').css({ 
-			top: '80%',
-			position: "absolute",
-			bottom: 0,
-			left: 0
-		});	
-	}
+	// Removed text goes here
+	
 	
 	$('.body-container').bind('resize', function() {
 //		console.log('resized');
@@ -78,16 +120,9 @@ $(document).ready(function() {
 		}
 	});
 	
-	// Fade "Most recent blogs" text up over 10 seconds
-	$('.fade-text').fadeTo(10000, 0.0);
-	
-	// If there are no user blogs, then hide the "most recent blogs" text
-	if( $('#blogSection').has('div.alert') ) {
-		$('.no-blogs').hide();
-	}
-		
 	$('.blogsLink').click(function(e) {
 //		e.preventDefault();
+		document.title = 'Blogger.com - User blogs';
 		$('.body-container').trigger('resize');
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		$(this).parent().addClass('activeLink');
@@ -96,14 +131,16 @@ $(document).ready(function() {
 			url: './includes/ajax.php?user_blogs=all',
 			method: 'GET',
 			success: function(res) {
-				$('.body-container').html(res);
-				$('p.settings').removeClass('hidden');
+				$('section#blogSection').html(res);
+//				$('p.settings').removeClass('hidden');
+				init();
 			}
 		})
 	});
 	
 	$('.homeLink').click(function(e) {
 //		e.preventDefault();
+		document.title = 'Blogger.com - Home';
 		$('.body-container').trigger('resize');
 		$('ul.navbar-right').children('li').removeClass('activeLink');
 		
@@ -115,24 +152,16 @@ $(document).ready(function() {
 			url: './includes/ajax.php?index=home',
 			method: 'GET',
 			success: function(res) {
-				$('.body-container').html(res);
+				$('section#blogSection').html(res);
+				init();
 //				if($('.settings').length) {
-				$('p.settings').removeClass('hidden');
-				$('.fade-text').fadeTo(10000, 0.0);
+//				$('p.settings').removeClass('hidden');
+//				$('.fade-text').fadeTo(10000, 0.0);
 //				}
 			}
 		})
 	});
 
-	// Show only the first 300 characters of the blog post on load
-	$.each($('.post'), function() {
-		var post = $(this).text();
-		if(post.length > 300 && !$('.post').hasClass('activeText')) {
-			post = post.substr(0, 300) + ".... <a href='#' role='button' class='showMore'>(click for more)</a>";
-			$(this).html(post);
-		}
-	}); // End of .each function for each post
-	
 	/** On scroll of window, when blog topics are displayed make them sticky **/
 	$(window).scroll(function() {
 //		if($('body').has('aside#blogTopics')) {
@@ -158,13 +187,23 @@ $(document).ready(function() {
 		
 			if($(window).scrollTop() == $(document).height() - $(window).height()) {
 			   // ajax call get data from server and append to the div
-				console.log('bottom');
-				var lastBlog = $('.blog').last().children('article').attr('id');
-				console.log($('.blog'));
-				console.log(lastBlog);
+//				console.log('bottom');
+				
+//				var lastBlog = $('.blog').last().children('article').attr('id');
+				
+//				console.log($('.blog'));
+//				console.log(lastBlog);
 
-				if(document.title.includes('Home')) {
+				if(document.title.toLowerCase().includes('home')) {
 	//				$.get('./includes/ajax.php', 'GET')
+					var page = 'public';
+					var lastBlog = $('.blog').last().children('article').attr('id');
+
+				} else if(document.title.toLowerCase().includes('user blogs')) {
+					var page = 'user';
+					var lastBlog = $('.blog').last().children('article').attr('id');
+
+				}
 
 					$.ajax({
 						method: 'POST',
@@ -174,16 +213,20 @@ $(document).ready(function() {
 						data: {
 	//						update_comment_post: newComment,
 	//						comment_id: commentId,
+							page: page,
 							load_blogs: lastBlog
 						},
 						success: function(res) {
 							res = $.parseHTML(res);
 							$('section#blogSection').append(res);
-							$('.blogComments').css('display', 'none');
-							console.log(res);
+							init();
+//							console.log(lastBlog);
+//							$('section#blogSection').before('footer');
+//							$('.blogComments').css('display', 'none');
+//							console.log(res);
 						}
 					})
-				}
+//				}
 			}
     	}
 	});
@@ -284,8 +327,9 @@ $(document).ready(function() {
 			method: "GET",
 			success: function(res) {
 				$('#blogSection').html(res);
-				$('.blogComments').css('display', 'none');
-				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
+				init();
+//				$('.blogComments').css('display', 'none');
+//				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
 //				$('main.row').append(res);
 			}
 		}); // End of AJAX call
@@ -329,8 +373,9 @@ $(document).ready(function() {
 			method: "GET",
 			success: function(res) {
 				$('#blogSection').html(res);
-				$('.blogComments').css('display', 'none');
-				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
+				init();
+//				$('.blogComments').css('display', 'none');
+//				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
 				var blogInfo = $.parseHTML(res);
 //				console.log(blogInfo[1].children);
 				$.each(blogInfo, function() {
@@ -385,8 +430,9 @@ $(document).ready(function() {
 				success: function(res) {
 					res = $.parseHTML(res);
 					$('section#blogSection').append(res);
-					$('.blogComments').css('display', 'none');
-					console.log(res);
+					init();
+//					$('.blogComments').css('display', 'none');
+//					console.log(res);
 				}
 			});
 		} else if(document.title.includes('User blogs')) {
@@ -431,7 +477,8 @@ $(document).ready(function() {
 			method: "GET",
 			success: function(res) {
 				$('#blogSection').html(res);
-				$('.blogComments').css('display', 'none');
+				init();
+//				$('.blogComments').css('display', 'none');
 				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
 			}
 		}); // End of AJAX call
@@ -447,7 +494,8 @@ $(document).ready(function() {
 			method: "GET",
 			success: function(res) {
 				$('#blogSection').html(res);
-				$('.blogComments').css('display', 'none');
+				init();
+//				$('.blogComments').css('display', 'none');
 				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
 			}
 		}); // End of AJAX call
@@ -466,7 +514,8 @@ $(document).ready(function() {
 			method: "GET",
 			success: function(res) {
 				$('#blogSection').html(res);
-				$('.blogComments').css('display', 'none');
+				init();
+//				$('.blogComments').css('display', 'none');
 				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
 			}
 		}); // End of AJAX call
@@ -482,7 +531,8 @@ $(document).ready(function() {
 			method: "GET",
 			success: function(res) {
 				$('#blogSection').html(res);
-				$('.blogComments').css('display', 'none');
+				init();
+//				$('.blogComments').css('display', 'none');
 				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
 			}
 		}); // End of AJAX call
