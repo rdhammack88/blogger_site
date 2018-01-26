@@ -112,7 +112,7 @@
 				/* If user is not logged in, display default navigation */
 				?> <!--  class="activeLink" -->
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="index.php"><span class="homeLink glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
+						<li><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
 						<li><a href="login.php">Log In</a></li>
 						<li id="signupButton"><a href="signup.php">Sign Up</a></li>
 					</ul> <!-- End of .navbar-right for default navigation -->
