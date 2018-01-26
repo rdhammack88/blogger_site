@@ -16,7 +16,7 @@
 
 <?php
 /* Close connection to DB */
-if(isset($conn)) {
+if(isset($conn) && !empty($conn)) {
 	mysqli_close($conn);
 }
 ?>

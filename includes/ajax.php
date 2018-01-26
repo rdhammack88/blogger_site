@@ -1,9 +1,39 @@
-<?php include('connection.php'); ?>
-<?php include('functions.php'); ?>
-
 <?php
 session_start();
+require_once('connection.php');
+require_once('functions.php'); 
 $avatar = 'userAvatarDefault.png';
+
+if(isset($_GET['index_page'])) {
+	/* Select the last 10 publicly posted blog posts and display them */
+	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,
+			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+			   blog_posts.total_comments, users.avatar, users.id,
+			   users.email, users.user_name
+			   FROM blog_posts
+			   LEFT JOIN users ON blog_posts.user_id = users.id
+			   WHERE public = 'public'
+			   ORDER BY blog_posts.date_created DESC
+			   LIMIT 5;";
+	queryCaller($conn, $query);
+}
+
+if(isset($_GET['blogs_page'])) {
+	$user_id = $_SESSION['user_id'];
+	$query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			  date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			  blog_posts.blog_category, blog_posts.id AS blog_id,
+			  blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+			  blog_posts.total_comments, users.avatar, users.id,
+			  users.email, users.user_name
+			  FROM blog_posts
+			  LEFT JOIN users ON blog_posts.user_id = users.id
+			  WHERE user_id='$user_id'
+			  ORDER BY blog_posts.date_created DESC"; 
+	queryCaller($conn, $query);
+}
 
 //if(isset($_GET['search'])) {
 //	$search_query 	= $_GET['search'];
@@ -44,6 +74,34 @@ $avatar = 'userAvatarDefault.png';
 	}*/
 //}
 
+if(isset($_GET['username_is_used'])) {
+	$user_name = $_GET['username_is_used'];
+	$query = "SELECT user_name
+			  FROM users
+			  WHERE user_name = '$user_name'";
+	$result = mysqli_query($conn, $query);
+	if(mysqli_num_rows($result) >= 1 && $user_name !== '') {//$result) { //
+		echo 'TRUE';
+	} else {
+		echo 'FALSE';
+	}
+}
+
+if(isset($_GET['email_is_used'])) {
+	$email = $_GET['email_is_used'];
+	$query = "SELECT email
+			  FROM users
+			  WHERE email = '$email'";
+	$result = mysqli_query($conn, $query);
+	if(mysqli_num_rows($result) >= 1 && $email !== '') {//$result) { //
+		echo 'TRUE';
+	} else {
+		echo 'FALSE';
+	}
+}
+
+
+
 if(isset($_GET['user_blogs'])) {
 	$user_id = $_SESSION['user_id'];
 	$_SERVER['SCRIPT_NAME'] = '/fullSiteProjects/blogger/blogs.php';
@@ -57,8 +115,7 @@ if(isset($_GET['user_blogs'])) {
 		      FROM blog_posts
 		      LEFT JOIN users ON blog_posts.user_id = users.id
 			  WHERE user_id='$user_id'
-			  ORDER BY blog_posts.date_created DESC"; 
-	
+			  ORDER BY blog_posts.date_created DESC";	
 	queryCaller($conn, $query);
 }
 
@@ -76,9 +133,6 @@ if(isset($_GET['index'])) {
 			   WHERE public = 'public'
 			   ORDER BY blog_posts.date_created DESC
 			   LIMIT 10;";
-	
-		//. "$_SESSION[" . 'id' . "]"		// %W 
-		
 	queryCaller($conn, $query);
 }
 
@@ -153,30 +207,8 @@ if(isset($_GET['topic'])) {
 		echo "</article>";			
 	}*/
 }  
-//else {
-//	echo "<p class='text-danger'>No results found!</p>";
-//}
 
-
-
-
-
-//if(isset($_GET['username']) && isset($_GET['title'])) {
-//	$username = $_GET['username'];
-//	$title = $_GET['title'];
-//	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
-//			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
-//			   blog_posts.blog_category, blog_posts.id,  blog_posts.user_id, users.avatar, users.id,
-//			   users.email, users.user_name
-//			   FROM blog_posts
-//			   LEFT JOIN users ON blog_posts.user_id = users.id
-//			   WHERE public = 'public'
-//			   AND blog_posts.blog_title = '$title'
-//			   AND (users.user_name = '$username'
-//			   OR users.email = '$username')";
-	
-//	echo "welcome home";
-//}
+/* If user clicks show more button on blog post, show the full blog */
 if(isset($_GET['full_post'])) {
 
 	$blog_id = $_GET['full_post'];
@@ -468,6 +500,7 @@ if(isset($_GET['favorite'])) {
 	}
 }
 
+/* If user scrolls to bottom of page, load next 10 blogs */
 if(isset($_POST['load_blogs'])) {
 	$last_blog_id = $_POST['load_blogs'];
 	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
@@ -482,12 +515,10 @@ if(isset($_POST['load_blogs'])) {
 			   AND blog_posts.id < $last_blog_id
 			   ORDER BY blog_posts.date_created DESC
 			   LIMIT 10;";
-
-	//. "$_SESSION[" . 'id' . "]"		// %W 
-
 	queryCaller($conn, $query);
 }
 
+/* If user clicks on topic link in sidebar, get all public posts related */
 if(isset($_POST['public_topic'])) {
 	$topic = $_POST['public_topic'];
 	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
@@ -502,12 +533,10 @@ if(isset($_POST['public_topic'])) {
 			   AND blog_posts.blog_category = '$topic'
 			   ORDER BY blog_posts.date_created DESC
 			   LIMIT 10;";
-
-	//. "$_SESSION[" . 'id' . "]"		// %W 
-
 	queryCaller($conn, $query);
 }
 
+/* If logged in user clicks on topic link in user sidebar, get all posts related */
 if(isset($_POST['user_topic'])) {
 	$topic = $_POST['user_topic'];
 	$user_id = $_SESSION['user_id'];
@@ -528,6 +557,7 @@ if(isset($_POST['user_topic'])) {
 	queryCaller($conn, $query);
 }
 
+/* If user clicks on comment button and is not logged in, redirect to login.php */
 if(isset($_POST['comment'])) {
 	if(!isset($_SESSION['loggedInUser'])) {
 		header("Location ../login.php");
@@ -971,4 +1001,43 @@ if( isset( $_POST['delete'] ) ) {
 	
 	header('Location: ../blogs.php');
 }
+
+///////	FALL BACK CODE FOR USERS WITH JAVASCRIPT DISABLED /////////
+//////  FOR BOTH POPULAR TOPICS ASIDE BAR, AND SEARCH    /////////
+if(isset($_GET['topic'])) {
+	$topic = $_GET['topic'];
+	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,
+			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes,
+			   blog_posts.dislikes, blog_posts.total_comments,
+			   users.avatar, users.id,
+			   users.email, users.user_name
+			   FROM blog_posts
+			   LEFT JOIN users ON blog_posts.user_id = users.id
+			   WHERE public = 'public'
+			   AND blog_category = '$topic'
+			   ORDER BY blog_posts.date_created DESC";
+	queryCaller($conn, $query);
+}
+		
+if(isset($_GET['search'])) {
+	$search_query 	= $_GET['search'];	
+	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+			   blog_posts.blog_category, blog_posts.id AS blog_id,
+			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+			   blog_posts.total_comments, users.avatar, users.id,
+			   users.email, users.user_name
+			   FROM blog_posts
+			   LEFT JOIN users ON blog_posts.user_id = users.id
+			   WHERE public = 'public'
+			   AND (blog_title = '$search_query'
+			   OR blog_post = '$search_query'
+			   OR blog_category = '$search_query')
+			   ORDER BY blog_posts.date_created DESC";
+
+	queryCaller($conn, $query);
+}
+/* END OF FALLBACK CODE FOR DISABLED JAVASCRIPT USERS */
 ?>

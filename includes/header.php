@@ -1,3 +1,4 @@
+<?php //include('./connection.php'); ?>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -67,8 +68,14 @@
 				<?php
 				/* If user is logged in, display user navigation */
 				if( isset( $_SESSION['loggedInUser'] ) ) :
-					$profile_avatar = $_SESSION['avatar'];
-					$user_name		= $_SESSION['user_name'];
+					if(isset($_SESSION['avatar'])){
+						$profile_avatar = $_SESSION['avatar'];
+					} else {
+						$profile_avatar = 'userAvatarDefault.png';
+					}
+					if(isset($_SESSION['user_name'])) {
+						$user_name		= $_SESSION['user_name'];
+					}
 					if(isset($_SESSION['last_name']) && $_SESSION['last_name'] != NULL) {
 						$user_full_name	= $_SESSION['loggedInUser'] . $_SESSION['last_name'];
 					} else {
@@ -78,7 +85,7 @@
 					<p class="navbar-text hidden">Welcome, <?php echo ucfirst($_SESSION['loggedInUser']);?></p> 
 					
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
+						<li class="activeLink"><a href="index.php" class="homeLink"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
 						<li><a href="blogs.php" class="blogsLink">My Blogs</a></li>
 						<!-- User account dropdown menu -->
 						<li class="account"><a role='listitem'>Account</a>
@@ -101,13 +108,13 @@
 						</li> <!-- End of .account -->
 					</ul> <!-- End of .navbar-right for user navigation -->
 				<?php
-				/* If user is not logged in, display default navigation */
 				else :
+				/* If user is not logged in, display default navigation */
 				?>
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="index.php"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
 						<li><a href="login.php">Log In</a></li>
-						<li><a href="signup.php">Sign Up</a></li>
+						<li id="signupButton"><a href="signup.php">Sign Up</a></li>
 					</ul> <!-- End of .navbar-right for default navigation -->
 				<?php endif; ?>
 				</div> <!-- End of .navbar-collapse -->
@@ -133,4 +140,4 @@
 		</div> <!-- End of .row -->
     </nav> <!-- End of Navigation Menu -->
 	<!-- Main div for body content -->
-	<div class="container body-container clear-fix">
+	<div class="container body-container clearfix">
