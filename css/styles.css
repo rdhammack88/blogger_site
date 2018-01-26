@@ -17,6 +17,10 @@ body {
 	font-size: 16px;
 }
 
+div.body-container {
+	height: 100%;
+}
+
 ul {
 	list-style: none;
 }
@@ -94,6 +98,10 @@ input[type='file'] {
 	border-radius: 40%;'
 }
 
+td.manage-title {
+	max-width: 12%;
+}
+
 #signupForm p.requiredMessage {
 /*	padding: 0;*/
 	font-size: .8em;
@@ -154,25 +162,25 @@ nav.navbar div.container ul.nav li {
 	height: 100%;
 	z-index: 999;
 	padding-bottom: 0;
-	margin-left: 10px;
+	margin-bottom: 5px;
+/*	margin-left: 3px;*/
 }
 
 nav.navbar div.container ul.nav > li#signupButton {
 	border: 1px solid #d55;
-	border-radius: 0 0 8px 8px;
-	margin-left: 10px;
+/*	border-radius: 0 0 8px 8px;*/
 }
 
 nav.navbar div.container ul.nav li a:hover {
 	background-color: rgba(220, 0, 0, 0.3);
-	border-radius: 0 0 8px 8px;
+/*	border-radius: 0 0 8px 8px;*/
 	color: #eee;
 	box-shadow: 4px 4px 16px rgba(20,23,28,.25);
 }
 
 nav.navbar div.container ul.nav .activeLink {
 	background: rgba(220, 0, 0, 0.5);/* rgba(255, 80, 0, .7);#f40;*/
-	border-radius: 0 0 8px 8px;
+/*	border-radius: 0 0 8px 8px;*/
 }
 
 nav.navbar div.container ul.nav .activeLink a {
@@ -209,9 +217,14 @@ nav.navbar div.container ul.nav li.account .account-dropdown a {
 	width: 100%;
 }
 
+/*nav.navbar div.container ul.nav li.visible-xs:first-of-type,*/
 nav.navbar div.container ul.nav li.account .account-dropdown a:first-of-type {
 /*	display: inline-block;*/
 	border-bottom: 1px solid #ccc;
+}
+
+nav.navbar div.container ul.nav li .header-profile-image {
+	vertical-align: text-bottom;
 }
 
 nav.navbar div.container ul.nav li.account .account-dropdown li .header-profile-image {
@@ -220,18 +233,20 @@ nav.navbar div.container ul.nav li.account .account-dropdown li .header-profile-
 	vertical-align: bottom;
 }
 
+nav.navbar div.container ul.nav li.visible-xs:first-of-type p#navUserInfo, 
 nav.navbar div.container ul.nav li.account .account-dropdown li p#navUserInfo {
 	display: inline-block;
 	margin: 0 0 0 20px;
 }
 
+nav.navbar div.container ul.nav li.visible-xs:first-of-type p .nav-full-name,
 nav.navbar div.container ul.nav li.account .account-dropdown li .nav-full-name {
 	display: block;
 	line-height: 1.2em;
 	font-size: 1.2em;
 }
 
-
+nav.navbar div.container ul.nav li.visible-xs:first-of-type p .nav-user-name,
 nav.navbar div.container ul.nav li.account .account-dropdown li .nav-user-name {
 	display: block;
 	line-height: 1.2em;
@@ -303,7 +318,7 @@ div.body-container {
 	margin-left: 0;
 	position: relative;
 	float: right;
-	height: 100vh;
+	height: 100%; /*100vh;*/
 }
 
 .body-container .text-right .add-btn {
@@ -412,12 +427,9 @@ div.body-container {
 /*.blog_title h2 {
 	font-family: 'Shadows Into Light', cursive;
 	display: inline-block;
-	padding-left: 5%;*/
-	
-	
-	/*margin-bottom: 2px;
-	width: 80%;*/
-/*}*/
+	padding-left: 5%;margin-bottom: 2px;
+	width: 80%;
+}*/
 
 /* Blog/Comment Settings Button Styles */
 #blogSection .date_and_settings,
@@ -728,11 +740,13 @@ footer.col-sm-12 {
 	font-size: 1.4em;
 	padding: 20px;
 	margin-top: 110px;
+/*
 	position: relative;
 	bottom: 0;
+*/
 /*	top: 88px;*/
 /*	top: 10%;*/
-	left: 0;
+/*	left: 0;*/
 }
 
 footer span.love {
@@ -816,41 +830,30 @@ img#userAvatar  {
 		position: fixed;
 		top: 0;
 		z-index: 999;
-/*		margin-bottom: 50px;*/
-	}
-	div.body-container {
-		margin-top: 200px;
-/*
-		position: relative;
-		top: 88px;
-*/
 	}
 	
-	header div {
-		display: block;
+	nav.navbar div.container ul.nav li {
+		margin-left: 3px;
+		margin-bottom: 0;
 	}
 	
-	#mainNav {
-		text-align: left;
-		font-size: 1.3em;
+	nav.navbar div.container ul.nav li a,
+	nav.navbar div.container ul.nav li a:hover {
+		border-radius: 0 0 8px 8px;
 	}
 	
-	#blogTopics {
-		display: block;
+	nav.navbar div.container ul.nav .activeLink {
+		border-radius: 0 0 8px 8px;
 	}
 	
-	#blogSection .blog_title a.name {
-		width: 67%;
-	}
-	
-	#blogSection .blog_title h4 {
-		font-size: 1.5em;
+	nav.navbar div.container ul.nav > li#signupButton {
+		margin-left: 50px;
+		border-radius: 0 0 8px 8px;
 	}
 	
 	nav > .row { /*#searchForm #search, #searchForm #searchButton*/
 		z-index: -999;
 		margin-top: 20px;
-/*		background-color: #000;*/
 	}
 	
 	nav.navbar div.container ul.nav .account:hover .account-dropdown {
@@ -866,6 +869,35 @@ img#userAvatar  {
 		box-shadow: 4px 4px 16px rgba(20,23,28,.25);
 		font-size: .9em;
 		z-index: 99;
+	}
+	
+	header div {
+		display: block;
+	}
+	
+	#mainNav {
+		text-align: left;
+		font-size: 1.3em;
+	}
+	
+	div.body-container {
+		margin-top: 200px;
+	}
+	
+	div.user-info-edit-container {
+		margin-top: -50px;
+	}
+	
+	#blogTopics {
+		display: block;
+	}
+	
+	#blogSection .blog_title a.name {
+		width: 67%;
+	}
+	
+	#blogSection .blog_title h4 {
+		font-size: 1.5em;
 	}
 	
 	#blogSection .blogComments ul.list-group li hr {
