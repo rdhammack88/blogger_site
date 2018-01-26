@@ -1,5 +1,5 @@
 <?php
-$TITLE = "Edit Blog"; 
+$page_title = "Edit Blog"; 
 session_start();
 
 include('includes/functions.php');
