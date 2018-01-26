@@ -1,7 +1,7 @@
 </div> <!-- End of .body-container -->
 
 <!-- Footer -->
-<footer class="text-center col-sm-12 navbar-fixed-bottom">
+<footer class="text-center col-sm-12"> <!-- navbar-fixed-bottom -->
 	<small>Created with <span class="love">&hearts;</span> by <a href="http://www.dustinhammack.com/" target="_blank" title="Portfolio site for Dustin Hammack" data-toggle="tooltip" data-placement="bottom">Dustin Hammack</a>!</small>  
 </footer>
 

@@ -15,7 +15,7 @@ if(isset($_GET['index_page'])) {
 			   FROM blog_posts
 			   LEFT JOIN users ON blog_posts.user_id = users.id
 			   WHERE public = 'public'
-			   ORDER BY blog_posts.date_created DESC
+			   ORDER BY blog_posts.id DESC
 			   LIMIT 5;";
 	queryCaller($conn, $query);
 }
@@ -31,7 +31,8 @@ if(isset($_GET['blogs_page'])) {
 			  FROM blog_posts
 			  LEFT JOIN users ON blog_posts.user_id = users.id
 			  WHERE user_id='$user_id'
-			  ORDER BY blog_posts.date_created DESC"; 
+			  ORDER BY blog_posts.id DESC
+			  LIMIT 5"; 
 	queryCaller($conn, $query);
 }
 
@@ -115,7 +116,7 @@ if(isset($_GET['user_blogs'])) {
 		      FROM blog_posts
 		      LEFT JOIN users ON blog_posts.user_id = users.id
 			  WHERE user_id='$user_id'
-			  ORDER BY blog_posts.date_created DESC";	
+			  ORDER BY blog_posts.id DESC";	
 	queryCaller($conn, $query);
 }
 
@@ -131,7 +132,7 @@ if(isset($_GET['index'])) {
 			   FROM blog_posts
 			   LEFT JOIN users ON blog_posts.user_id = users.id
 			   WHERE public = 'public'
-			   ORDER BY blog_posts.date_created DESC
+			   ORDER BY blog_posts.id DESC
 			   LIMIT 10;";
 	queryCaller($conn, $query);
 }
@@ -501,20 +502,38 @@ if(isset($_GET['favorite'])) {
 }
 
 /* If user scrolls to bottom of page, load next 10 blogs */
-if(isset($_POST['load_blogs'])) {
+if(isset($_POST['load_blogs']) && isset($_POST['page'])) {
+	$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL;
+	$page = $_POST['page'];
 	$last_blog_id = $_POST['load_blogs'];
-	$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
-			   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
-			   blog_posts.blog_category, blog_posts.id AS blog_id,
-			   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
-			   blog_posts.total_comments, users.avatar, users.id,
-			   users.email, users.user_name
-			   FROM blog_posts
-			   LEFT JOIN users ON blog_posts.user_id = users.id
-			   WHERE public = 'public'
-			   AND blog_posts.id < $last_blog_id
-			   ORDER BY blog_posts.date_created DESC
-			   LIMIT 10;";
+	if($page == 'public') {
+		$query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
+				   date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+				   blog_posts.blog_category, blog_posts.id AS blog_id,
+				   blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+				   blog_posts.total_comments, users.avatar, users.id,
+				   users.email, users.user_name
+				   FROM blog_posts
+				   LEFT JOIN users ON blog_posts.user_id = users.id
+				   WHERE public = 'public'
+				   AND blog_posts.id < '$last_blog_id'
+				   ORDER BY blog_posts.date_created DESC
+				   LIMIT 5;";
+	} else if($page == 'user') {
+		$query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
+				  date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
+				  blog_posts.blog_category, blog_posts.id AS blog_id,
+				  blog_posts.user_id, blog_posts.favorite, blog_posts.likes, blog_posts.dislikes,
+				  blog_posts.total_comments, users.avatar, users.id,
+				  users.email, users.user_name
+				  FROM blog_posts
+				  LEFT JOIN users ON blog_posts.user_id = users.id
+				  WHERE user_id='$user_id'
+				  AND blog_posts.id < '$last_blog_id'
+				  ORDER BY blog_posts.date_created DESC
+				  LIMIT 5"; 
+	}
+		
 	queryCaller($conn, $query);
 }
 
