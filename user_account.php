@@ -190,7 +190,7 @@ include("includes/header.php");
 <button type="submit" name="delete" class="btn btn-sm btn-danger col-sm-offset-9">Delete Account</button>
 </form>
 -->
-
+<div class="user-info-edit-container">
 
 <br><br>
 
@@ -302,6 +302,7 @@ include("includes/header.php");
 	<input type="submit"  name="cancel" class="btn btn-danger btn-lg col-xs-4 col-xs-offset-2" value="Cancel"><!--Cancel</button>-->
 	
 </form>
+</div>
 
 <?php// mysqli_close($conn); ?>
 <?php require_once('includes/footer.php'); ?>
