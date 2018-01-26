@@ -16,53 +16,35 @@ include('includes/connection.php');
 // Incluce Functions
 include('includes/functions.php');
 
-
 $user_id = $_SESSION['user_id'];
 
 // check for query string
 if( isset( $_GET['alert'] ) ) {
 	// User logged in successfully
 	if( $_GET['alert'] == 'logged_in') {
-//		$alertMessage = "<div class='alert alert-success'>You are logged in! <a class='close' data-dismiss='alert'>&times;</a></div>";
 		$alertMessage = "<div class='alert alert-success'>Welcome " . $_SESSION['loggedInUser'] . "! <a class='close' data-dismiss='alert'>&times;</a></div>";
 	}
 }
 
 include('includes/header.php');
 echo $alertMessage;
-//echo $_SESSION['loggedInUser'];
-//echo "<br/>";
-//echo $_SESSION['user_id'];
 ?>
 
 <br/>
 
-<!--<main class="row">-->
-	<?php
-
-	?>
 <?php
-	
-//	$query = "SELECT blog_category 
-//			FROM blog_posts
-//			WHERE user_id='$user_id'
-//			GROUP BY blog_category
-//			HAVING COUNT(*) >= 1";
 mainCaller($conn);
-//	sidebarCaller($conn);	
 echo '<section id="blogSection" class="col-xs-12 col-md-8 col-md-offset-1">';
 ?>
 
 <!--BLOG TOPICS ASIDE BAR FULL CODE HERE-->
 
-
 <!-- Main Blog Article Content -->
-
 
 <noscript>
 <!-- Blog Section for user blogss -->
 <?php
-// query & results TESTER
+// query & results if user has Javascript disabled
 $query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
 		  date_format(blog_posts.date_created, '%m/%d/%Y') date_created,
 		  blog_posts.blog_category, blog_posts.id AS blog_id,
@@ -72,11 +54,13 @@ $query = "SELECT blog_posts.blog_title, blog_posts.blog_post,
 		  FROM blog_posts
 		  LEFT JOIN users ON blog_posts.user_id = users.id
 		  WHERE user_id='$user_id'
-		  ORDER BY blog_posts.date_created DESC"; 
+		  ORDER BY blog_posts.id DESC"; 
 queryCaller($conn, $query);
 
-echo '</section></main>';
+//echo '</section></main>';
 ?>
 </noscript>
 
+</section>
+</main>
 <?php include('includes/footer.php'); ?>

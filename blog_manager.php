@@ -23,7 +23,9 @@ modalCaller();
 //echo $_SERVER['HTTP_REFERER'];
 //echo substr(strrchr($_SERVER['HTTP_REFERER'], '/'), 1 );
 ?>
-<div class="container-fluid">
+<div class="container-fluid"> <!-- 
+<div class="user-info-edit-container">
+ -->
 	<div class="row text-right">
 		<span class="sr-only">Add new blog</span><a href="add_blog.php" class="btn btn-primary add-btn"><span class="glyphicon glyphicon-plus"> </span> New</a>
 	</div>
@@ -65,7 +67,7 @@ modalCaller();
 
 		<tr class="table-hover <?= $row['id']; ?>"> 
 			<th class="blog_id"><?= $x; ?></th>
-			<td><?= ucfirst($row['blog_title']); ?></td>
+			<td class="manage-title"><?= ucfirst($row['blog_title']); ?></td>
 			<td><?= $row['blog_category']; ?></td>
 			<td><?= $row['public']; ?></td>
 			<td><?= $likes; ?></td>
