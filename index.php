@@ -51,12 +51,14 @@ $query 	= "SELECT blog_posts.blog_title, blog_posts.blog_post,
 		   FROM blog_posts
 		   LEFT JOIN users ON blog_posts.user_id = users.id
 		   WHERE public = 'public'
-		   ORDER BY blog_posts.date_created DESC
+		   ORDER BY blog_posts.id DESC
 		   LIMIT 5;";
 queryCaller($conn, $query);
 ?>
 </noscript>
+</section>
+</main>
 <?php
-echo '</section></main>';
+//echo '</section></main>';
 include('includes/footer.php');
 ?>
