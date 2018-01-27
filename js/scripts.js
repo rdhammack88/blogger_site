@@ -718,7 +718,7 @@ $(document).ready(function() {
 	/** On upload of image, show image before actual upload **/
 	$('input[name="avatar"]').change(function() {
 		var user_avatar_preview = $('.user_avatar_preview');
-		var max_file_size = 5242880;
+		var max_file_size = 6242880;
 		// Correct File Type Selected
 		if(this.files && this.files[0].size <= max_file_size && (this.files[0].type == 'image/jpg' || this.files[0].type == 'image/jpeg' || this.files[0].type == 'image/png' || this.files[0].type == 'image/gif')) {
 			var render = new FileReader();
