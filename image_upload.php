@@ -18,8 +18,8 @@
 	}
 
 	// CHECK FILE SIZE
-	if( $_FILES['avatar']['size'] > 5242881 ) { //5242880
-		$uploadError .= "<br/>File size too large. (Max 5Mb)";
+	if( $_FILES['avatar']['size'] > 6242880 ) { //5242880
+		$uploadError .= "<br/>File size too large. (Max 6Mb)";
 		$uploadPass  = 0;
 	}
 

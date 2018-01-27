@@ -85,7 +85,7 @@ if( isset( $_POST["signup"] ) ) {
 							rotateImage($image);
 							
 							 /* Rename user avatar image to include user_id */
-							$avatar = "user$user_id.$image_type";
+							$avatar = "user$user_id-md.$image_type";
 							$query	= "UPDATE users
 									   SET avatar = '$avatar'
 									   WHERE id = '$user_id'";

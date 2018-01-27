@@ -75,6 +75,9 @@ if( isset( $_POST['save'] ) ) {
 				rotateImage($image);
 				createThumbnail($image, $path);
 //				$avatar = $_FILES['avatar']['name'];
+				
+				$user_image	= "user" . $user_id . '-md.' . $image_type;
+//				$image_ext = pathinfo( $user_image, PATHINFO_EXTENSION );
 				$avatar = $user_image;
 				unset($_SESSION['avatar']);
 				$_SESSION['avatar']	= $avatar;
