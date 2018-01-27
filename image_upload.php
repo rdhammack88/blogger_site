@@ -1,5 +1,4 @@
 <?php
-
 	$user_id = isset( $_SESSION['user_id'] ) ? $_SESSION['user_id'] : 'tmp';
 	$user_image_dir = "images/user_profile_images/";
 	$user_image		= basename( $_FILES['avatar']['name'] );
@@ -9,18 +8,8 @@
 	$target_path	= $user_image_dir . $user_image;
 	$uploadPass 	= 1;
 	$uploadError	= '';
-
-//echo "<pre>";
-//print_r($_FILES);
-//echo "</pre>";
-//var_dump($_FILES);
-
 	$verifyImage	= getimagesize( $_FILES['avatar']['tmp_name'] );
-//	print_r( $verifyImage );
-//	echo "<br>";
-//	var_dump($verifyImage);
-//	echo "<br>";
-//	print_r( $_FILES['avatar'] );
+
 	if( $verifyImage !== false ) {
 		$uploadPass	= 1;
 	} else {

@@ -70,6 +70,10 @@ if( isset( $_POST['save'] ) ) {
 //			$uploadPass = 1;
 		} else {	// UPLOAD PASSED ALL TESTS
 			if( move_uploaded_file( $_FILES['avatar']['tmp_name'], $target_path ) ) {
+				$path = 'images/user_profile_images/';
+				$image = $path . $user_image;
+				rotateImage($image);
+				createThumbnail($image, $path);
 //				$avatar = $_FILES['avatar']['name'];
 				$avatar = $user_image;
 				unset($_SESSION['avatar']);
