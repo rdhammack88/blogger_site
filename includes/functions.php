@@ -13,6 +13,138 @@ function validateFormData($formData) {
 	return $formData;
 }
 
+function rotateImage($image) {
+	$mime_type = substr(mime_content_type($image), (strrpos(mime_content_type($image), '/') + 1));
+	/* If image is not of jpeg mime type, no need to rotate */
+	if($mime_type === 'jpeg' || $mime_type === 'jpg') {
+		$image_data = exif_read_data($image);
+//		echo $image_data['Orientation'];
+//		exit();
+
+		/* Get orientation code number from image data */
+		if(!empty($image_data['Orientation'])) {
+			switch ($image_data['Orientation']) {
+				case 2: /* Horizontal flip */
+					$flip = 1;
+					$rotate = null;
+					break;
+				case 3: /* Rotate 180deg left */
+					$rotate = 180;
+					$flip = null;
+					break;
+				case 4: /* Vertical flip */
+					$flip = 2;
+					$rotate = null;
+					break;
+				case 5: /* Vertical flip + Rotate 90deg right */
+					$flip = 1;
+					$rotate = -90;
+					break;
+				case 6: /* Rotate 90deg right */
+					$rotate = -90;
+					$flip = null;
+					break;
+				case 7: /* Horizontal flip + Rotate 90deg right */
+					$flip = 1;
+					$rotate = -90;
+					break;
+				case 8: /* Rotate 90deg left */
+					$rotate = 90;
+					$flip = null;
+					break;
+				default:
+					$rotate = null;
+					$flip = null;
+			}
+
+			if($mime_type == 'png') {
+				$original_copy = imagecreatefrompng($image);
+			} elseif($mime_type == 'gif') {
+				$original_copy = imagecreatefromgif($image);
+			} elseif($mime_type == 'jpg') {
+				$original_copy = imagecreatefromjpeg($image);
+			} elseif($mime_type == 'jpeg') {
+				$original_copy = imagecreatefromjpeg($image);
+			} else {
+				$original_copy = imagecreatefromstring($image);
+			}
+			
+			/* If $flip && $rotate did not return NULL, the image needs rotated */
+			if(!is_null($flip) && !is_null($flip)) {
+				$flipped_image = imageflip($original_copy, $rotate, 0);
+				$rotated_image = imagerotate($flipped_image, $rotate, 0);
+				imagejpeg($rotated_image, $image, 100);
+				imagedestroy($original_copy);
+				imagedestroy($rotated_image);
+				imagedestroy($flipped_image);
+			}
+			
+			/* If $flip did not return NULL, the image needs rotated */	
+			if(!is_null($flip)) {
+				$flipped_image = imageflip($original_copy, $rotate, 0);
+				imagejpeg($flipped_image, $image, 100);
+				imagedestroy($original_copy);
+				imagedestroy($flipped_image);
+			}
+
+			/* If $rotate did not return NULL, the image needs rotated */	
+			if(!is_null($rotate)) {
+				$rotated_image = imagerotate($original_copy, $rotate, 0);
+				imagejpeg($rotated_image, $image, 100);
+				imagedestroy($original_copy);
+				imagedestroy($rotated_image);
+			}
+		}
+	}
+	return $image;
+}
+
+function createThumbnail($image, $path) {
+//	$destination = 'images/user_profile_images/';
+						 //(strrpos($image, '.') - 1));
+	$mime_type = substr(mime_content_type($image), (strrpos(mime_content_type($image), '/') + 1));
+	$destination = $path;
+		
+	$sizes = [
+		'tn' => 300,
+		'md' => 900
+	];
+	
+	if($mime_type == 'png') {
+		$resource = imagecreatefrompng($image);
+		$image_name = substr($image, (strrpos($image, '/') + 1), -4);
+	} elseif($mime_type == 'gif') {
+		$resource = imagecreatefromgif($image);
+		$image_name = substr($image, (strrpos($image, '/') + 1), -4);
+	} elseif($mime_type == 'jpg') {
+		$resource = imagecreatefromjpeg($image);
+		$image_name = substr($image, (strrpos($image, '/') + 1), -4);
+	} elseif($mime_type == 'jpeg') {
+		$resource = imagecreatefromjpeg($image);
+		$image_name = substr($image, (strrpos($image, '/') + 1), -5);
+	} else {
+		//$resource = imagecreatefromstring($image);
+	}
+	
+//	echo $image;
+//	echo '<br>';
+//	echo $image_name;
+//	echo '<br>';
+//	echo $destination;
+//	echo '<br>';
+//	echo $mime_type;
+//	echo '<br>';
+//	exit();
+	
+	foreach($sizes as $name => $size) {
+		$scaled = imagescale($resource, $size);
+		imagejpeg($scaled, $destination . $image_name . '-' . $name . '.' . $mime_type, 70);
+		imagedestroy($scaled);
+	}
+	imagedestroy($resource);
+	return true;
+}
+
 /* Delete Conformation Modal Display */
 function modalCaller() {
 	echo '<!-- Delete Conformation Modal -->
@@ -149,7 +281,9 @@ function commentCaller($query1, $query2) {
 			echo "<li class='text-right load-more-comments list-group-item'>";
 			echo "<a role='button' title='Load more comments' ";
 			echo "data-toggle='tooltip' data-placement='bottom' ";
-			echo "class='load-more-comments'>Load more comments</a></li>";
+//			echo "class='load-more-comments'>Load more comments</a></li>";
+			echo "class='load-more-comments'>Load more comments</a>";
+			echo "<input type='number' class='comment-count hidden' value='$comment_count[0]'/></li>";
 		}
 		
 		echo "</ul>";
