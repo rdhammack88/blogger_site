@@ -16,10 +16,8 @@ function validateFormData($formData) {
 function rotateImage($image) {
 	$mime_type = substr(mime_content_type($image), (strrpos(mime_content_type($image), '/') + 1));
 	/* If image is not of jpeg mime type, no need to rotate */
-	if($mime_type === 'jpeg' || $mime_type === 'jpg') {
-		$image_data = exif_read_data($image);
-//		echo $image_data['Orientation'];
-//		exit();
+	if($mime_type === 'jpeg') { // || $mime_type === 'jpg') {
+		$image_data = @exif_read_data($image);
 
 		/* Get orientation code number from image data */
 		if(!empty($image_data['Orientation'])) {
@@ -102,7 +100,8 @@ function rotateImage($image) {
 function createThumbnail($image, $path) {
 //	$destination = 'images/user_profile_images/';
 						 //(strrpos($image, '.') - 1));
-	$mime_type = substr(mime_content_type($image), (strrpos(mime_content_type($image), '/') + 1));
+//	$mime_type = substr(mime_content_type($image), (strrpos(mime_content_type($image), '/') + 1));
+	$mime_type = pathinfo( $image, PATHINFO_EXTENSION );
 	$destination = $path;
 		
 	$sizes = [
@@ -138,7 +137,7 @@ function createThumbnail($image, $path) {
 	
 	foreach($sizes as $name => $size) {
 		$scaled = imagescale($resource, $size);
-		imagejpeg($scaled, $destination . $image_name . '-' . $name . '.' . $mime_type, 70);
+		imagejpeg($scaled, $destination . $image_name . '-' . $name . '.' . $mime_type, 100);
 		imagedestroy($scaled);
 	}
 	imagedestroy($resource);
