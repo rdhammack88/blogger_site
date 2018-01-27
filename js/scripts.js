@@ -50,6 +50,7 @@ $(document).ready(function() {
 				$('section#blogSection').html("<h4 class='loading-message'>LOADING...</h4>");
 			},
 			success: function(res, status, jqXHR) {
+				res = $.parseHTML(res);
 				$('section#blogSection').html(res);
 				init();
 			}
@@ -414,7 +415,7 @@ $(document).ready(function() {
 	// Blog topics link clicked, show public blogs with same topic
 	$('#blogTopics a').click(function(e) {
 		e.preventDefault();
-		var topic = $(this).html();
+		var topic = $(this).text().trim();
 		console.log(topic);
 		
 		if(document.title.includes('Home')) {
@@ -429,10 +430,9 @@ $(document).ready(function() {
 				},
 				success: function(res) {
 					res = $.parseHTML(res);
-					$('section#blogSection').append(res);
+					$('section#blogSection').html(res);
 					init();
-//					$('.blogComments').css('display', 'none');
-//					console.log(res);
+					console.log(res);
 				}
 			});
 		} else if(document.title.includes('User blogs')) {
@@ -447,24 +447,12 @@ $(document).ready(function() {
 				},
 				success: function(res) {
 					res = $.parseHTML(res);
-					$('section#blogSection').append(res);
-					$('.blogComments').css('display', 'none');
+					$('section#blogSection').html(res);
+					init();
 					console.log(res);
 				}
 			});
 		}
-		
-		
-		$.ajax({
-			url: "./includes/ajax.php?topic="+topic,
-			method: "GET",
-			success: function(res) {
-				$('#blogSection').html(res);
-				$('.blogComments').css('display', 'none');
-				$('div.likes-and-comments span.comment-btn').css('cursor', 'pointer');
-				$('.body-container').trigger('resize');
-			}
-		}); // End of AJAX call
 	}); // End of Blog topic link click
 	
 	// User image clicked, show users public blogs
@@ -1133,14 +1121,17 @@ $(document).ready(function() {
 	});
 	
 	$('body').on('click', 'a.load-more-comments', function(e) {
-		e.stopPropagation();
+//		e.stopPropagation();
+		console.log('Loading Comments');
 		var self = $(this);
 		var blogId = $(this).parents('.blogComments').siblings('article').attr('id');
-		var appendToEl = $(this).parent('li.load-more-comments');
-		var lastCommentShown = appendToEl.prev().attr('id');
-		var commentList = $(this).parents('ul.comment-list');
+		var appendBeforeEl = $(this).parent('li.load-more-comments');
+		var lastCommentShown = appendBeforeEl.prev().attr('id');
+		var commentList = $(this).parents('ul.comment-list li');
+//		var lastCommentShown = commentList.children().last().prev().attr('id');
 //		$(this).parent('li.load-more-comments')
 //		$(this).parents('ul.comment-list').children('li.comment').first().attr('id');
+//		console.log(appendBeforeEl);
 //		console.log(lastCommentShown);
 		
 		$.ajax({
@@ -1154,13 +1145,18 @@ $(document).ready(function() {
 			},
 			success: function(res) {
 //				console.log(res);
-				appendToEl.before(res);
+				res = $.parseHTML(res);
+				console.log(res.length);
+				appendBeforeEl.before(res);
 //				console.log($('.comment-count').val());
-				var commentCount = $('.comment-count').val();
-				var shownComments = commentList.children('li.comment').length;
-				if(shownComments <= commentCount) {
-//					appendToEl.hide();
+//				var commentCount = $('.comment-count').val();
+//				var shownComments = commentList.children('li.comment').length;
+//				if(shownComments >= commentCount) {
+				if(res.length >= commentList.length) {
+					appendBeforeEl.hide();
+//					self.parent().hide();
 				}
+//				console.log('More');
 			}
 			
 		});
