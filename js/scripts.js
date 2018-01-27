@@ -219,8 +219,10 @@ $(document).ready(function() {
 						},
 						success: function(res) {
 							res = $.parseHTML(res);
-							$('section#blogSection').append(res);
-							init();
+							if(res.length >= 1) {
+								$('section#blogSection').append(res);
+								init();
+							}
 //							console.log(lastBlog);
 //							$('section#blogSection').before('footer');
 //							$('.blogComments').css('display', 'none');
@@ -1127,7 +1129,7 @@ $(document).ready(function() {
 		var blogId = $(this).parents('.blogComments').siblings('article').attr('id');
 		var appendBeforeEl = $(this).parent('li.load-more-comments');
 		var lastCommentShown = appendBeforeEl.prev().attr('id');
-		var commentList = $(this).parents('ul.comment-list li');
+		var commentList = $(this).parents('ul.comment-list').children('li');
 //		var lastCommentShown = commentList.children().last().prev().attr('id');
 //		$(this).parent('li.load-more-comments')
 //		$(this).parents('ul.comment-list').children('li.comment').first().attr('id');
@@ -1147,6 +1149,7 @@ $(document).ready(function() {
 //				console.log(res);
 				res = $.parseHTML(res);
 				console.log(res.length);
+				console.log(commentList.length);
 				appendBeforeEl.before(res);
 //				console.log($('.comment-count').val());
 //				var commentCount = $('.comment-count').val();
