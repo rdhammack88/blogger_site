@@ -372,7 +372,7 @@ function queryCaller($conn, $query) {
 			echo "<div class='date col-xs-4'><a href='index.php?date=" . $row['date_created'] . "' class='date'><p class='date_posted'>". $row['date_created'] . "</p></a></div>";
 		}
 				
-		echo "</div><div class='row blogPost'><a href='index.php' class='title'><h3 class='title col-xs-12'>" . $row['blog_title'] . "</h3></a><p class='post col-xs-12'>". strip_tags($row['blog_post']) . "</p><div class=' likes-and-comments'><p class='text-right col-xs-10 likes-and-comments'><span class='total-likes'>" . $like_count . " </span> Likes &nbsp;&nbsp;&nbsp;<span class='total-dislikes'>" . $dislike_count . "  </span> Dislikes &nbsp;&nbsp;&nbsp;<span class='comment-btn " . $cursor_class . " " . $row['blog_id'] . "'";
+		echo "</div><div class='row blogPost'><a href='index.php' class='title'><h3 class='title col-xs-12'>" . $row['blog_title'] . "</h3></a><p class='post col-xs-12'>". strip_tags($row['blog_post']) . "</p><div class='likes-and-comments'><p class='text-right col-xs-10 likes-and-comments'><span class='total-likes'>" . $like_count . " </span> Likes &nbsp;&nbsp;&nbsp;<span class='total-dislikes'>" . $dislike_count . "  </span> Dislikes &nbsp;&nbsp;&nbsp;<span class='comment-btn " . $cursor_class . " " . $row['blog_id'] . "'";
 		if(isset($_SESSION['loggedInUser'])) {
 			echo "title='Comment on this post' data-toggle='tooltip' data-placement='top'";
 		}
