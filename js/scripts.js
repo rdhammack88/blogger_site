@@ -1124,18 +1124,22 @@ $(document).ready(function() {
 	
 	$('body').on('click', 'a.load-more-comments', function(e) {
 //		e.stopPropagation();
-		console.log('Loading Comments');
+//		console.log('Loading Comments');
 		var self = $(this);
-		var blogId = $(this).parents('.blogComments').siblings('article').attr('id');
 		var appendBeforeEl = $(this).parent('li.load-more-comments');
 		var lastCommentShown = appendBeforeEl.prev().attr('id');
 		var commentList = $(this).parents('ul.comment-list').children('li');
-//		var lastCommentShown = commentList.children().last().prev().attr('id');
-//		$(this).parent('li.load-more-comments')
-//		$(this).parents('ul.comment-list').children('li.comment').first().attr('id');
-//		console.log(appendBeforeEl);
-//		console.log(lastCommentShown);
-		
+		var blogId = $(this).parents('.blogComments')
+							.siblings('article').attr('id');
+		var totalCommentCount = $(this).parents('.blogComments')
+									   .siblings('article#'+blogId)
+									   .children('.blogPost')
+									   .children('div.likes-and-comments')
+									   .children('p.likes-and-comments')
+									   .children('span.comment-btn')
+									   .children('.total-comments')
+									   .text();
+
 		$.ajax({
 			method: 'POST',
 			datatype: 'text',
@@ -1145,25 +1149,20 @@ $(document).ready(function() {
 				blog_id: blogId,
 				load_more_comments: lastCommentShown
 			},
+			beforeSend: function() {
+				appendBeforeEl.before('<li id="comment-loader">Loading Comments...</li>');
+			},
 			success: function(res) {
-//				console.log(res);
 				res = $.parseHTML(res);
-				console.log(res.length);
-				console.log(commentList.length);
+				var currentShownCommentCount = res.length + commentList.length;
 				appendBeforeEl.before(res);
-//				console.log($('.comment-count').val());
-//				var commentCount = $('.comment-count').val();
-//				var shownComments = commentList.children('li.comment').length;
-//				if(shownComments >= commentCount) {
-				if(res.length >= commentList.length) {
+				$('#comment-loader').remove();
+
+				if(currentShownCommentCount >= totalCommentCount) {
 					appendBeforeEl.hide();
-//					self.parent().hide();
 				}
-//				console.log('More');
 			}
-			
 		});
-		
 	});
 	
 	/* On click of favorite-btn, update DB with ajax */
