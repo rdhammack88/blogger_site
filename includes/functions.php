@@ -18,6 +18,9 @@ function rotateImage($image) {
 	/* If image is not of jpeg mime type, no need to rotate */
 	if($mime_type === 'jpeg') { // || $mime_type === 'jpg') {
 		$image_data = @exif_read_data($image);
+		
+//		var_dump($image_data);
+//		exit();
 
 		/* Get orientation code number from image data */
 		if(!empty($image_data['Orientation'])) {
@@ -282,7 +285,7 @@ function commentCaller($query1, $query2) {
 			echo "data-toggle='tooltip' data-placement='bottom' ";
 //			echo "class='load-more-comments'>Load more comments</a></li>";
 			echo "class='load-more-comments'>Load more comments</a>";
-			echo "<input type='number' class='comment-count hidden' value='$comment_count[0]'/></li>";
+			echo "<input type='number' class='comment-count hidden' value='$query2[0]'/></li>";
 		}
 		
 		echo "</ul>";

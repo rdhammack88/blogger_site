@@ -102,7 +102,7 @@
 						
 						<!-- Nav items for mobile devices -->
 						<li class="visible-xs"><a href="blog_manager.php">Manage Blogs</a></li>
-						<li class="visible-xs"><a href="user_account.php">Edit Profile</a></li>
+						<li class="visible-xs"><a href="edit_user_account.php">Edit Profile</a></li>
 						<li class="visible-xs"><a href="logout.php"><span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span> Log out</a></li>
 						<!-- End of Nav item for mobile devices -->
 						
@@ -121,7 +121,7 @@
 									</p>
 								</li></a>
 								<a href="blog_manager.php"><li>Manage Blogs</li></a>
-								<a href="user_account.php"><li>Edit Profile</li></a>
+								<a href="edit_user_account.php"><li>Edit Profile</li></a>
 								<a href="logout.php"><li><span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span> Log out</li></a>
 							</ul> <!-- End of .account-dropdown -->
 						</li> <!-- End of .account -->
